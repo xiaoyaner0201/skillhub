@@ -361,7 +361,8 @@ class NotificationEventListenerTest {
         when(userAccountRepository.findByIdIn(anyList())).thenReturn(List.of(
                 new UserAccount("user-1", "One", null, null),
                 new UserAccount("user-2", "Two", null, null)));
-        mockNamespace();
+        when(namespaceRepository.findById(5L))
+                .thenReturn(Optional.of(new Namespace("demo", "Demo", "owner")));
         when(namespaceMemberRepository.findByNamespaceIdAndUserIdIn(eq(5L), anyCollection()))
                 .thenThrow(new IllegalStateException("membership unavailable"));
 
