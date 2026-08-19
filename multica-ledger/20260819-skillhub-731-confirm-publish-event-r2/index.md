@@ -25,3 +25,4 @@
 | 20260819-173745 | planner | plan r4 | planner/20260819-173745-plan-r4.md | `94b6533676d523dc5e474bfe76a9d41b53ba6d31` | FROZEN |
 | 20260819-182034 | planner | plan r5 | planner/20260819-182034-plan-r5.md | `94a518e67b34ede0ef2265d3f81b0ada4dbc1734` | FROZEN |
 | 20260819-190045 | planner | plan r6 | planner/20260819-190045-plan-r6.md | `612f9e98ca62842a18f855b7738c573c9281abfa` | FROZEN |
+| 20260819-194420 | planner | plan r6 approval audit | planner/20260819-194420-plan-r6-approval.md | `6d6a2fefd011fd3008526dc782303ead17434ba9` | PASS |
