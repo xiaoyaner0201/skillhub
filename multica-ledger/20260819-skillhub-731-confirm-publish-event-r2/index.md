@@ -17,3 +17,4 @@
 | 20260819-113351 | leader | implementation gate | leader/20260819-113351-implementation-gate.md | `bb71f8b567578c374f783881983e17e62c283944` | PASS |
 | 20260819-114152 | qa | regression | qa/20260819-114152-regression.md | `ce971b514f35d159ea50a3fe0bfe24cd359ef2d3` | PASS |
 | 20260819-114417 | leader | QA gate | leader/20260819-114417-qa-gate.md | `ce971b514f35d159ea50a3fe0bfe24cd359ef2d3` | PASS |
+| 20260819-114706 | reviewer | exact-tree review | reviewer/20260819-114706-verdict.md | `6ebe64036cdddb4dc85ef4127de39bb5bcaa3e83` | PASS |
