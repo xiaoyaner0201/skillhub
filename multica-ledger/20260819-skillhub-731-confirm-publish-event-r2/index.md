@@ -3,7 +3,7 @@
 - Issue：HD-7 (`ae99ba98-551a-4912-82df-5ffc458ee5db`)
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
 - 冻结计划：`planner/20260819-190045-plan-r6.md`
-- 当前状态：READY
+- 当前状态：READY（PUBLICATION PREPARED；EXTERNAL ACTION PENDING）
 
 ## 分录
 
@@ -45,3 +45,4 @@
 | 20260819-214118 | reviewer | exact-tree review r3 | reviewer/20260819-214118-verdict-r3.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
 | 20260819-221739 | reviewer | review approval audit | reviewer/20260819-221739-review-approval.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
 | 20260819-222008 | leader | review r3 gate | leader/20260819-222008-review-r3-gate.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
+| 20260819-223121 | leader | publication preparation | leader/20260819-223121-publication-preparation.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | PASS |
