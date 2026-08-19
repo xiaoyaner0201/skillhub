@@ -3,7 +3,7 @@
 - Issue：HD-7 (`ae99ba98-551a-4912-82df-5ffc458ee5db`)
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
 - 冻结计划：`planner/20260819-190045-plan-r6.md`
-- 当前状态：VERIFYING
+- 当前状态：IMPLEMENTING
 
 ## 分录
 
@@ -34,3 +34,4 @@
 | 20260819-210154 | leader | implementation r6 gate | leader/20260819-210154-implementation-r6-gate.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | PASS |
 | 20260819-210445 | qa | independent verification charter r2 | qa/20260819-210445-independent-charter-r2.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | — |
 | 20260819-211005 | qa | union verification r2 | qa/20260819-211005-regression-r2.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | FAIL |
+| 20260819-211300 | leader | qa r2 test gap route | leader/20260819-211300-qa-r2-test-gap-route.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | RETURN |
