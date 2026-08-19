@@ -28,3 +28,4 @@
 | 20260819-194420 | planner | plan r6 approval audit | planner/20260819-194420-plan-r6-approval.md | `6d6a2fefd011fd3008526dc782303ead17434ba9` | PASS |
 | 20260819-194611 | leader | plan r6 gate | leader/20260819-194611-plan-r6-gate.md | `6d6a2fefd011fd3008526dc782303ead17434ba9` | PASS |
 | 20260819-202700 | coder | tdd red | coder/20260819-202700-tdd-red.md | `2fe391def34bcc10206316e7954cce19abad8d90` | — |
+| 20260819-195600 | coder | tdd green | coder/20260819-195600-tdd-green.md | `a136ade7fcfb82ffe9969287a00c6908caac5710` | — |
