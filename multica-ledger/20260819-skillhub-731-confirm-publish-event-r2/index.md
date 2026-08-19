@@ -43,3 +43,4 @@
 | 20260819-213047 | qa | union verification r3 | qa/20260819-213047-regression-r3.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
 | 20260819-213333 | leader | qa r3 gate | leader/20260819-213333-qa-r3-gate.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
 | 20260819-214118 | reviewer | exact-tree review r3 | reviewer/20260819-214118-verdict-r3.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
+| 20260819-221739 | reviewer | review approval audit | reviewer/20260819-221739-review-approval.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
