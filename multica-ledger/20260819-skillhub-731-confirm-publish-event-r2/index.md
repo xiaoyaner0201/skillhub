@@ -32,3 +32,5 @@
 | 20260819-202229 | coder | test gap closure | coder/20260819-202229-test-gap-closure.md | `77ea5beec05a06c3aecc0a0624c5d578db2c75ed` | RETURN |
 | 20260819-205859 | coder | regression | coder/20260819-205859-regression.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | — |
 | 20260819-210154 | leader | implementation r6 gate | leader/20260819-210154-implementation-r6-gate.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | PASS |
+| 20260819-210445 | qa | independent verification charter r2 | qa/20260819-210445-independent-charter-r2.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | — |
+| 20260819-211005 | qa | union verification r2 | qa/20260819-211005-regression-r2.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | FAIL |
