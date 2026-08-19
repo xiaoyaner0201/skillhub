@@ -35,3 +35,6 @@
 | 20260819-210445 | qa | independent verification charter r2 | qa/20260819-210445-independent-charter-r2.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | — |
 | 20260819-211005 | qa | union verification r2 | qa/20260819-211005-regression-r2.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | FAIL |
 | 20260819-211300 | leader | qa r2 test gap route | leader/20260819-211300-qa-r2-test-gap-route.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | RETURN |
+| 20260819-212121 | coder | TEST_GAP RED | coder/20260819-212121-test-gap-red.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | — |
+| 20260819-212122 | coder | TEST_GAP GREEN | coder/20260819-212122-test-gap-green.md | `2196fadc347cfdc844703df04877f7c388611a4f` | — |
+| 20260819-212123 | coder | TEST_GAP regression | coder/20260819-212123-test-gap-regression.md | `2196fadc347cfdc844703df04877f7c388611a4f` | — |
