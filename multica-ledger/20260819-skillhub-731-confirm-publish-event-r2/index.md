@@ -15,3 +15,4 @@
 | 20260819-110600 | coder | tdd red | coder/20260819-110600-tdd-red.md | `87f7d980689b6865795b22e7e05ae06123859215` | — |
 | 20260819-110601 | coder | tdd green | coder/20260819-110601-tdd-green.md | `9b7dc3a2e9d49b426ce8d0ce0588ac269706ae75` | — |
 | 20260819-113351 | leader | implementation gate | leader/20260819-113351-implementation-gate.md | `bb71f8b567578c374f783881983e17e62c283944` | PASS |
+| 20260819-114152 | qa | regression | qa/20260819-114152-regression.md | `ce971b514f35d159ea50a3fe0bfe24cd359ef2d3` | PASS |
