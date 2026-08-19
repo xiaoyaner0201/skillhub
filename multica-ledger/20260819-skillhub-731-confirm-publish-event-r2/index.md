@@ -30,3 +30,4 @@
 | 20260819-202700 | coder | tdd red | coder/20260819-202700-tdd-red.md | `2fe391def34bcc10206316e7954cce19abad8d90` | — |
 | 20260819-195600 | coder | tdd green | coder/20260819-195600-tdd-green.md | `a136ade7fcfb82ffe9969287a00c6908caac5710` | — |
 | 20260819-202229 | coder | test gap closure | coder/20260819-202229-test-gap-closure.md | `77ea5beec05a06c3aecc0a0624c5d578db2c75ed` | RETURN |
+| 20260819-205859 | coder | regression | coder/20260819-205859-regression.md | `71d9c55387b0a0b8336905d3aa9986fff6be6c97` | — |
