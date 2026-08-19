@@ -4,10 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iflytek.skillhub.domain.event.*;
 import com.iflytek.skillhub.domain.namespace.Namespace;
 import com.iflytek.skillhub.domain.namespace.NamespaceRepository;
+import com.iflytek.skillhub.domain.namespace.NamespaceMemberRepository;
 import com.iflytek.skillhub.domain.skill.Skill;
 import com.iflytek.skillhub.domain.skill.SkillRepository;
 import com.iflytek.skillhub.domain.skill.SkillVisibility;
 import com.iflytek.skillhub.domain.skill.SkillVersionRepository;
+import com.iflytek.skillhub.domain.social.SkillSubscriptionService;
+import com.iflytek.skillhub.domain.social.SubscriptionRecipientEligibility;
+import com.iflytek.skillhub.domain.social.SubscriptionMetadataAccessPolicy;
+import com.iflytek.skillhub.domain.user.UserAccount;
+import com.iflytek.skillhub.domain.user.UserAccountRepository;
+import com.iflytek.skillhub.domain.user.UserStatus;
 import com.iflytek.skillhub.notification.domain.NotificationCategory;
 import com.iflytek.skillhub.notification.service.NotificationDispatcher;
 import org.junit.jupiter.api.Test;
@@ -31,9 +38,20 @@ class NotificationEventListenerTest {
     @Mock RecipientResolver recipientResolver;
     @Mock NotificationDispatcher dispatcher;
     @Mock ObjectMapper objectMapper;
+    @Mock SkillSubscriptionService skillSubscriptionService;
+    @Mock UserAccountRepository userAccountRepository;
+    @Mock NamespaceMemberRepository namespaceMemberRepository;
 
     @InjectMocks
     NotificationEventListener listener;
+
+    @org.junit.jupiter.api.BeforeEach
+    void setUpListener() {
+        listener = new NotificationEventListener(skillRepository, skillVersionRepository, namespaceRepository,
+                recipientResolver, dispatcher, skillSubscriptionService, objectMapper,
+                new SubscriptionRecipientEligibility(userAccountRepository, namespaceMemberRepository,
+                        new SubscriptionMetadataAccessPolicy()));
+    }
 
     private Skill mockSkill(Long id) {
         Skill skill = mock(Skill.class);
@@ -224,5 +242,36 @@ class NotificationEventListenerTest {
 
         verify(dispatcher).dispatch(eq("reporter-1"), eq(NotificationCategory.REPORT),
                 eq("REPORT_RESOLVED"), anyString(), anyString(), eq("SKILL"), eq(1L));
+    }
+
+    @Test
+    void publishSubscriberFanoutExcludesInactiveAccount() {
+        Skill skill = skill(1L, "owner", "owner");
+        skill.setLatestVersionId(10L);
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        when(skillSubscriptionService.findSubscribersBySkillId(1L)).thenReturn(List.of("inactive"));
+        UserAccount inactive = new UserAccount("inactive", "Inactive", null, null);
+        inactive.setStatus(UserStatus.DISABLED);
+        when(userAccountRepository.findByIdIn(List.of("inactive"))).thenReturn(List.of(inactive));
+        mockNamespace();
+
+        listener.onSkillPublishedForSubscribers(new SkillPublishedEvent(1L, 10L, "owner"));
+
+        verifyNoInteractions(dispatcher);
+    }
+
+    @Test
+    void publishSubscriberFanoutFailsClosedBeforeDispatchWhenAccountBatchFails() {
+        Skill skill = skill(1L, "owner", "owner");
+        skill.setLatestVersionId(10L);
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        when(skillSubscriptionService.findSubscribersBySkillId(1L)).thenReturn(List.of("user-1", "user-2"));
+        when(userAccountRepository.findByIdIn(anyList())).thenThrow(new IllegalStateException("account batch unavailable"));
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(() ->
+                listener.onSkillPublishedForSubscribers(new SkillPublishedEvent(1L, 10L, "owner")))
+                .isInstanceOf(IllegalStateException.class);
+
+        verifyNoInteractions(dispatcher);
     }
 }

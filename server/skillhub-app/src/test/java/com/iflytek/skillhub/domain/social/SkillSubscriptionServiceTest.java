@@ -2,6 +2,14 @@ package com.iflytek.skillhub.domain.social;
 
 import com.iflytek.skillhub.domain.skill.Skill;
 import com.iflytek.skillhub.domain.skill.SkillRepository;
+import com.iflytek.skillhub.domain.namespace.Namespace;
+import com.iflytek.skillhub.domain.namespace.NamespaceMemberRepository;
+import com.iflytek.skillhub.domain.namespace.NamespaceRepository;
+import com.iflytek.skillhub.domain.namespace.NamespaceStatus;
+import com.iflytek.skillhub.domain.user.UserAccount;
+import com.iflytek.skillhub.domain.user.UserAccountRepository;
+import com.iflytek.skillhub.domain.user.UserStatus;
+import com.iflytek.skillhub.domain.shared.exception.DomainForbiddenException;
 import com.iflytek.skillhub.domain.social.event.SkillSubscribedEvent;
 import com.iflytek.skillhub.domain.social.event.SkillUnsubscribedEvent;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,17 +32,34 @@ class SkillSubscriptionServiceTest {
     @Mock private SkillSubscriptionRepository subscriptionRepository;
     @Mock private SkillRepository skillRepository;
     @Mock private ApplicationEventPublisher eventPublisher;
+    @Mock private NamespaceRepository namespaceRepository;
+    @Mock private NamespaceMemberRepository namespaceMemberRepository;
+    @Mock private UserAccountRepository userAccountRepository;
 
     private SkillSubscriptionService service;
 
+    private void allowPublicSubscription(Skill skill) {
+        skill.setLatestVersionId(10L);
+        when(userAccountRepository.findById("user-1"))
+                .thenReturn(Optional.of(new UserAccount("user-1", "User", null, null)));
+        Namespace namespace = new Namespace("demo", "Demo", "owner");
+        when(namespaceRepository.findById(skill.getNamespaceId())).thenReturn(Optional.of(namespace));
+        when(namespaceMemberRepository.findByNamespaceIdAndUserId(skill.getNamespaceId(), "user-1"))
+                .thenReturn(Optional.empty());
+    }
+
     @BeforeEach
     void setUp() {
-        service = new SkillSubscriptionService(subscriptionRepository, skillRepository, eventPublisher);
+        service = new SkillSubscriptionService(subscriptionRepository, skillRepository, eventPublisher,
+                namespaceRepository, namespaceMemberRepository, userAccountRepository,
+                new SubscriptionMetadataAccessPolicy());
     }
 
     @Test
     void subscribe_createsSubscriptionAndPublishesEvent() {
-        when(skillRepository.findById(1L)).thenReturn(Optional.of(mock(Skill.class)));
+        Skill skill = new Skill(5L, "public-skill", "owner", com.iflytek.skillhub.domain.skill.SkillVisibility.PUBLIC);
+        allowPublicSubscription(skill);
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
         when(subscriptionRepository.findBySkillIdAndUserId(1L, "user-1")).thenReturn(Optional.empty());
         when(subscriptionRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -50,7 +75,9 @@ class SkillSubscriptionServiceTest {
 
     @Test
     void subscribe_idempotent_doesNotDuplicate() {
-        when(skillRepository.findById(1L)).thenReturn(Optional.of(mock(Skill.class)));
+        Skill skill = new Skill(5L, "public-skill", "owner", com.iflytek.skillhub.domain.skill.SkillVisibility.PUBLIC);
+        allowPublicSubscription(skill);
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
         when(subscriptionRepository.findBySkillIdAndUserId(1L, "user-1"))
                 .thenReturn(Optional.of(mock(SkillSubscription.class)));
 
@@ -101,5 +128,42 @@ class SkillSubscriptionServiceTest {
         when(subscriptionRepository.findBySkillIdAndUserId(1L, "user-1")).thenReturn(Optional.empty());
 
         assertThat(service.isSubscribed(1L, "user-1")).isFalse();
+    }
+
+    @Test
+    void subscribe_rejectsInactiveAccountWithoutMutation() {
+        Skill skill = new Skill(5L, "private-skill", "owner", com.iflytek.skillhub.domain.skill.SkillVisibility.PRIVATE);
+        skill.setLatestVersionId(10L);
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        UserAccount account = new UserAccount("user-1", "User", null, null);
+        account.setStatus(UserStatus.DISABLED);
+        when(userAccountRepository.findById("user-1")).thenReturn(Optional.of(account));
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.subscribe(1L, "user-1"))
+                .isInstanceOf(DomainForbiddenException.class);
+
+        verifyNoInteractions(subscriptionRepository);
+        verify(skillRepository, never()).incrementSubscriptionCount(anyLong());
+        verifyNoInteractions(eventPublisher);
+    }
+
+    @Test
+    void subscribe_rejectsRemovedMemberOfArchivedNamespaceWithoutMutation() {
+        Skill skill = new Skill(5L, "public-skill", "owner", com.iflytek.skillhub.domain.skill.SkillVisibility.PUBLIC);
+        skill.setLatestVersionId(10L);
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        when(userAccountRepository.findById("user-1"))
+                .thenReturn(Optional.of(new UserAccount("user-1", "User", null, null)));
+        Namespace namespace = new Namespace("archived", "Archived", "owner");
+        namespace.setStatus(NamespaceStatus.ARCHIVED);
+        when(namespaceRepository.findById(5L)).thenReturn(Optional.of(namespace));
+        when(namespaceMemberRepository.findByNamespaceIdAndUserId(5L, "user-1")).thenReturn(Optional.empty());
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.subscribe(1L, "user-1"))
+                .isInstanceOf(DomainForbiddenException.class);
+
+        verifyNoInteractions(subscriptionRepository);
+        verify(skillRepository, never()).incrementSubscriptionCount(anyLong());
+        verifyNoInteractions(eventPublisher);
     }
 }
