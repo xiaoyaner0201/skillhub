@@ -39,3 +39,5 @@
 | 20260819-212122 | coder | TEST_GAP GREEN | coder/20260819-212122-test-gap-green.md | `2196fadc347cfdc844703df04877f7c388611a4f` | — |
 | 20260819-212123 | coder | TEST_GAP regression | coder/20260819-212123-test-gap-regression.md | `2196fadc347cfdc844703df04877f7c388611a4f` | — |
 | 20260819-212344 | leader | test gap closure gate | leader/20260819-212344-test-gap-closure-gate.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
+| 20260819-212700 | qa | independent verification charter r3 | qa/20260819-212700-independent-charter-r3.md | `2196fadc347cfdc844703df04877f7c388611a4f` | — |
+| 20260819-213047 | qa | union verification r3 | qa/20260819-213047-regression-r3.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
