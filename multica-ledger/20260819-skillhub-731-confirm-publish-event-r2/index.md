@@ -20,3 +20,4 @@
 | 20260819-114706 | reviewer | exact-tree review | reviewer/20260819-114706-verdict.md | `6ebe64036cdddb4dc85ef4127de39bb5bcaa3e83` | PASS |
 | 20260819-115539 | leader | review gate | leader/20260819-115539-review-gate.md | `6ebe64036cdddb4dc85ef4127de39bb5bcaa3e83` | PASS |
 | 20260819-163257 | leader | superseding finding | leader/20260819-163257-rework-plan-gap.md | `3cea02cf72013c9798fa8071e5429da13197fd66` | RETURN |
+| 20260819-163725 | planner | plan r2 | planner/20260819-163725-plan-r2.md | `3d545b45fa5df8b209b3b7eb97932538bf1c1f82` | FROZEN |
