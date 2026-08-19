@@ -27,3 +27,4 @@
 | 20260819-190045 | planner | plan r6 | planner/20260819-190045-plan-r6.md | `612f9e98ca62842a18f855b7738c573c9281abfa` | FROZEN |
 | 20260819-194420 | planner | plan r6 approval audit | planner/20260819-194420-plan-r6-approval.md | `6d6a2fefd011fd3008526dc782303ead17434ba9` | PASS |
 | 20260819-194611 | leader | plan r6 gate | leader/20260819-194611-plan-r6-gate.md | `6d6a2fefd011fd3008526dc782303ead17434ba9` | PASS |
+| 20260819-202700 | coder | tdd red | coder/20260819-202700-tdd-red.md | `2fe391def34bcc10206316e7954cce19abad8d90` | — |
