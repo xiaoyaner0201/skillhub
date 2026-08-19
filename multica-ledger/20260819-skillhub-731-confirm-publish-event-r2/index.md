@@ -2,8 +2,8 @@
 
 - Issue：HD-7 (`ae99ba98-551a-4912-82df-5ffc458ee5db`)
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
-- 冻结计划：`planner/20260819-104029-plan-r1.md`
-- 当前状态：REVIEW_RETURNED
+- 冻结计划：`planner/20260819-190045-plan-r6.md`
+- 当前状态：IMPLEMENTING
 
 ## 分录
 
@@ -26,3 +26,4 @@
 | 20260819-182034 | planner | plan r5 | planner/20260819-182034-plan-r5.md | `94a518e67b34ede0ef2265d3f81b0ada4dbc1734` | FROZEN |
 | 20260819-190045 | planner | plan r6 | planner/20260819-190045-plan-r6.md | `612f9e98ca62842a18f855b7738c573c9281abfa` | FROZEN |
 | 20260819-194420 | planner | plan r6 approval audit | planner/20260819-194420-plan-r6-approval.md | `6d6a2fefd011fd3008526dc782303ead17434ba9` | PASS |
+| 20260819-194611 | leader | plan r6 gate | leader/20260819-194611-plan-r6-gate.md | `6d6a2fefd011fd3008526dc782303ead17434ba9` | PASS |
