@@ -12,3 +12,5 @@
 | 20260819-103708 | leader | dispatch | leader/20260819-103708-dispatch.md | — | — |
 | 20260819-104029 | planner | plan r1 | planner/20260819-104029-plan-r1.md | — | FROZEN |
 | 20260819-105902 | leader | plan gate | leader/20260819-105902-plan-gate.md | — | PASS |
+| 20260819-110600 | coder | tdd red | coder/20260819-110600-tdd-red.md | `87f7d980689b6865795b22e7e05ae06123859215` | — |
+| 20260819-110601 | coder | tdd green | coder/20260819-110601-tdd-green.md | `9b7dc3a2e9d49b426ce8d0ce0588ac269706ae75` | — |
