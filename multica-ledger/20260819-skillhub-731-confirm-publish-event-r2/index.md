@@ -3,7 +3,7 @@
 - Issue：HD-7 (`ae99ba98-551a-4912-82df-5ffc458ee5db`)
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
 - 冻结计划：`planner/20260819-190045-plan-r6.md`
-- 当前状态：READY（PUBLICATION PREPARED；EXTERNAL ACTION PENDING）
+- 当前状态：PUBLICATION_BLOCKED（Draft PR #735 OPEN；DCO/CLA 待处理）
 
 ## 分录
 
@@ -46,3 +46,4 @@
 | 20260819-221739 | reviewer | review approval audit | reviewer/20260819-221739-review-approval.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
 | 20260819-222008 | leader | review r3 gate | leader/20260819-222008-review-r3-gate.md | `2196fadc347cfdc844703df04877f7c388611a4f` | PASS |
 | 20260819-223121 | leader | publication preparation | leader/20260819-223121-publication-preparation.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | PASS |
+| 20260820-024724 | leader | publication mapping / metadata blockers | leader/20260820-024724-publication-mapping.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | RETURN |
