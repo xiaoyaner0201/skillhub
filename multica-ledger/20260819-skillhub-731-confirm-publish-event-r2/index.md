@@ -3,7 +3,7 @@
 - Issue：HD-7 (`ae99ba98-551a-4912-82df-5ffc458ee5db`)
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
 - 冻结计划：`planner/20260819-190045-plan-r6.md`
-- 当前状态：PUBLICATION_BLOCKED（Draft PR #735 OPEN；DCO/CLA 待处理）
+- 当前状态：PUBLISHED（Draft PR #735 OPEN；DCO/CLA PASS；上游未合并）
 
 ## 分录
 
@@ -48,3 +48,4 @@
 | 20260819-223121 | leader | publication preparation | leader/20260819-223121-publication-preparation.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | PASS |
 | 20260820-024724 | leader | publication mapping / metadata blockers | leader/20260820-024724-publication-mapping.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | RETURN |
 | 20260820-030208 | leader | DCO remediation | leader/20260820-030208-dco-remediation.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | PASS |
+| 20260820-032908 | leader | publication delivered / upstream pending | leader/20260820-032908-publication-delivered.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | PASS |
