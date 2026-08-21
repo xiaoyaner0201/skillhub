@@ -20,3 +20,4 @@
 |---|---|---|---|---|---|
 | 20260821-113951 | leader | intake + dispatch discovery | leader/20260821-113951-intake-dispatch.md | `c81497c` | — |
 | 20260821-123244 | qa | behavior discovery | qa/20260821-123244-behavior-discovery.md | `c81497c` | FROZEN |
+| 20260821-125849 | planner | plan r1 | planner/20260821-125849-plan-r1.md | `c81497c` | FROZEN |
