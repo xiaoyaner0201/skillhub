@@ -1,9 +1,10 @@
 # 20260819-skillhub-731-confirm-publish-event-r2
 
-- Issue：HD-7 (`ae99ba98-551a-4912-82df-5ffc458ee5db`)
+- Issue：HD-28 (`eeaef67f-f4b8-4e58-ae96-b9649785a739`)；前序 HD-7 (`ae99ba98-551a-4912-82df-5ffc458ee5db`)
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
-- 冻结计划：`planner/20260819-190045-plan-r6.md`
-- 当前状态：PUBLISHED（Draft PR #735 OPEN；DCO/CLA PASS；上游未合并）
+- 冻结计划：`planner/20260819-190045-plan-r6.md`（HD-7 终态；HD-28 待新 plan 冻结后替换）
+- 风险分级：`HIGH_RISK`（authz / PRIVATE / event fan-out / async listener，见 `leader/20260821-072735-hd28-dispatch.md`）
+- 当前状态：PLANNING（HD-28 Discovery Stage 进行中；HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
 
 ## 分录
 
@@ -49,3 +50,4 @@
 | 20260820-024724 | leader | publication mapping / metadata blockers | leader/20260820-024724-publication-mapping.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | RETURN |
 | 20260820-030208 | leader | DCO remediation | leader/20260820-030208-dco-remediation.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | PASS |
 | 20260820-032908 | leader | publication delivered / upstream pending | leader/20260820-032908-publication-delivered.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | PASS |
+| 20260821-072735 | leader | HD-28 intake / dispatch | leader/20260821-072735-hd28-dispatch.md | `5e6c885499774eae6beeda27febafaf2003e9e1b` | — |
