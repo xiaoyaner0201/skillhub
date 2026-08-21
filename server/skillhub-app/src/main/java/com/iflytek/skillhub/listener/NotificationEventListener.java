@@ -79,6 +79,10 @@ public class NotificationEventListener {
                 return;
             }
             var namespace = namespaceRepository.findById(skill.getNamespaceId()).orElse(null);
+            if (namespace == null) {
+                log.warn("Subscriber notification skipped because namespace was not found [skillId={}, namespaceId={}]",
+                        skill.getId(), skill.getNamespaceId());
+            }
             subscribers = subscriptionEligibility.currentRecipients(skill, namespace, subscribers);
             String title = "Skill updated: " + skillDisplayName(skill);
             Map<String, Object> body = bodyWithSkill(skill);
@@ -103,6 +107,10 @@ public class NotificationEventListener {
                 return;
             }
             var namespace = namespaceRepository.findById(skill.getNamespaceId()).orElse(null);
+            if (namespace == null) {
+                log.warn("Subscriber notification skipped because namespace was not found [skillId={}, namespaceId={}]",
+                        skill.getId(), skill.getNamespaceId());
+            }
             subscribers = subscriptionEligibility.yankedRecipients(skill, namespace, subscribers, event.wasPublished());
             String title = "Skill version yanked: " + skillDisplayName(skill);
             Map<String, Object> body = bodyWithSkill(skill);

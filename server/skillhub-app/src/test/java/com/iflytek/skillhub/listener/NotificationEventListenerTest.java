@@ -1,5 +1,9 @@
 package com.iflytek.skillhub.listener;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iflytek.skillhub.domain.event.*;
 import com.iflytek.skillhub.domain.namespace.Namespace;
@@ -25,10 +29,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -354,6 +360,41 @@ class NotificationEventListenerTest {
     }
 
     @Test
+    void publishMissingNamespaceWarnsWithoutSubscriberPiiAndFailsClosed() {
+        Skill skill = skill(1L, "owner", "owner");
+        skill.setLatestVersionId(10L);
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        when(skillSubscriptionService.findSubscribersBySkillId(1L))
+                .thenReturn(List.of("subscriber-pii-sentinel"));
+        when(namespaceRepository.findById(5L)).thenReturn(Optional.empty());
+        when(userAccountRepository.findByIdIn(anyList())).thenReturn(List.of(
+                new UserAccount("subscriber-pii-sentinel", "Sentinel", null, null)));
+
+        List<ILoggingEvent> events = captureLogs(() ->
+                listener.onSkillPublishedForSubscribers(new SkillPublishedEvent(1L, 10L, "owner")));
+
+        assertMissingNamespaceWarning(events);
+        verifyNoInteractions(dispatcher);
+    }
+
+    @Test
+    void yankMissingNamespaceWarnsWithoutSubscriberPiiAndFailsClosed() {
+        Skill skill = skill(1L, "owner", "owner");
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        when(skillSubscriptionService.findSubscribersBySkillId(1L))
+                .thenReturn(List.of("subscriber-pii-sentinel"));
+        when(namespaceRepository.findById(5L)).thenReturn(Optional.empty());
+        when(userAccountRepository.findByIdIn(anyList())).thenReturn(List.of(
+                new UserAccount("subscriber-pii-sentinel", "Sentinel", null, null)));
+
+        List<ILoggingEvent> events = captureLogs(() -> listener.onSkillVersionYankedForSubscribers(
+                new SkillVersionYankedEvent(1L, 10L, "actor", true)));
+
+        assertMissingNamespaceWarning(events);
+        verifyNoInteractions(dispatcher);
+    }
+
+    @Test
     void yankFanoutFailsClosedBeforeDispatchWhenMembershipBatchFails() {
         Skill skill = skill(1L, "owner", "owner");
         when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
@@ -394,5 +435,31 @@ class NotificationEventListenerTest {
         verify(dispatcher).dispatch(eq("current"), eq(NotificationCategory.PUBLISH),
                 eq("SUBSCRIPTION_VERSION_YANKED"), anyString(), eq("{}"), eq("SKILL"), eq(1L));
         verifyNoMoreInteractions(dispatcher);
+    }
+
+    private List<ILoggingEvent> captureLogs(Runnable action) {
+        Logger logger = (Logger) LoggerFactory.getLogger(NotificationEventListener.class);
+        Level previousLevel = logger.getLevel();
+        ListAppender<ILoggingEvent> appender = new ListAppender<>();
+        appender.start();
+        logger.setLevel(Level.WARN);
+        logger.addAppender(appender);
+        try {
+            action.run();
+            return List.copyOf(appender.list);
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(previousLevel);
+            appender.stop();
+        }
+    }
+
+    private void assertMissingNamespaceWarning(List<ILoggingEvent> events) {
+        assertThat(events).singleElement().satisfies(event -> {
+            assertThat(event.getLevel()).isEqualTo(Level.WARN);
+            assertThat(event.getFormattedMessage())
+                    .contains("skillId=1", "namespaceId=5")
+                    .doesNotContain("subscriber-pii-sentinel");
+        });
     }
 }
