@@ -4,7 +4,7 @@
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
 - 冻结计划：`planner/20260821-083820-plan-r1-m1.md`（HD-28 生效，artifact `d5948e67…0c7e`）；HD-7 终态为 `planner/20260819-190045-plan-r6.md`
 - 风险分级：`HIGH_RISK`（authz / PRIVATE / event fan-out / async listener，见 `leader/20260821-072735-hd28-dispatch.md`）
-- 当前状态：REVIEW/QA（HD-28 Implementation Gate PASS，exact tree `e8aca2a4…` 冻结；Review Pass 1 进行中，QA Charter 待 `PLAN_GAP` 修复后再派。HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
+- 当前状态：REVIEW/DISCOVERY 返修（HD-28 Implementation Gate PASS，exact tree `e8aca2a4…` 冻结不动；`PLAN_GAP` artifact 层已闭合，上游 `EVIDENCE_GAP` 退回 discovery：inventory `must_fail_old` 与 subject `23658e0f` 冲突。Review Pass 1 并行进行，QA Charter 继续暂缓。HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
 
 ## 分录
 
@@ -61,3 +61,4 @@
 | 20260821-091620 | coder | RED→GREEN / regression | coder/20260821-091620-red-green-regression.md | `e8aca2a43467dad0da969c182632a7b791f90621` | — |
 | 20260821-092115 | leader | implementation gate / PLAN_GAP on expected_before | leader/20260821-092115-implementation-gate-and-plan-gap.md | `f025cd9ea0cb1979184104634612a4638aa2a670` | PASS |
 | 20260821-093209 | planner | HD-28 plan r1 M2 expected-before / inventory conflict | planner/20260821-093209-plan-r1-m2-expected-before-return.md | `e8aca2a43467dad0da969c182632a7b791f90621` | RETURN |
+| 20260821-094207 | leader | plan gate re-run on M2 / EVIDENCE_GAP on inventory | leader/20260821-094207-m2-regate-return-and-evidence-gap.md | `a1b3a91a7074b0294d69afb982cc2a97505b8416` | RETURN |
