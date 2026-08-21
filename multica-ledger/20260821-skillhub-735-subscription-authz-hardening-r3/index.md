@@ -25,3 +25,4 @@
 | 20260821-155700 | coder | RED→GREEN | coder/20260821-155700-code-tdd.md | `9221956` | — |
 | 20260821-160557 | leader | 候选核对 + 冻结 + 并行派 QA/Review Pass 1 | leader/20260821-160557-candidate-intake.md | `9221956` | ACCEPTED_FOR_VERIFICATION |
 | 20260821-161203 | qa | blind QA charter | qa/20260821-161203-blind-qa-charter.md | `9221956` | FROZEN |
+| 20260821-172100 | qa | QA execution | qa/20260821-172100-qa-execution.md | `9221956` | RETURN |

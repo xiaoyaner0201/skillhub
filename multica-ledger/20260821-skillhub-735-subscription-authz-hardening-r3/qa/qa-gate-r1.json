@@ -1,0 +1,895 @@
+{
+  "schema_version": "qa-gate.v1",
+  "subject": {
+    "repo": "skillhub",
+    "commit": "046c04ed6b5631bae7b854ae60797b3ed7a3a930",
+    "tree": "922195602c92f0f420e17df9021ae39727c95f8d",
+    "plan_revision": 1,
+    "plan_sha256": "39510ad88cff8cb34f7efc584eb9818a47e6f1cb032c0bf2c11caf3c018d2236",
+    "discovery_inventory_sha256": "efd911ad203add676cf925c8e20e1cb40251415d1a90600b2ad3de2f48131eae",
+    "worktree_status": "CLEAN"
+  },
+  "charter": {
+    "path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/20260821-161203-blind-qa-charter.md",
+    "sha256": "6faf5414433a70d1b76f240e8ba027c0554e1083a43a4f1375f07e2fdc431fb1",
+    "created_at": "2026-08-21T16:12:03Z",
+    "plan_opened_at": "2026-08-21T16:35:00Z",
+    "run_id": "ca970b26-c4b0-402f-bbe0-9af5d825b6f0",
+    "context_id": "ca970b26-c4b0-402f-bbe0-9af5d825b6f0",
+    "independent_inventory_ids": [
+      "QAC-01",
+      "QAC-02",
+      "QAC-03",
+      "QAC-04",
+      "QAC-05",
+      "QAC-06",
+      "QAC-07",
+      "QAC-08",
+      "QAC-09",
+      "QAC-10",
+      "QAC-11",
+      "QAC-12",
+      "QAC-13",
+      "QAC-14",
+      "QAC-15",
+      "QAC-16",
+      "QAC-17",
+      "QAC-18"
+    ],
+    "source_inputs": [
+      "Source Contract",
+      "exact subject tree and complete business diff",
+      "frozen discovery inventory",
+      "surrounding production and test source",
+      "repository invariants"
+    ]
+  },
+  "execution": {
+    "run_id": "c78f0d9e-4324-4b2e-a41f-6ecc5607145f",
+    "context_id": "c78f0d9e-4324-4b2e-a41f-6ecc5607145f"
+  },
+  "coverage": {
+    "inventory_candidate_ids": [
+      "r1-subscribe-create",
+      "r1-unsubscribe-existing",
+      "r1-is-subscribed-read",
+      "r2-published-subscriber-fanout",
+      "r2-yanked-subscriber-fanout",
+      "r3-visibility-skill-query-detail",
+      "r3-visibility-skill-query-list",
+      "r3-visibility-skill-query-published-access",
+      "r3-visibility-skill-download",
+      "r3-visibility-skill-tags",
+      "r3-visibility-skill-labels",
+      "r3-visibility-compat-lookup",
+      "r3-visibility-security-audit",
+      "unverified-spring-runtime-dispatch",
+      "unverified-reflection-generated-external"
+    ],
+    "plan_probe_ids": [
+      "subscribe-private-denied",
+      "subscribe-hidden-denied",
+      "subscribe-removed-denied",
+      "subscribe-disabled-denied",
+      "subscribe-namespace-member",
+      "subscribe-message-en-zh",
+      "unsubscribe-revocation-escape",
+      "status-stale-row-compatible",
+      "published-private-denied",
+      "published-hidden-denied",
+      "published-removed-denied",
+      "published-disabled-denied",
+      "published-namespace-member",
+      "published-publisher-skipped",
+      "published-batch-failure",
+      "yanked-private-denied",
+      "yanked-hidden-denied",
+      "yanked-removed-denied",
+      "yanked-disabled-denied",
+      "yanked-namespace-member",
+      "yanked-latest-null-denied",
+      "yanked-actor-skipped",
+      "yanked-batch-failure",
+      "existing-consumer-regression",
+      "runtime-rollback-zero-sink",
+      "runtime-executor-rejection-zero-sink",
+      "runtime-commit-reaches-sink",
+      "dynamic-surface-delta-audit"
+    ],
+    "regression_ids": [
+      "QAC-01",
+      "QAC-02",
+      "QAC-03",
+      "QAC-04",
+      "QAC-05",
+      "QAC-06",
+      "QAC-07",
+      "QAC-08",
+      "QAC-09",
+      "QAC-10",
+      "QAC-11",
+      "QAC-12",
+      "QAC-13",
+      "QAC-14",
+      "QAC-15",
+      "QAC-16",
+      "QAC-17",
+      "QAC-18",
+      "exact-tree-full-reactor",
+      "targeted-union",
+      "candidate-red-control",
+      "semgrep-delta"
+    ],
+    "represented_path_ids": [
+      "subscription-create",
+      "subscription-unsubscribe",
+      "subscription-status-read",
+      "published-subscriber-fanout",
+      "yanked-subscriber-fanout",
+      "visibility-checker-consumer-regression",
+      "spring-runtime-dispatch",
+      "dynamic-surface-audit"
+    ],
+    "represented_sink_ids": [
+      "dynamic-audit-evidence",
+      "existing-consumer-observables",
+      "published-notification-row",
+      "published-notification-sse",
+      "runtime-recipient-sink",
+      "subscribe-counter-event",
+      "subscribe-forbidden-message",
+      "subscribe-row",
+      "subscription-own-boolean",
+      "unsubscribe-delete-counter-event",
+      "yanked-notification-row",
+      "yanked-notification-sse"
+    ],
+    "represented_state_ids": [
+      "dynamic-delta-audited",
+      "existing-consumer-matrix",
+      "published-batch-failure",
+      "published-disabled-denied",
+      "published-hidden-denied",
+      "published-namespace-member",
+      "published-private-denied",
+      "published-publisher-skipped",
+      "published-removed-denied",
+      "published-super-admin",
+      "runtime-commit",
+      "runtime-executor-rejection",
+      "runtime-rollback",
+      "status-anonymous",
+      "status-stale-own-row",
+      "subscribe-disabled-denied",
+      "subscribe-hidden-denied",
+      "subscribe-namespace-member",
+      "subscribe-private-denied",
+      "subscribe-public-active",
+      "subscribe-removed-denied",
+      "subscribe-super-admin",
+      "unsubscribe-after-revocation",
+      "unsubscribe-no-row",
+      "yanked-actor-skipped",
+      "yanked-batch-failure",
+      "yanked-disabled-denied",
+      "yanked-hidden-denied",
+      "yanked-latest-null-denied",
+      "yanked-namespace-member",
+      "yanked-private-denied",
+      "yanked-removed-denied"
+    ]
+  },
+  "probe_results": [
+    {
+      "probe_id": "subscribe-private-denied",
+      "path_id": "subscription-create",
+      "state_id": "subscribe-private-denied",
+      "sink_ids": [
+        "subscribe-row",
+        "subscribe-counter-event",
+        "subscribe-forbidden-message"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_privateOrdinaryMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "DomainForbiddenException uses error.skill.subscription.noPermission",
+        "subscription save, counter increment and event publication are all zero",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "subscribe-hidden-denied",
+      "path_id": "subscription-create",
+      "state_id": "subscribe-hidden-denied",
+      "sink_ids": [
+        "subscribe-row",
+        "subscribe-counter-event",
+        "subscribe-forbidden-message"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_hiddenOrdinaryMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "hidden ordinary member receives forbidden code",
+        "subscription row, counter and event sinks remain zero",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "subscribe-removed-denied",
+      "path_id": "subscription-create",
+      "state_id": "subscribe-removed-denied",
+      "sink_ids": [
+        "subscribe-row",
+        "subscribe-counter-event",
+        "subscribe-forbidden-message"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "removed member receives forbidden code",
+        "subscription row, counter and event sinks remain zero",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "subscribe-disabled-denied",
+      "path_id": "subscription-create",
+      "state_id": "subscribe-disabled-denied",
+      "sink_ids": [
+        "subscribe-row",
+        "subscribe-counter-event",
+        "subscribe-forbidden-message"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "disabled user is denied on PUBLIC skill",
+        "subscription row, counter and event sinks remain zero",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "subscribe-namespace-member",
+      "path_id": "subscription-create",
+      "state_id": "subscribe-namespace-member",
+      "sink_ids": [
+        "subscribe-row",
+        "subscribe-counter-event",
+        "subscribe-forbidden-message"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_namespaceOnlyCurrentMember_allows -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "one subscription row, one counter increment and one SkillSubscribedEvent",
+        "no extra authorization repository call occurs after checker result",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_RUN"
+    },
+    {
+      "probe_id": "subscribe-message-en-zh",
+      "path_id": "subscription-create",
+      "state_id": "subscribe-private-denied",
+      "sink_ids": [
+        "subscribe-row",
+        "subscribe-counter-event",
+        "subscribe-forbidden-message"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriptionMessageBundleTest -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "PASS",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "English and Simplified Chinese values equal frozen copy",
+        "neither locale returns raw error.skill.subscription.noPermission",
+        "Exact-tree execution observed the asserted non-runtime behavior"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "unsubscribe-revocation-escape",
+      "path_id": "subscription-unsubscribe",
+      "state_id": "unsubscribe-after-revocation",
+      "sink_ids": [
+        "unsubscribe-delete-counter-event"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#unsubscribe_afterMetadataRevocation_stillDeletesOwnRow -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "existing row is deleted",
+        "counter decrements and SkillUnsubscribedEvent publishes exactly once without VisibilityChecker gate",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_REQUIRED"
+    },
+    {
+      "probe_id": "status-stale-row-compatible",
+      "path_id": "subscription-status-read",
+      "state_id": "status-stale-own-row",
+      "sink_ids": [
+        "subscription-own-boolean"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#isSubscribed_staleOwnRow_remainsTrueWithoutMetadata -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "authenticated caller receives true for existing own row",
+        "response contains no skill metadata and performs no mutation",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_REQUIRED"
+    },
+    {
+      "probe_id": "published-private-denied",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-private-denied",
+      "sink_ids": [
+        "published-notification-row",
+        "published-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_privateOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "ordinary member receives zero notification rows and zero SSE pushes",
+        "private namespace admin control receives one exact row and same-recipient SSE",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "published-hidden-denied",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-hidden-denied",
+      "sink_ids": [
+        "published-notification-row",
+        "published-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_hiddenOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "ordinary member receives zero row and SSE",
+        "owner or manager control receives exact row and SSE tuple",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "published-removed-denied",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-removed-denied",
+      "sink_ids": [
+        "published-notification-row",
+        "published-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_namespaceOnlyRemovedMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "stale row plus absent current membership yields zero row and SSE",
+        "current MEMBER control receives exact row and SSE tuple",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "published-disabled-denied",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-disabled-denied",
+      "sink_ids": [
+        "published-notification-row",
+        "published-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_disabledUser_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "disabled subscriber on PUBLIC skill receives zero row and SSE",
+        "active subscriber control receives exact row and SSE tuple",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "published-namespace-member",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-namespace-member",
+      "sink_ids": [
+        "published-notification-row",
+        "published-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_namespaceOnlyCurrentMember_receivesExactPayload -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "one SUBSCRIPTION_NEW_VERSION row for current MEMBER",
+        "SSE recipient, eventType, bodyJson, entityType and entityId match persisted row",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_RUN"
+    },
+    {
+      "probe_id": "published-publisher-skipped",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-publisher-skipped",
+      "sink_ids": [
+        "published-notification-row",
+        "published-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=NotificationEventListenerTest#publishedFanout_skipsPublisherAfterEligibility -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "publisher receives zero subscriber notification row and SSE",
+        "other eligible recipient remains unaffected",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_REQUIRED"
+    },
+    {
+      "probe_id": "published-batch-failure",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-batch-failure",
+      "sink_ids": [
+        "published-notification-row",
+        "published-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberAccessResolverTest#batchFailure_happensBeforeEveryPublishedSink -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "account, membership, role and namespace failure variants each yield zero dispatcher calls",
+        "NotificationService and SseEmitterManager have zero interactions",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_RUN"
+    },
+    {
+      "probe_id": "yanked-private-denied",
+      "path_id": "yanked-subscriber-fanout",
+      "state_id": "yanked-private-denied",
+      "sink_ids": [
+        "yanked-notification-row",
+        "yanked-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_privateOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "ordinary member receives zero notification rows and zero SSE pushes",
+        "private namespace admin control receives one exact yanked row and SSE",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "yanked-hidden-denied",
+      "path_id": "yanked-subscriber-fanout",
+      "state_id": "yanked-hidden-denied",
+      "sink_ids": [
+        "yanked-notification-row",
+        "yanked-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_hiddenOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "ordinary member receives zero row and SSE",
+        "owner or manager control receives exact yanked row and SSE tuple",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "yanked-removed-denied",
+      "path_id": "yanked-subscriber-fanout",
+      "state_id": "yanked-removed-denied",
+      "sink_ids": [
+        "yanked-notification-row",
+        "yanked-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_namespaceOnlyRemovedMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "stale row plus absent membership yields zero row and SSE",
+        "current MEMBER control receives exact yanked row and SSE tuple",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "yanked-disabled-denied",
+      "path_id": "yanked-subscriber-fanout",
+      "state_id": "yanked-disabled-denied",
+      "sink_ids": [
+        "yanked-notification-row",
+        "yanked-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_disabledUser_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "disabled subscriber on PUBLIC skill receives zero row and SSE",
+        "active subscriber control receives exact yanked row and SSE tuple",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "yanked-namespace-member",
+      "path_id": "yanked-subscriber-fanout",
+      "state_id": "yanked-namespace-member",
+      "sink_ids": [
+        "yanked-notification-row",
+        "yanked-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_namespaceOnlyCurrentMember_receivesExactPayload -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "one SUBSCRIPTION_VERSION_YANKED row for current MEMBER",
+        "SSE recipient, eventType, bodyJson, entityType and entityId match persisted row",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_RUN"
+    },
+    {
+      "probe_id": "yanked-latest-null-denied",
+      "path_id": "yanked-subscriber-fanout",
+      "state_id": "yanked-latest-null-denied",
+      "sink_ids": [
+        "yanked-notification-row",
+        "yanked-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_lastPublishedVersion_nonOwnerGetsNoSink -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "non-owner receives zero row and SSE when latestVersionId is null",
+        "event record and producer remain unchanged and no wasPublished bypass exists",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "EXPECTED_FAIL_OBSERVED"
+    },
+    {
+      "probe_id": "yanked-actor-skipped",
+      "path_id": "yanked-subscriber-fanout",
+      "state_id": "yanked-actor-skipped",
+      "sink_ids": [
+        "yanked-notification-row",
+        "yanked-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=NotificationEventListenerTest#yankedFanout_skipsActorAfterEligibility -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "actor receives zero subscriber notification row and SSE",
+        "other eligible recipient remains unaffected",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_REQUIRED"
+    },
+    {
+      "probe_id": "yanked-batch-failure",
+      "path_id": "yanked-subscriber-fanout",
+      "state_id": "yanked-batch-failure",
+      "sink_ids": [
+        "yanked-notification-row",
+        "yanked-notification-sse"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberAccessResolverTest#batchFailure_happensBeforeEveryYankedSink -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "account, membership, role and namespace failure variants each yield zero dispatcher calls",
+        "NotificationService and SseEmitterManager have zero interactions",
+        "Targeted test passed, but final persistence/transport or complete failure/order behavior is not proven at the required high-risk boundary"
+      ],
+      "old_behavior_result": "NOT_RUN"
+    },
+    {
+      "probe_id": "existing-consumer-regression",
+      "path_id": "visibility-checker-consumer-regression",
+      "state_id": "existing-consumer-matrix",
+      "sink_ids": [
+        "existing-consumer-observables"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=VisibilityCheckerTest,SkillQueryServiceTest,SkillDownloadServiceTest,SkillTagServiceTest,SkillLabelAppServiceTest,CompatSkillLookupServiceTest,SecurityAuditControllerTest -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "PASS",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "detail/list/published query, download, tag, label, compat and security audit outcomes remain green",
+        "git diff shows none of the eight production consumer files changed",
+        "Exact-tree execution observed the asserted non-runtime behavior"
+      ],
+      "old_behavior_result": "NOT_REQUIRED"
+    },
+    {
+      "probe_id": "runtime-rollback-zero-sink",
+      "path_id": "spring-runtime-dispatch",
+      "state_id": "runtime-rollback",
+      "sink_ids": [
+        "runtime-recipient-sink"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationRuntimeIntegrationTest#rolledBackPublishedEvent_neverReachesRecipientSink -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "real Spring transaction rollback creates zero notification rows",
+        "registered subscriber listener is proxied and does not push SSE",
+        "Executed test only reflects annotations or a synthetic rejecting Executor; it does not exercise real Spring transaction/proxy/configured-executor/final sinks"
+      ],
+      "old_behavior_result": "NOT_RUN"
+    },
+    {
+      "probe_id": "runtime-executor-rejection-zero-sink",
+      "path_id": "spring-runtime-dispatch",
+      "state_id": "runtime-executor-rejection",
+      "sink_ids": [
+        "runtime-recipient-sink"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationRuntimeIntegrationTest#rejectedSubscriberTask_createsNoRecipientSink -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "deterministically rejecting skillhubEventExecutor produces zero notification rows",
+        "zero SSE pushes and explicit rejection evidence are observed",
+        "Executed test only reflects annotations or a synthetic rejecting Executor; it does not exercise real Spring transaction/proxy/configured-executor/final sinks"
+      ],
+      "old_behavior_result": "NOT_RUN"
+    },
+    {
+      "probe_id": "runtime-commit-reaches-sink",
+      "path_id": "spring-runtime-dispatch",
+      "state_id": "runtime-commit",
+      "sink_ids": [
+        "runtime-recipient-sink"
+      ],
+      "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationRuntimeIntegrationTest#committedPublishedEvent_reachesAsyncRecipientSink -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exit_code": 0,
+      "result": "BLOCKED",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-targeted-union.log",
+      "assertions": [
+        "committed event reaches the real registered subscriber listener after commit",
+        "eligible recipient row appears and no row exists before commit",
+        "Executed test only reflects annotations or a synthetic rejecting Executor; it does not exercise real Spring transaction/proxy/configured-executor/final sinks"
+      ],
+      "old_behavior_result": "NOT_RUN"
+    },
+    {
+      "probe_id": "dynamic-surface-delta-audit",
+      "path_id": "dynamic-surface-audit",
+      "state_id": "dynamic-delta-audited",
+      "sink_ids": [
+        "dynamic-audit-evidence"
+      ],
+      "command": "UV_CACHE_DIR=/workspaces/.skill-cache/semgrep-uv uvx --from semgrep==1.132.0 --with 'setuptools<81' semgrep scan --config multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/discovery/semgrep-hd30.yml --json --metrics=off --no-git-ignore server/skillhub-domain/src/main/java server/skillhub-app/src/main/java server/skillhub-notification/src/main/java server/skillhub-search/src/main/java",
+      "exit_code": 0,
+      "result": "PASS",
+      "evidence_path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/raw/qa-execution-semgrep.json",
+      "assertions": [
+        "candidate scan output and direct call/annotation delta are persisted for QA and blind review",
+        "new reflection/generated/external/runtime conditional paths are reported as UNVERIFIED rather than absent",
+        "Exact-tree execution observed the asserted non-runtime behavior"
+      ],
+      "old_behavior_result": "NOT_REQUIRED"
+    }
+  ],
+  "unverified": [
+    {
+      "coverage_id": "QAC-09/runtime-commit-reaches-sink",
+      "reason": "No real Spring ApplicationEventPublisher + transaction proxy + configured async executor + persisted Notification/SSE probe exists; the named test only reflects annotations.",
+      "risk": "BLOCKER",
+      "blocks_pass": true
+    },
+    {
+      "coverage_id": "QAC-10/runtime-rollback-and-no-transaction-zero-sink",
+      "reason": "No real rollback or no-active-transaction publication was observed through registered listeners and final sinks.",
+      "risk": "BLOCKER",
+      "blocks_pass": true
+    },
+    {
+      "coverage_id": "QAC-11/configured-executor-saturation",
+      "reason": "Production uses CallerRunsPolicy; the test uses an unrelated handwritten rejecting Executor and does not observe configured saturation/thread/transaction/sink behavior.",
+      "risk": "BLOCKER",
+      "blocks_pass": true
+    },
+    {
+      "coverage_id": "QAC-01/02/04/05/06/07/12-final-sinks",
+      "reason": "Unit probes use mocked repositories, NotificationService and/or SseEmitterManager. They prove call-level policy/payload behavior, not real rows, transport delivery, end-to-end producer entry, or listener recipient order.",
+      "risk": "HIGH",
+      "blocks_pass": true
+    },
+    {
+      "coverage_id": "QAC-08/batch-failure-closure",
+      "reason": "Only UserAccountRepository failure is exercised; membership, platform-role and namespace failure variants and zero final sinks are not executed.",
+      "risk": "HIGH",
+      "blocks_pass": true
+    },
+    {
+      "coverage_id": "QAC-13/base-candidate-differential",
+      "reason": "Existing suites pass and old consumer production files are unchanged, but the Charter-required base-vs-candidate differential output was not produced.",
+      "risk": "HIGH",
+      "blocks_pass": true
+    },
+    {
+      "coverage_id": "QAC-15/reproducible-red-tree",
+      "reason": "The persisted 14-failure log is target-specific with zero errors, but its intermediate source tree is not reachable. Applying final tests to frozen base e3312ae5 yields compilation errors, so QA could not independently reproduce all 14 on an auditable old tree.",
+      "risk": "HIGH",
+      "blocks_pass": true
+    },
+    {
+      "coverage_id": "QAC-18/generated-reflection-external",
+      "reason": "Semgrep parsed 511 production Java files with 51 findings and zero errors, but generated sources, reflection, external modules, classpath listeners and runtime-conditional registration were not proven complete.",
+      "risk": "HIGH",
+      "blocks_pass": true
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "QA-EX-01",
+      "class": "TEST_GAP",
+      "severity": "BLOCKER",
+      "path_id": "spring-runtime-dispatch",
+      "state_id": "runtime-commit",
+      "prerequisites": [
+        "real Spring context",
+        "real transaction manager",
+        "configured skillhubEventExecutor",
+        "real notification persistence and SSE capture"
+      ],
+      "events": [
+        "SkillPublishedEvent",
+        "transaction commit or rollback",
+        "executor saturation"
+      ],
+      "call_chain": [
+        "ApplicationEventPublisher",
+        "TransactionalEventListener proxy",
+        "Async proxy",
+        "NotificationEventListener",
+        "SubscriberAccessResolver",
+        "NotificationDispatcher"
+      ],
+      "sink": "Notification row and recipient SSE payload",
+      "observable": "Current tests stop at annotation reflection, direct listener calls, mocks, or a synthetic Executor.",
+      "reproduction": "Inspect and run SubscriberNotificationRuntimeIntegrationTest; compare its operations with QAC-09/10/11 and AsyncConfig CallerRunsPolicy.",
+      "status": "OPEN"
+    },
+    {
+      "finding_id": "QA-EX-02",
+      "class": "EVIDENCE_GAP",
+      "severity": "HIGH",
+      "path_id": "subscription-create",
+      "state_id": "subscribe-private-denied",
+      "prerequisites": [
+        "frozen base e3312ae5",
+        "final candidate test patch"
+      ],
+      "events": [
+        "compile old-tree tests",
+        "execute 14 expected-before FAIL probes"
+      ],
+      "call_chain": [
+        "Maven testCompile",
+        "target probe execution"
+      ],
+      "sink": "auditable RED evidence",
+      "observable": "Old-tree reconstruction stops at 15 compilation errors; persisted 14-failure log has no reachable exact source tree.",
+      "reproduction": "See qa/raw/qa-execution-red-base.log and qa/raw/qa-execution-red-candidate-control.log; compare coder/20260821-141300-red-output.log.",
+      "status": "OPEN"
+    },
+    {
+      "finding_id": "QA-EX-03",
+      "class": "TEST_GAP",
+      "severity": "HIGH",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-namespace-member",
+      "prerequisites": [
+        "two readable recipients in ordered candidate list",
+        "real listener sink observation"
+      ],
+      "events": [
+        "published and yanked fanout"
+      ],
+      "call_chain": [
+        "SubscriberAccessResolver",
+        "NotificationEventListener",
+        "NotificationDispatcher"
+      ],
+      "sink": "ordered recipient rows/SSE",
+      "observable": "Resolver order is asserted, but listener sink test verifies calls without InOrder and mocks both persistence and SSE.",
+      "reproduction": "Run SubscriberAccessResolverTest and SubscriberNotificationSinkTest, then inspect their order/final-sink assertions.",
+      "status": "OPEN"
+    },
+    {
+      "finding_id": "QA-EX-04",
+      "class": "TEST_GAP",
+      "severity": "HIGH",
+      "path_id": "published-subscriber-fanout",
+      "state_id": "published-batch-failure",
+      "prerequisites": [
+        "failure at each authoritative batch loader"
+      ],
+      "events": [
+        "account load",
+        "membership load",
+        "platform-role load",
+        "namespace load"
+      ],
+      "call_chain": [
+        "NotificationEventListener",
+        "SubscriberAccessResolver",
+        "authority repositories"
+      ],
+      "sink": "zero NotificationService and SSE interactions",
+      "observable": "Only account-repository failure is injected and it stops at resolver helper behavior.",
+      "reproduction": "Run SubscriberAccessResolverTest batchFailure methods and inspect mocked interactions.",
+      "status": "OPEN"
+    },
+    {
+      "finding_id": "QA-EX-05",
+      "class": "EVIDENCE_GAP",
+      "severity": "HIGH",
+      "path_id": "dynamic-surface-audit",
+      "state_id": "dynamic-delta-audited",
+      "prerequisites": [
+        "runtime component registry or equivalent whole-program evidence"
+      ],
+      "events": [
+        "component scan",
+        "proxy registration",
+        "classpath/generated/reflection edge discovery"
+      ],
+      "call_chain": [
+        "build/runtime registration surface"
+      ],
+      "sink": "complete consumer and sink inventory",
+      "observable": "Fresh Semgrep direct-syntax delta is clean apart from the two planned canAccess calls, but it cannot close dynamic completeness.",
+      "reproduction": "See qa/raw/qa-execution-semgrep.json and inventory coverage_note.",
+      "status": "OPEN"
+    }
+  ],
+  "verdict": {
+    "plan_compliance": "UNVERIFIED",
+    "system_behavior": "UNVERIFIED",
+    "overall": "UNVERIFIED"
+  }
+}
