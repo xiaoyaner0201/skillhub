@@ -52,3 +52,4 @@
 | 20260820-032908 | leader | publication delivered / upstream pending | leader/20260820-032908-publication-delivered.md | `24ec04f814f666511698b5b1b3e908305b3f526c` | PASS |
 | 20260821-072735 | leader | HD-28 intake / dispatch | leader/20260821-072735-hd28-dispatch.md | `5e6c885499774eae6beeda27febafaf2003e9e1b` | — |
 | 20260821-073605 | qa | behavior discovery | qa/20260821-073605-behavior-discovery.md | `d35a58c983b1ea3d0fa4830e2c0ca3bd43283673` | FROZEN |
+| 20260821-074243 | leader | discovery gate | leader/20260821-074243-discovery-gate.md | `8c5b7249414f37b6e626dbe19bf5ce4b4382d9ed` | PASS |
