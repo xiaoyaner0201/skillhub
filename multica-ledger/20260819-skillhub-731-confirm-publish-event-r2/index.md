@@ -4,7 +4,7 @@
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
 - 冻结计划：`planner/20260821-083820-plan-r1-m1.md`（HD-28 生效，artifact `d5948e67…0c7e`）；HD-7 终态为 `planner/20260819-190045-plan-r6.md`
 - 风险分级：`HIGH_RISK`（authz / PRIVATE / event fan-out / async listener，见 `leader/20260821-072735-hd28-dispatch.md`）
-- 当前状态：CODING（HD-28 Plan Stage 关闭，M1 再冻结 PASS，已派 实现 进 Code/TDD。HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
+- 当前状态：REVIEW/QA（HD-28 Implementation Gate PASS，exact tree `e8aca2a4…` 冻结；Review Pass 1 进行中，QA Charter 待 `PLAN_GAP` 修复后再派。HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
 
 ## 分录
 
@@ -59,3 +59,4 @@
 | 20260821-083820 | planner | HD-28 plan r1 M1 artifact re-freeze | planner/20260821-083820-plan-r1-m1.md | — | FROZEN |
 | 20260821-084606 | leader | plan gate re-run on M1 / code dispatch | leader/20260821-084606-plan-m1-regate-and-code-dispatch.md | `27649c954e41aed9c0aa0ac1e9bc454b78a38909` | PASS |
 | 20260821-091620 | coder | RED→GREEN / regression | coder/20260821-091620-red-green-regression.md | `e8aca2a43467dad0da969c182632a7b791f90621` | — |
+| 20260821-092115 | leader | implementation gate / PLAN_GAP on expected_before | leader/20260821-092115-implementation-gate-and-plan-gap.md | `f025cd9ea0cb1979184104634612a4638aa2a670` | PASS |
