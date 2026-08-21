@@ -1,0 +1,89 @@
+rules:
+  - id: visibility-checker-call
+    languages: [java]
+    severity: INFO
+    message: VisibilityChecker canAccess call
+    patterns:
+      - pattern: $CHECKER.canAccess(...)
+      - metavariable-type:
+          metavariable: $CHECKER
+          type: VisibilityChecker
+
+  - id: subscription-service-call
+    languages: [java]
+    severity: INFO
+    message: SkillSubscriptionService public-path call
+    patterns:
+      - pattern-either:
+          - pattern: $SERVICE.subscribe(...)
+          - pattern: $SERVICE.unsubscribe(...)
+          - pattern: $SERVICE.isSubscribed(...)
+          - pattern: $SERVICE.findSubscribersBySkillId(...)
+      - metavariable-type:
+          metavariable: $SERVICE
+          type: SkillSubscriptionService
+
+  - id: published-event-producer
+    languages: [java]
+    severity: INFO
+    message: SkillPublishedEvent producer
+    pattern: $PUBLISHER.publishEvent(new SkillPublishedEvent(...))
+
+  - id: yanked-event-producer
+    languages: [java]
+    severity: INFO
+    message: SkillVersionYankedEvent producer
+    pattern-either:
+      - pattern: $PUBLISHER.publishEvent(new SkillVersionYankedEvent(...))
+      - pattern: $PUBLISHER.publishEvent(new $PACKAGE.SkillVersionYankedEvent(...))
+
+  - id: event-listener-method
+    languages: [java]
+    severity: INFO
+    message: Transactional event listener method
+    patterns:
+      - pattern: |
+          @TransactionalEventListener
+          $RET $METHOD($EVENT $ARG) { ... }
+
+  - id: notification-dispatch-call
+    languages: [java]
+    severity: INFO
+    message: Notification dispatch call
+    patterns:
+      - pattern: $DISPATCHER.dispatch(...)
+      - metavariable-type:
+          metavariable: $DISPATCHER
+          type: NotificationDispatcher
+
+  - id: subscription-repository-write
+    languages: [java]
+    severity: INFO
+    message: Subscription persistence write
+    patterns:
+      - pattern-either:
+          - pattern: $REPOSITORY.save(new SkillSubscription(...))
+          - pattern: $REPOSITORY.delete(...)
+      - metavariable-type:
+          metavariable: $REPOSITORY
+          type: SkillSubscriptionRepository
+
+  - id: notification-persist
+    languages: [java]
+    severity: INFO
+    message: Notification persistence sink
+    patterns:
+      - pattern: $SERVICE.create($RECIPIENT, ...)
+      - metavariable-type:
+          metavariable: $SERVICE
+          type: NotificationService
+
+  - id: notification-sse-push
+    languages: [java]
+    severity: INFO
+    message: Notification SSE transport sink
+    patterns:
+      - pattern: $MANAGER.push($RECIPIENT, ...)
+      - metavariable-type:
+          metavariable: $MANAGER
+          type: SseEmitterManager

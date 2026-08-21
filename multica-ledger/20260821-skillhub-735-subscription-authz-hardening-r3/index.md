@@ -19,3 +19,4 @@
 | 时间 | Agent | 动作 | 产物 | tree | 结论 |
 |---|---|---|---|---|---|
 | 20260821-113951 | leader | intake + dispatch discovery | leader/20260821-113951-intake-dispatch.md | `c81497c` | — |
+| 20260821-123244 | qa | behavior discovery | qa/20260821-123244-behavior-discovery.md | `c81497c` | FROZEN |

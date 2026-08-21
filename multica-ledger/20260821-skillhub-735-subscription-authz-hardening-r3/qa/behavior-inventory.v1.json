@@ -1,0 +1,415 @@
+{
+  "schema_version": "behavior-inventory.v1",
+  "subject": {
+    "repo": "skillhub",
+    "base_commit": "e8cab7389f5dc1084fdc1cdf70bafd314d0a3d50",
+    "base_tree": "c81497cf7eb98f0568b8b30c9af1e67797bca27a"
+  },
+  "generator": {
+    "name": "semgrep-hd30-java-surface",
+    "version": "semgrep-1.132.0+rules-v1",
+    "mode": "typed-java-ast-symbol-and-callsite-enumeration+manual-dataflow-stitching",
+    "maturity": "D2",
+    "produced_by_run_id": "8e9589ec-f00d-4f62-9942-ce12f43146de",
+    "produced_by_context_id": "01a02421-600c-7c10-96ec-64a52988313e",
+    "produced_at": "2026-08-21T12:32:44Z",
+    "command": "UV_CACHE_DIR=/workspaces/.skill-cache/semgrep-uv uvx --from semgrep==1.132.0 --with 'setuptools<81' semgrep scan --config multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/discovery/semgrep-hd30.yml --json --metrics=off --no-git-ignore server/skillhub-domain/src/main/java server/skillhub-app/src/main/java server/skillhub-notification/src/main/java server/skillhub-search/src/main/java",
+    "coverage_note": "Semgrep Java AST parsed 510 production Java files (~100% parsed) and typed call-site rules enumerated VisibilityChecker, SkillSubscriptionService, event producer/listener, dispatcher, persistence and SSE surfaces; the discovery agent manually stitched those deterministic matches into candidate paths. This is D2 for direct Java syntax and cross-file symbol/call-site enumeration, but not whole-program data-flow: Spring dynamic bean registration, proxy/annotation runtime dispatch, reflection, generated code, runtime conditional branches, external modules and interface implementations not present in these scanned production roots remain UNVERIFIED candidates below."
+  },
+  "candidates": [
+    {
+      "candidate_id": "r1-subscribe-create",
+      "producer": "SkillSubscriptionController.subscribeSkill PUT /api/{v1,web}/skills/{skillId}/subscription",
+      "event": "SkillSubscribedEvent after repository/counter writes",
+      "consumer": "SkillSubscriptionService.subscribe",
+      "relationship_source": "authenticated PlatformPrincipal.userId plus SkillRepository.findById; current base has no metadata-read eligibility lookup",
+      "eligibility_boundary": "current metadata visibility/access before creating the subscription row; exact policy composition is reserved for Plan",
+      "sinks": [
+        "SkillSubscriptionRepository.save subscription persistence",
+        "SkillRepository.incrementSubscriptionCount aggregate counter",
+        "ApplicationEventPublisher.publishEvent SkillSubscribedEvent"
+      ],
+      "affected_invariants": [
+        "AUTHZ_CURRENT_METADATA_READ",
+        "PRIVATE_METADATA_CONFIDENTIALITY",
+        "IDEMPOTENT_SUBSCRIBE",
+        "TRANSACTIONAL_ATOMICITY"
+      ],
+      "required_states": [
+        "readable-public",
+        "private-denied",
+        "namespace-only-member",
+        "removed-member",
+        "hidden-denied",
+        "disabled-user",
+        "super-admin",
+        "missing-skill",
+        "already-subscribed"
+      ],
+      "must_fail_old": true,
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java",
+        "symbol": "SkillSubscriptionService.subscribe",
+        "callers": [
+          "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java:subscribeSkill"
+        ],
+        "ast_findings": [
+          "subscription-service-call SkillSubscriptionController.java:27",
+          "subscription-repository-write SkillSubscriptionService.java:33"
+        ]
+      }
+    },
+    {
+      "candidate_id": "r1-unsubscribe-existing",
+      "producer": "SkillSubscriptionController.unsubscribeSkill DELETE /api/{v1,web}/skills/{skillId}/subscription",
+      "event": "SkillUnsubscribedEvent after deletion/counter decrement",
+      "consumer": "SkillSubscriptionService.unsubscribe",
+      "relationship_source": "authenticated PlatformPrincipal.userId plus existing SkillSubscriptionRepository row",
+      "eligibility_boundary": "current base checks only skill existence; whether metadata-read authz also governs removal is explicitly UNVERIFIED for Planner disposition",
+      "sinks": [
+        "SkillSubscriptionRepository.delete subscription persistence",
+        "SkillRepository.decrementSubscriptionCount aggregate counter",
+        "ApplicationEventPublisher.publishEvent SkillUnsubscribedEvent"
+      ],
+      "affected_invariants": [
+        "REVOCATION_ESCAPE_PATH",
+        "SUBSCRIPTION_COUNTER_INTEGRITY",
+        "TRANSACTIONAL_ATOMICITY"
+      ],
+      "required_states": [
+        "currently-readable",
+        "private-after-subscribe",
+        "removed-member-after-subscribe",
+        "hidden-after-subscribe",
+        "disabled-user-after-subscribe",
+        "missing-skill",
+        "no-existing-row"
+      ],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java",
+        "symbol": "SkillSubscriptionService.unsubscribe",
+        "callers": [
+          "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java:unsubscribeSkill"
+        ],
+        "ast_findings": [
+          "subscription-service-call SkillSubscriptionController.java:35",
+          "subscription-repository-write SkillSubscriptionService.java:42"
+        ]
+      }
+    },
+    {
+      "candidate_id": "r1-is-subscribed-read",
+      "producer": "SkillSubscriptionController.checkSubscribed GET /api/{v1,web}/skills/{skillId}/subscription",
+      "event": "none",
+      "consumer": "SkillSubscriptionService.isSubscribed",
+      "relationship_source": "authenticated PlatformPrincipal.userId plus SkillSubscriptionRepository.findBySkillIdAndUserId",
+      "eligibility_boundary": "anonymous controller requests return false; authenticated requests currently check only skill existence; metadata-read authz semantics are UNVERIFIED for Planner disposition",
+      "sinks": [
+        "ApiResponse<Boolean> recipient-visible subscription-state payload"
+      ],
+      "affected_invariants": [
+        "AUTHZ_SUBSCRIPTION_STATE_READ",
+        "PRIVATE_METADATA_CONFIDENTIALITY"
+      ],
+      "required_states": [
+        "anonymous",
+        "currently-readable",
+        "private-after-subscribe",
+        "removed-member-after-subscribe",
+        "hidden-after-subscribe",
+        "disabled-user-after-subscribe",
+        "missing-skill"
+      ],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java",
+        "symbol": "SkillSubscriptionService.isSubscribed",
+        "callers": [
+          "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java:checkSubscribed"
+        ],
+        "ast_findings": [
+          "subscription-service-call SkillSubscriptionController.java:46"
+        ]
+      }
+    },
+    {
+      "candidate_id": "r2-published-subscriber-fanout",
+      "producer": "SkillPublishService.publish, ReviewService.approveReview, PromotionService.approvePromotion, SkillReviewSubmitService.confirmPublish",
+      "event": "SkillPublishedEvent via ApplicationEventPublisher",
+      "consumer": "NotificationEventListener.onSkillPublishedForSubscribers via @Async and @TransactionalEventListener",
+      "relationship_source": "SkillSubscriptionService.findSubscribersBySkillId -> SkillSubscriptionRepository.findAllBySkillId distinct user IDs",
+      "eligibility_boundary": "event-time current account, namespace membership/platform roles and VisibilityChecker decision before dispatch; base currently dispatches every subscriber except publisher",
+      "sinks": [
+        "NotificationRepository.save recipient-specific SUBSCRIPTION_NEW_VERSION row",
+        "SseEmitterManager.push recipient-specific notification payload"
+      ],
+      "affected_invariants": [
+        "AUTHZ_AT_FANOUT_TIME",
+        "PRIVATE_METADATA_CONFIDENTIALITY",
+        "CURRENT_MEMBERSHIP_AND_ACCOUNT_STATE",
+        "SKIP_PUBLISHER",
+        "NO_N_PLUS_ONE_ELIGIBILITY_LOADS",
+        "ASYNC_AFTER_TRANSACTION_BEHAVIOR",
+        "FAIL_CLOSED_ON_ELIGIBILITY_LOOKUP_FAILURE"
+      ],
+      "required_states": [
+        "readable-public",
+        "private-denied",
+        "namespace-only-member",
+        "removed-member",
+        "hidden-denied",
+        "disabled-user",
+        "super-admin",
+        "publisher-is-subscriber",
+        "preference-disabled",
+        "missing-skill",
+        "eligibility-load-failure",
+        "sse-failure-after-persistence"
+      ],
+      "must_fail_old": true,
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "symbol": "NotificationEventListener.onSkillPublishedForSubscribers",
+        "producers": [
+          "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillPublishService.java:572",
+          "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/review/ReviewService.java:233",
+          "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/review/PromotionService.java:258",
+          "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillReviewSubmitService.java:150"
+        ],
+        "ast_findings": [
+          "event-listener-method NotificationEventListener.java:69",
+          "subscription-service-call NotificationEventListener.java:73",
+          "notification-dispatch-call NotificationEventListener.java:85",
+          "notification-persist NotificationDispatcher.java:40",
+          "notification-sse-push NotificationDispatcher.java:45"
+        ]
+      }
+    },
+    {
+      "candidate_id": "r2-yanked-subscriber-fanout",
+      "producer": "SkillGovernanceService.yankVersion",
+      "event": "SkillVersionYankedEvent via ApplicationEventPublisher after version/skill/audit mutations",
+      "consumer": "NotificationEventListener.onSkillVersionYankedForSubscribers via @Async and @TransactionalEventListener",
+      "relationship_source": "SkillSubscriptionService.findSubscribersBySkillId -> SkillSubscriptionRepository.findAllBySkillId distinct user IDs",
+      "eligibility_boundary": "event-time current account, namespace membership/platform roles and VisibilityChecker decision before dispatch; base currently dispatches every subscriber except actor; yanked-publication visibility semantics are UNVERIFIED for Planner disposition",
+      "sinks": [
+        "NotificationRepository.save recipient-specific SUBSCRIPTION_VERSION_YANKED row",
+        "SseEmitterManager.push recipient-specific notification payload"
+      ],
+      "affected_invariants": [
+        "AUTHZ_AT_FANOUT_TIME",
+        "PRIVATE_METADATA_CONFIDENTIALITY",
+        "CURRENT_MEMBERSHIP_AND_ACCOUNT_STATE",
+        "SKIP_ACTOR",
+        "NO_N_PLUS_ONE_ELIGIBILITY_LOADS",
+        "ASYNC_AFTER_TRANSACTION_BEHAVIOR",
+        "FAIL_CLOSED_ON_ELIGIBILITY_LOOKUP_FAILURE"
+      ],
+      "required_states": [
+        "was-published-readable",
+        "private-denied",
+        "namespace-only-member",
+        "removed-member",
+        "hidden-denied",
+        "disabled-user",
+        "super-admin",
+        "actor-is-subscriber",
+        "latest-version-becomes-null",
+        "preference-disabled",
+        "missing-skill",
+        "eligibility-load-failure",
+        "sse-failure-after-persistence"
+      ],
+      "must_fail_old": true,
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "symbol": "NotificationEventListener.onSkillVersionYankedForSubscribers",
+        "producers": [
+          "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillGovernanceService.java:283"
+        ],
+        "ast_findings": [
+          "event-listener-method NotificationEventListener.java:91",
+          "subscription-service-call NotificationEventListener.java:95",
+          "notification-dispatch-call NotificationEventListener.java:107",
+          "notification-persist NotificationDispatcher.java:40",
+          "notification-sse-push NotificationDispatcher.java:45"
+        ]
+      }
+    },
+    {
+      "candidate_id": "r3-visibility-skill-query-detail",
+      "producer": "SkillQueryService.getSkillDetail",
+      "event": "none",
+      "consumer": "SkillQueryService getSkillDetail access guard",
+      "relationship_source": "caller-supplied currentUserId and namespace role map",
+      "eligibility_boundary": "VisibilityChecker.canAccess plus surrounding namespace archived guard",
+      "sinks": [
+        "SkillDetailDTO metadata payload or DomainForbiddenException"
+      ],
+      "affected_invariants": ["AUTHZ_METADATA_READ", "PRIVATE_METADATA_CONFIDENTIALITY", "ARCHIVED_NAMESPACE_ACCESS"],
+      "required_states": ["anonymous", "owner", "member", "removed-member", "hidden", "private", "namespace-only", "latest-version-null", "archived-namespace"],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillQueryService.java",
+        "symbol": "SkillQueryService.getSkillDetail",
+        "ast_findings": ["visibility-checker-call SkillQueryService.java:209"]
+      }
+    },
+    {
+      "candidate_id": "r3-visibility-skill-query-list",
+      "producer": "SkillQueryService.listSkillsByNamespace",
+      "event": "none",
+      "consumer": "SkillQueryService list filter",
+      "relationship_source": "caller-supplied currentUserId and namespace role map",
+      "eligibility_boundary": "VisibilityChecker.canAccess per returned skill",
+      "sinks": ["Page<Skill> metadata collection with inaccessible skills filtered"],
+      "affected_invariants": ["AUTHZ_METADATA_LIST", "PRIVATE_METADATA_CONFIDENTIALITY", "FILTER_WITHOUT_LEAK"],
+      "required_states": ["mixed-visible-page", "anonymous", "owner", "member", "removed-member", "hidden", "private", "namespace-only", "latest-version-null"],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillQueryService.java",
+        "symbol": "SkillQueryService.listSkillsByNamespace",
+        "ast_findings": ["visibility-checker-call SkillQueryService.java:278"]
+      }
+    },
+    {
+      "candidate_id": "r3-visibility-skill-query-published-access",
+      "producer": "SkillQueryService published version/file/detail query paths",
+      "event": "none",
+      "consumer": "SkillQueryService.assertPublishedAccessible",
+      "relationship_source": "resolved namespace and skill plus caller-supplied currentUserId and namespace role map",
+      "eligibility_boundary": "namespace status, skill ACTIVE/hidden management exceptions, then VisibilityChecker.canAccess",
+      "sinks": ["published version/file/detail metadata payload or DomainForbiddenException"],
+      "affected_invariants": ["AUTHZ_PUBLISHED_METADATA_READ", "PRIVATE_METADATA_CONFIDENTIALITY", "HIDDEN_AND_INACTIVE_ACCESS", "ARCHIVED_NAMESPACE_ACCESS"],
+      "required_states": ["anonymous", "owner", "admin", "member", "removed-member", "hidden", "inactive", "private", "namespace-only", "archived-namespace"],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillQueryService.java",
+        "symbol": "SkillQueryService.assertPublishedAccessible",
+        "ast_findings": ["visibility-checker-call SkillQueryService.java:823"]
+      }
+    },
+    {
+      "candidate_id": "r3-visibility-skill-download",
+      "producer": "SkillDownloadService downloadLatest/downloadVersion/downloadByTag",
+      "event": "SkillDownloadedEvent after successful content retrieval",
+      "consumer": "SkillDownloadService.assertCanDownload",
+      "relationship_source": "resolved namespace and skill plus caller-supplied currentUserId and namespace role map",
+      "eligibility_boundary": "anonymous PUBLIC constraint, VisibilityChecker.canAccess, archived namespace membership",
+      "sinks": ["download byte payload", "SkillRepository.incrementDownloadCount", "SkillDownloadedEvent"],
+      "affected_invariants": ["AUTHZ_CONTENT_DOWNLOAD", "PRIVATE_CONTENT_CONFIDENTIALITY", "ARCHIVED_NAMESPACE_ACCESS"],
+      "required_states": ["anonymous-public", "anonymous-nonpublic", "owner", "member", "removed-member", "hidden", "private", "namespace-only", "archived-namespace"],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillDownloadService.java",
+        "symbol": "SkillDownloadService.assertCanDownload",
+        "ast_findings": ["visibility-checker-call SkillDownloadService.java:285"]
+      }
+    },
+    {
+      "candidate_id": "r3-visibility-skill-tags",
+      "producer": "SkillTagService.listTags",
+      "event": "none",
+      "consumer": "SkillTagService list access guard",
+      "relationship_source": "resolved skill plus caller-supplied currentUserId and namespace role map",
+      "eligibility_boundary": "VisibilityChecker.canAccess",
+      "sinks": ["List<SkillTag> including synthetic latest pointer or DomainForbiddenException"],
+      "affected_invariants": ["AUTHZ_TAG_METADATA_READ", "PRIVATE_METADATA_CONFIDENTIALITY"],
+      "required_states": ["anonymous", "owner", "member", "removed-member", "hidden", "private", "namespace-only", "latest-version-null"],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillTagService.java",
+        "symbol": "SkillTagService.listTags",
+        "ast_findings": ["visibility-checker-call SkillTagService.java:55"]
+      }
+    },
+    {
+      "candidate_id": "r3-visibility-skill-labels",
+      "producer": "SkillLabelAppService.listSkillLabels and label mutation resolution",
+      "event": "label search sync after commit on mutation paths",
+      "consumer": "SkillLabelAppService.resolveSkillForRead",
+      "relationship_source": "caller userId, namespace roles and RbacService platform roles",
+      "eligibility_boundary": "explicit SUPER_ADMIN bypass, otherwise VisibilityChecker.canAccess using the three-argument overload",
+      "sinks": ["List<SkillLabelDto> or DomainForbiddenException", "label mutation/audit/search-sync paths sharing resolution"],
+      "affected_invariants": ["AUTHZ_LABEL_METADATA_READ", "PRIVATE_METADATA_CONFIDENTIALITY", "SUPER_ADMIN_SEMANTICS"],
+      "required_states": ["anonymous", "owner", "member", "removed-member", "hidden", "private", "namespace-only", "super-admin"],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/SkillLabelAppService.java",
+        "symbol": "SkillLabelAppService.resolveSkillForRead",
+        "ast_findings": ["visibility-checker-call SkillLabelAppService.java:170"]
+      }
+    },
+    {
+      "candidate_id": "r3-visibility-compat-lookup",
+      "producer": "CompatSkillLookupService.resolveVisible/canAccess",
+      "event": "none",
+      "consumer": "compatibility API callers via shared lookup helper",
+      "relationship_source": "resolved published skill plus currentUserId and namespace role map",
+      "eligibility_boundary": "VisibilityChecker.canAccess, with denial translated to DomainNotFoundException",
+      "sinks": ["CompatSkillContext including namespace/skill/latest version or not-found response"],
+      "affected_invariants": ["AUTHZ_COMPAT_METADATA_READ", "PRIVATE_METADATA_CONFIDENTIALITY", "NOT_FOUND_MASKING"],
+      "required_states": ["anonymous", "owner", "member", "removed-member", "hidden", "private", "namespace-only", "latest-version-null"],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/compat/CompatSkillLookupService.java",
+        "symbol": "CompatSkillLookupService.canAccess",
+        "ast_findings": ["visibility-checker-call CompatSkillLookupService.java:55"]
+      }
+    },
+    {
+      "candidate_id": "r3-visibility-security-audit",
+      "producer": "SecurityAuditController.getSecurityAudits",
+      "event": "none",
+      "consumer": "SecurityAuditController.canViewAudit",
+      "relationship_source": "PlatformPrincipal platform roles and caller namespace role map",
+      "eligibility_boundary": "SUPER_ADMIN/SKILL_ADMIN and namespace ADMIN/OWNER bypasses, otherwise VisibilityChecker.canAccess",
+      "sinks": ["List<SecurityAuditResponse> finding payload or DomainForbiddenException"],
+      "affected_invariants": ["AUTHZ_SECURITY_FINDING_READ", "PRIVATE_SECURITY_DATA_CONFIDENTIALITY", "ADMIN_BYPASS_SEMANTICS"],
+      "required_states": ["anonymous", "owner", "member", "removed-member", "hidden", "private", "namespace-only", "namespace-admin", "skill-admin", "super-admin"],
+      "must_fail_old": false,
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SecurityAuditController.java",
+        "symbol": "SecurityAuditController.canViewAudit",
+        "ast_findings": ["visibility-checker-call SecurityAuditController.java:110"]
+      }
+    },
+    {
+      "candidate_id": "unverified-spring-runtime-dispatch",
+      "producer": "Spring ApplicationEventPublisher and runtime bean graph",
+      "event": "SkillPublishedEvent, SkillVersionYankedEvent, SkillSubscribedEvent, SkillUnsubscribedEvent",
+      "consumer": "annotation/proxy-discovered listeners and any dynamically registered ApplicationListener",
+      "relationship_source": "runtime classpath, component scanning, bean post-processors and transaction synchronization",
+      "eligibility_boundary": "UNVERIFIED: static AST cannot prove runtime listener registry completeness, proxy order, executor rejection behavior, transaction phase or event ordering",
+      "sinks": ["UNVERIFIED runtime listener side effects, retries or dropped delivery"],
+      "affected_invariants": ["EVENT_CONSUMER_COMPLETENESS", "ASYNC_TRANSACTION_ORDER", "FAILURE_RECOVERY"],
+      "required_states": ["transaction-commit", "transaction-rollback", "no-active-transaction", "executor-rejection", "listener-exception", "dynamic-listener-registration"],
+      "must_fail_old": false,
+      "status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "symbol": "@Async + @TransactionalEventListener methods",
+        "reason": "Semgrep enumerates declared annotations but does not execute Spring registration/proxy/transaction behavior."
+      }
+    },
+    {
+      "candidate_id": "unverified-reflection-generated-external",
+      "producer": "reflection/generated code/external runtime modules",
+      "event": "unknown",
+      "consumer": "callers or consumers not expressed as direct Java syntax in the four scanned production roots",
+      "relationship_source": "reflection, generated sources, external dependencies or runtime configuration",
+      "eligibility_boundary": "UNVERIFIED: no whole-program CodeQL build, framework registry dump or runtime trace was available",
+      "sinks": ["UNVERIFIED persistence, transport or recipient-visible side effects"],
+      "affected_invariants": ["CALLER_COMPLETENESS", "CONSUMER_COMPLETENESS", "SINK_COMPLETENESS"],
+      "required_states": ["reflection", "generated-code", "external-module", "runtime-conditional-registration"],
+      "must_fail_old": false,
+      "status": "UNVERIFIED",
+      "evidence": {
+        "path": "multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/discovery/semgrep-results.json",
+        "symbol": "Semgrep scan boundary",
+        "reason": "510 production Java files parsed, but AST matching cannot establish these dynamic edges."
+      }
+    }
+  ]
+}
