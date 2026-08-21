@@ -66,7 +66,7 @@ class SkillSubscriptionControllerTest {
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
                 .andExpect(jsonPath("$.requestId").isNotEmpty());
 
-        verify(skillSubscriptionService).subscribe(eq(10L), eq("user-42"));
+        verify(skillSubscriptionService).subscribe(eq(10L), eq("user-42"), eq(Set.of("SUPER_ADMIN")));
     }
 
     @Test

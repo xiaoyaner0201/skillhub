@@ -19,6 +19,7 @@ import java.util.Optional;
 public interface NamespaceMemberJpaRepository
         extends JpaRepository<NamespaceMember, Long>, NamespaceMemberRepository {
     Optional<NamespaceMember> findByNamespaceIdAndUserId(Long namespaceId, String userId);
+    List<NamespaceMember> findByNamespaceIdAndUserIdIn(Long namespaceId, Collection<String> userIds);
     List<NamespaceMember> findByUserId(String userId);
     Page<NamespaceMember> findByNamespaceId(Long namespaceId, Pageable pageable);
     List<NamespaceMember> findByNamespaceIdAndRoleIn(Long namespaceId, Collection<NamespaceRole> roles);

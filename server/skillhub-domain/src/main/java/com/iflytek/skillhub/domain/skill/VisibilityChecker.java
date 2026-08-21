@@ -1,6 +1,9 @@
 package com.iflytek.skillhub.domain.skill;
 
 import com.iflytek.skillhub.domain.namespace.NamespaceRole;
+import com.iflytek.skillhub.domain.namespace.Namespace;
+import com.iflytek.skillhub.domain.namespace.NamespaceStatus;
+import com.iflytek.skillhub.domain.user.UserAccount;
 
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +34,28 @@ public class VisibilityChecker {
             case NAMESPACE_ONLY -> roles.containsKey(skill.getNamespaceId());
             case PRIVATE -> isOwner(skill, currentUserId) || isAdminOrAbove(roles.get(skill.getNamespaceId()));
         };
+    }
+
+    public boolean canAccess(Skill skill,
+                             UserAccount account,
+                             Namespace namespace,
+                             NamespaceRole namespaceRole,
+                             Set<String> platformRoles) {
+        if (account == null || !account.isActive()) {
+            return false;
+        }
+        if (isSuperAdmin(platformRoles)) {
+            return true;
+        }
+        if (namespace != null
+                && namespace.getStatus() == NamespaceStatus.ARCHIVED
+                && namespaceRole == null) {
+            return false;
+        }
+        Map<Long, NamespaceRole> roles = namespaceRole == null
+                ? Map.of()
+                : Map.of(skill.getNamespaceId(), namespaceRole);
+        return canAccess(skill, account.getId(), roles, Set.of());
     }
 
     private boolean isOwner(Skill skill, String currentUserId) {

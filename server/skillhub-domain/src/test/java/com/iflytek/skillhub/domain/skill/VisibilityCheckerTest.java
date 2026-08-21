@@ -1,6 +1,10 @@
 package com.iflytek.skillhub.domain.skill;
 
 import com.iflytek.skillhub.domain.namespace.NamespaceRole;
+import com.iflytek.skillhub.domain.namespace.Namespace;
+import com.iflytek.skillhub.domain.namespace.NamespaceStatus;
+import com.iflytek.skillhub.domain.user.UserAccount;
+import com.iflytek.skillhub.domain.user.UserStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -188,5 +192,53 @@ class VisibilityCheckerTest {
     void testEmptyPlatformRolesDoNotGrantAccess() {
         boolean canAccess = checker.canAccess(privateSkill, OTHER_USER_ID, Map.of(), Set.of());
         assertFalse(canAccess);
+    }
+
+    @Test
+    void fullContext_missingAccount_deniesBeforeSuperAdmin() {
+        assertFalse(checker.canAccess(hiddenPublicSkill, null, archivedNamespace(), null,
+                Set.of("SUPER_ADMIN")));
+    }
+
+    @Test
+    void fullContext_disabledAccount_deniesBeforeSuperAdmin() {
+        UserAccount disabled = account(OTHER_USER_ID);
+        disabled.setStatus(UserStatus.DISABLED);
+
+        assertFalse(checker.canAccess(hiddenPublicSkill, disabled, archivedNamespace(), null,
+                Set.of("SUPER_ADMIN")));
+    }
+
+    @Test
+    void fullContext_activeSuperAdmin_allowsArchivedHiddenPrivate() {
+        Skill hiddenPrivate = new Skill(NAMESPACE_ID, "hidden-private", OWNER_ID, SkillVisibility.PRIVATE);
+        hiddenPrivate.setHidden(true);
+
+        assertTrue(checker.canAccess(hiddenPrivate, account(OTHER_USER_ID), archivedNamespace(), null,
+                Set.of("SUPER_ADMIN")));
+    }
+
+    @Test
+    void fullContext_archivedNonMember_deniesOtherwisePublic() {
+        assertFalse(checker.canAccess(publicSkill, account(OTHER_USER_ID), archivedNamespace(), null,
+                Set.of()));
+    }
+
+    @Test
+    void fullContext_archivedCurrentMember_usesExistingVisibilityRules() {
+        assertTrue(checker.canAccess(namespaceOnlySkill, account(OTHER_USER_ID), archivedNamespace(),
+                NamespaceRole.MEMBER, Set.of()));
+        assertFalse(checker.canAccess(privateSkill, account(OTHER_USER_ID), archivedNamespace(),
+                NamespaceRole.MEMBER, Set.of()));
+    }
+
+    private UserAccount account(String userId) {
+        return new UserAccount(userId, userId, userId + "@example.com", null);
+    }
+
+    private Namespace archivedNamespace() {
+        Namespace namespace = new Namespace("archived", "Archived", OWNER_ID);
+        namespace.setStatus(NamespaceStatus.ARCHIVED);
+        return namespace;
     }
 }

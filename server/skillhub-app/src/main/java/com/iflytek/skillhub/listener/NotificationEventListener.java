@@ -30,6 +30,7 @@ public class NotificationEventListener {
     private final SkillVersionRepository skillVersionRepository;
     private final NamespaceRepository namespaceRepository;
     private final RecipientResolver recipientResolver;
+    private final SubscriberAccessResolver subscriberAccessResolver;
     private final NotificationDispatcher dispatcher;
     private final SkillSubscriptionService skillSubscriptionService;
     private final ObjectMapper objectMapper;
@@ -38,6 +39,7 @@ public class NotificationEventListener {
                                       SkillVersionRepository skillVersionRepository,
                                       NamespaceRepository namespaceRepository,
                                       RecipientResolver recipientResolver,
+                                      SubscriberAccessResolver subscriberAccessResolver,
                                       NotificationDispatcher dispatcher,
                                       SkillSubscriptionService skillSubscriptionService,
                                       ObjectMapper objectMapper) {
@@ -45,6 +47,7 @@ public class NotificationEventListener {
         this.skillVersionRepository = skillVersionRepository;
         this.namespaceRepository = namespaceRepository;
         this.recipientResolver = recipientResolver;
+        this.subscriberAccessResolver = subscriberAccessResolver;
         this.dispatcher = dispatcher;
         this.skillSubscriptionService = skillSubscriptionService;
         this.objectMapper = objectMapper;
@@ -74,6 +77,11 @@ public class NotificationEventListener {
             if (subscribers.isEmpty()) {
                 return;
             }
+            var namespace = namespaceRepository.findById(skill.getNamespaceId());
+            if (namespace.isEmpty()) {
+                return;
+            }
+            subscribers = subscriberAccessResolver.resolveReadableSubscribers(skill, namespace.get(), subscribers);
             String title = "Skill updated: " + skillDisplayName(skill);
             Map<String, Object> body = bodyWithSkill(skill);
             versionLabel(event.versionId(), body);
@@ -96,6 +104,11 @@ public class NotificationEventListener {
             if (subscribers.isEmpty()) {
                 return;
             }
+            var namespace = namespaceRepository.findById(skill.getNamespaceId());
+            if (namespace.isEmpty()) {
+                return;
+            }
+            subscribers = subscriberAccessResolver.resolveReadableSubscribers(skill, namespace.get(), subscribers);
             String title = "Skill version yanked: " + skillDisplayName(skill);
             Map<String, Object> body = bodyWithSkill(skill);
             versionLabel(event.versionId(), body);

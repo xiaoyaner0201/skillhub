@@ -8,6 +8,7 @@ import com.iflytek.skillhub.domain.skill.Skill;
 import com.iflytek.skillhub.domain.skill.SkillRepository;
 import com.iflytek.skillhub.domain.skill.SkillVisibility;
 import com.iflytek.skillhub.domain.skill.SkillVersionRepository;
+import com.iflytek.skillhub.domain.social.SkillSubscriptionService;
 import com.iflytek.skillhub.notification.domain.NotificationCategory;
 import com.iflytek.skillhub.notification.service.NotificationDispatcher;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,8 @@ class NotificationEventListenerTest {
     @Mock SkillVersionRepository skillVersionRepository;
     @Mock NamespaceRepository namespaceRepository;
     @Mock RecipientResolver recipientResolver;
+    @Mock SubscriberAccessResolver subscriberAccessResolver;
+    @Mock SkillSubscriptionService skillSubscriptionService;
     @Mock NotificationDispatcher dispatcher;
     @Mock ObjectMapper objectMapper;
 
@@ -224,5 +227,47 @@ class NotificationEventListenerTest {
 
         verify(dispatcher).dispatch(eq("reporter-1"), eq(NotificationCategory.REPORT),
                 eq("REPORT_RESOLVED"), anyString(), anyString(), eq("SKILL"), eq(1L));
+    }
+
+    @Test
+    void publishedFanout_skipsPublisherAfterEligibility() throws Exception {
+        Skill skill = mockSkill(1L);
+        Namespace namespace = mock(Namespace.class);
+        when(namespace.getSlug()).thenReturn("demo");
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        when(namespaceRepository.findById(5L)).thenReturn(Optional.of(namespace));
+        when(skillSubscriptionService.findSubscribersBySkillId(1L))
+                .thenReturn(List.of("publisher", "reader"));
+        when(subscriberAccessResolver.resolveReadableSubscribers(
+                skill, namespace, List.of("publisher", "reader")))
+                .thenReturn(List.of("publisher", "reader"));
+        when(objectMapper.writeValueAsString(any())).thenReturn("{}");
+
+        listener.onSkillPublishedForSubscribers(new SkillPublishedEvent(1L, 10L, "publisher"));
+
+        verify(dispatcher, never()).dispatch(eq("publisher"), any(), any(), any(), any(), any(), any());
+        verify(dispatcher).dispatch(eq("reader"), eq(NotificationCategory.PUBLISH),
+                eq("SUBSCRIPTION_NEW_VERSION"), anyString(), anyString(), eq("SKILL"), eq(1L));
+    }
+
+    @Test
+    void yankedFanout_skipsActorAfterEligibility() throws Exception {
+        Skill skill = mockSkill(1L);
+        Namespace namespace = mock(Namespace.class);
+        when(namespace.getSlug()).thenReturn("demo");
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        when(namespaceRepository.findById(5L)).thenReturn(Optional.of(namespace));
+        when(skillSubscriptionService.findSubscribersBySkillId(1L))
+                .thenReturn(List.of("actor", "reader"));
+        when(subscriberAccessResolver.resolveReadableSubscribers(
+                skill, namespace, List.of("actor", "reader")))
+                .thenReturn(List.of("actor", "reader"));
+        when(objectMapper.writeValueAsString(any())).thenReturn("{}");
+
+        listener.onSkillVersionYankedForSubscribers(new SkillVersionYankedEvent(1L, 10L, "actor"));
+
+        verify(dispatcher, never()).dispatch(eq("actor"), any(), any(), any(), any(), any(), any());
+        verify(dispatcher).dispatch(eq("reader"), eq(NotificationCategory.PUBLISH),
+                eq("SUBSCRIPTION_VERSION_YANKED"), anyString(), anyString(), eq("SKILL"), eq(1L));
     }
 }

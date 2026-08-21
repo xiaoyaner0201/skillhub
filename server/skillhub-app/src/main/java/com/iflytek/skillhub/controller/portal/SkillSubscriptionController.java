@@ -24,7 +24,7 @@ public class SkillSubscriptionController extends BaseApiController {
     public ApiResponse<Void> subscribeSkill(
             @PathVariable Long skillId,
             @AuthenticationPrincipal PlatformPrincipal principal) {
-        skillSubscriptionService.subscribe(skillId, principal.userId());
+        skillSubscriptionService.subscribe(skillId, principal.userId(), principal.platformRoles());
         return ok("response.success.updated", null);
     }
 
