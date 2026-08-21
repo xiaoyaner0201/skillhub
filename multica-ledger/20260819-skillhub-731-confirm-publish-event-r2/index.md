@@ -56,3 +56,4 @@
 | 20260821-075744 | planner | HD-28 plan r1 | planner/20260821-075744-plan-r1.md | — | FROZEN |
 | 20260821-081557 | leader | plan r1 gate | leader/20260821-081557-plan-r1-gate.md | `ccc7320337592d8f66890ee5316dc3fd8d29f06a` | PASS |
 | 20260821-082539 | leader | plan r1 approval / M1 artifact-drift route | leader/20260821-082539-plan-r1-approval-m1-route.md | `f84f2acef7eaf26d409893a08eb4161eb2a31f4c` | RETURN |
+| 20260821-083820 | planner | HD-28 plan r1 M1 artifact re-freeze | planner/20260821-083820-plan-r1-m1.md | — | FROZEN |
