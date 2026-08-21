@@ -4,7 +4,7 @@
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
 - 冻结计划：`planner/20260819-190045-plan-r6.md`（HD-7 终态；HD-28 待新 plan 冻结后替换）
 - 风险分级：`HIGH_RISK`（authz / PRIVATE / event fan-out / async listener，见 `leader/20260821-072735-hd28-dispatch.md`）
-- 当前状态：PLANNING（HD-28 Discovery Stage 进行中；HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
+- 当前状态：PLANNING（HD-28 Plan Gate 已获人类批准，附修订 M1；产物层退回 规划 再冻结后派工。HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
 
 ## 分录
 
@@ -55,3 +55,4 @@
 | 20260821-074243 | leader | discovery gate | leader/20260821-074243-discovery-gate.md | `8c5b7249414f37b6e626dbe19bf5ce4b4382d9ed` | PASS |
 | 20260821-075744 | planner | HD-28 plan r1 | planner/20260821-075744-plan-r1.md | — | FROZEN |
 | 20260821-081557 | leader | plan r1 gate | leader/20260821-081557-plan-r1-gate.md | `ccc7320337592d8f66890ee5316dc3fd8d29f06a` | PASS |
+| 20260821-082539 | leader | plan r1 approval / M1 artifact-drift route | leader/20260821-082539-plan-r1-approval-m1-route.md | `f84f2acef7eaf26d409893a08eb4161eb2a31f4c` | RETURN |
