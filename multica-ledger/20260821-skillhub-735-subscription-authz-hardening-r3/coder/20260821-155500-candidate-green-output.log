@@ -1,0 +1,213 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] skillhub-parent                                                    [pom]
+[INFO] skillhub-storage                                                   [jar]
+[INFO] skillhub-domain                                                    [jar]
+[INFO] skillhub-auth                                                      [jar]
+[INFO] skillhub-notification                                              [jar]
+[INFO] skillhub-infra                                                     [jar]
+[INFO] skillhub-search                                                    [jar]
+[INFO] skillhub-app                                                       [jar]
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-parent >----------------
+[INFO] Building skillhub-parent 0.1.0                                     [1/8]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ---------------< com.iflytek.skillhub:skillhub-storage >----------------
+[INFO] Building skillhub-storage 0.1.0                                    [2/8]
+[INFO]   from skillhub-storage/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-storage ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-storage/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-storage/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-storage ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-storage ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-storage/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-storage ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-storage ---
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-domain >----------------
+[INFO] Building skillhub-domain 0.1.0                                     [3/8]
+[INFO]   from skillhub-domain/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-domain ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-domain/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-domain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-domain ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-domain ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-domain ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-domain ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.iflytek.skillhub.domain.skill.VisibilityCheckerTest
+[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.620 s -- in com.iflytek.skillhub.domain.skill.VisibilityCheckerTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] -----------------< com.iflytek.skillhub:skillhub-auth >-----------------
+[INFO] Building skillhub-auth 0.1.0                                       [4/8]
+[INFO]   from skillhub-auth/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-auth ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-auth/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-auth/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-auth ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-auth ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-auth ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-auth ---
+[INFO] 
+[INFO] -------------< com.iflytek.skillhub:skillhub-notification >-------------
+[INFO] Building skillhub-notification 0.1.0                               [5/8]
+[INFO]   from skillhub-notification/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-notification ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-notification/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-notification/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-notification ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-notification ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-notification/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-notification ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-notification ---
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-infra >-----------------
+[INFO] Building skillhub-infra 0.1.0                                      [6/8]
+[INFO]   from skillhub-infra/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-infra ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-infra/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-infra/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-infra ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-infra ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-infra/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-infra ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-infra ---
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-search >----------------
+[INFO] Building skillhub-search 0.1.0                                     [7/8]
+[INFO]   from skillhub-search/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-search ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-search/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-search/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-search ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-search ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-search ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-search ---
+[INFO] 
+[INFO] -----------------< com.iflytek.skillhub:skillhub-app >------------------
+[INFO] Building skillhub-app 0.1.0                                        [8/8]
+[INFO]   from skillhub-app/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-app ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 49 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-app ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-app ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.iflytek.skillhub.controller.portal.SkillSubscriptionControllerTest
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+main dict load finished, time elapsed 4312 ms
+model load finished, time elapsed 242 ms.
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 80.46 s -- in com.iflytek.skillhub.controller.portal.SkillSubscriptionControllerTest
+[INFO] Running com.iflytek.skillhub.listener.SubscriberNotificationRuntimeIntegrationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.344 s -- in com.iflytek.skillhub.listener.SubscriberNotificationRuntimeIntegrationTest
+[INFO] Running com.iflytek.skillhub.listener.SubscriberNotificationSinkTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.964 s -- in com.iflytek.skillhub.listener.SubscriberNotificationSinkTest
+[INFO] Running com.iflytek.skillhub.listener.NotificationEventListenerTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.860 s -- in com.iflytek.skillhub.listener.NotificationEventListenerTest
+[INFO] Running com.iflytek.skillhub.listener.SubscriberAccessResolverTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.179 s -- in com.iflytek.skillhub.listener.SubscriberAccessResolverTest
+[INFO] Running com.iflytek.skillhub.exception.SubscriptionMessageBundleTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.iflytek.skillhub.exception.SubscriptionMessageBundleTest
+[INFO] Running com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.300 s -- in com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 54, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for skillhub-parent 0.1.0:
+[INFO] 
+[INFO] skillhub-parent .................................... SUCCESS [  0.009 s]
+[INFO] skillhub-storage ................................... SUCCESS [  4.181 s]
+[INFO] skillhub-domain .................................... SUCCESS [  3.913 s]
+[INFO] skillhub-auth ...................................... SUCCESS [  0.678 s]
+[INFO] skillhub-notification .............................. SUCCESS [  0.177 s]
+[INFO] skillhub-infra ..................................... SUCCESS [  0.314 s]
+[INFO] skillhub-search .................................... SUCCESS [  0.319 s]
+[INFO] skillhub-app ....................................... SUCCESS [01:30 min]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:41 min
+[INFO] Finished at: 2026-08-21T15:56:10Z
+[INFO] ------------------------------------------------------------------------

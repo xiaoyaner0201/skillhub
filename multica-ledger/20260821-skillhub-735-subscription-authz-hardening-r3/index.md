@@ -22,3 +22,4 @@
 | 20260821-123244 | qa | behavior discovery | qa/20260821-123244-behavior-discovery.md | `c81497c` | FROZEN |
 | 20260821-125849 | planner | plan r1 | planner/20260821-125849-plan-r1.md | `c81497c` | FROZEN |
 | 20260821-133911 | leader | plan gate + 人工批准 + dispatch code/tdd | leader/20260821-133911-plan-gate.md | `c81497c` | PASS |
+| 20260821-155700 | coder | RED→GREEN | coder/20260821-155700-code-tdd.md | `9221956` | — |

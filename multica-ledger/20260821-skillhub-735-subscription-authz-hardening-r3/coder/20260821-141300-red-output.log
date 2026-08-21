@@ -1,0 +1,620 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] skillhub-parent                                                    [pom]
+[INFO] skillhub-storage                                                   [jar]
+[INFO] skillhub-domain                                                    [jar]
+[INFO] skillhub-auth                                                      [jar]
+[INFO] skillhub-notification                                              [jar]
+[INFO] skillhub-infra                                                     [jar]
+[INFO] skillhub-search                                                    [jar]
+[INFO] skillhub-app                                                       [jar]
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-parent >----------------
+[INFO] Building skillhub-parent 0.1.0                                     [1/8]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ---------------< com.iflytek.skillhub:skillhub-storage >----------------
+[INFO] Building skillhub-storage 0.1.0                                    [2/8]
+[INFO]   from skillhub-storage/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-storage ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-storage/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-storage/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-storage ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-storage ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-storage/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-storage ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-storage ---
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-domain >----------------
+[INFO] Building skillhub-domain 0.1.0                                     [3/8]
+[INFO]   from skillhub-domain/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-domain ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-domain/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-domain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-domain ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-domain ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-domain ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-domain ---
+[INFO] 
+[INFO] -----------------< com.iflytek.skillhub:skillhub-auth >-----------------
+[INFO] Building skillhub-auth 0.1.0                                       [4/8]
+[INFO]   from skillhub-auth/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-auth ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-auth/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-auth/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-auth ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-auth ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-auth ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-auth ---
+[INFO] 
+[INFO] -------------< com.iflytek.skillhub:skillhub-notification >-------------
+[INFO] Building skillhub-notification 0.1.0                               [5/8]
+[INFO]   from skillhub-notification/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-notification ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-notification/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-notification/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-notification ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-notification ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-notification/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-notification ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-notification ---
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-infra >-----------------
+[INFO] Building skillhub-infra 0.1.0                                      [6/8]
+[INFO]   from skillhub-infra/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-infra ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-infra/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-infra/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-infra ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-infra ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-infra/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-infra ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-infra ---
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-search >----------------
+[INFO] Building skillhub-search 0.1.0                                     [7/8]
+[INFO]   from skillhub-search/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-search ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-search/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-search/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-search ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-search ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-search ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-search ---
+[INFO] 
+[INFO] -----------------< com.iflytek.skillhub:skillhub-app >------------------
+[INFO] Building skillhub-app 0.1.0                                        [8/8]
+[INFO]   from skillhub-app/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-app ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 49 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-app ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-app ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.iflytek.skillhub.listener.SubscriberNotificationSinkTest
+WARNING: A Java agent has been loaded dynamically (/home/agent/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+[ERROR] Tests run: 9, Failures: 9, Errors: 0, Skipped: 0, Time elapsed: 7.919 s <<< FAILURE! -- in com.iflytek.skillhub.listener.SubscriberNotificationSinkTest
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_privateOrdinaryMember_hasZeroRowAndSse -- Time elapsed: 6.957 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_privateOrdinaryMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:77)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_lastPublishedVersion_nonOwnerGetsNoSink -- Time elapsed: 0.083 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_lastPublishedVersion_nonOwnerGetsNoSink(SubscriberNotificationSinkTest.java:133)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_namespaceOnlyRemovedMember_hasZeroRowAndSse -- Time elapsed: 0.158 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_namespaceOnlyRemovedMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:91)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_privateOrdinaryMember_hasZeroRowAndSse -- Time elapsed: 0.027 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_privateOrdinaryMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:105)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_disabledUser_hasZeroRowAndSse -- Time elapsed: 0.054 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_disabledUser_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:126)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_hiddenOrdinaryMember_hasZeroRowAndSse -- Time elapsed: 0.029 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_hiddenOrdinaryMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:84)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_hiddenOrdinaryMember_hasZeroRowAndSse -- Time elapsed: 0.033 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_hiddenOrdinaryMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:112)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_disabledUser_hasZeroRowAndSse -- Time elapsed: 0.027 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_disabledUser_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:98)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_namespaceOnlyRemovedMember_hasZeroRowAndSse -- Time elapsed: 0.044 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_namespaceOnlyRemovedMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:119)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running com.iflytek.skillhub.exception.SubscriptionMessageBundleTest
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.716 s <<< FAILURE! -- in com.iflytek.skillhub.exception.SubscriptionMessageBundleTest
+[ERROR] com.iflytek.skillhub.exception.SubscriptionMessageBundleTest.subscriptionPermissionMessage_resolvesEnglishAndChinese -- Time elapsed: 0.708 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  "error.skill.subscription.noPermission"
+not to be equal to:
+  "error.skill.subscription.noPermission"
+
+	at com.iflytek.skillhub.exception.SubscriptionMessageBundleTest.subscriptionPermissionMessage_resolvesEnglishAndChinese(SubscriptionMessageBundleTest.java:27)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest
+[ERROR] Tests run: 4, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 0.633 s <<< FAILURE! -- in com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest
+[ERROR] com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_privateOrdinaryMember_deniesBeforeMutation -- Time elapsed: 0.452 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.assertForbiddenWithoutMutation(SkillSubscriptionServiceTest.java:168)
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_privateOrdinaryMember_deniesBeforeMutation(SkillSubscriptionServiceTest.java:138)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_hiddenOrdinaryMember_deniesBeforeMutation -- Time elapsed: 0.108 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.assertForbiddenWithoutMutation(SkillSubscriptionServiceTest.java:168)
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_hiddenOrdinaryMember_deniesBeforeMutation(SkillSubscriptionServiceTest.java:145)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill -- Time elapsed: 0.018 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.assertForbiddenWithoutMutation(SkillSubscriptionServiceTest.java:168)
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill(SkillSubscriptionServiceTest.java:164)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation -- Time elapsed: 0.016 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.assertForbiddenWithoutMutation(SkillSubscriptionServiceTest.java:168)
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation(SkillSubscriptionServiceTest.java:154)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   SkillSubscriptionServiceTest.subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill:164->assertForbiddenWithoutMutation:168 
+Expecting code to raise a throwable.
+[ERROR]   SkillSubscriptionServiceTest.subscribe_hiddenOrdinaryMember_deniesBeforeMutation:145->assertForbiddenWithoutMutation:168 
+Expecting code to raise a throwable.
+[ERROR]   SkillSubscriptionServiceTest.subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation:154->assertForbiddenWithoutMutation:168 
+Expecting code to raise a throwable.
+[ERROR]   SkillSubscriptionServiceTest.subscribe_privateOrdinaryMember_deniesBeforeMutation:138->assertForbiddenWithoutMutation:168 
+Expecting code to raise a throwable.
+[ERROR]   SubscriptionMessageBundleTest.subscriptionPermissionMessage_resolvesEnglishAndChinese:27 
+Expecting actual:
+  "error.skill.subscription.noPermission"
+not to be equal to:
+  "error.skill.subscription.noPermission"
+
+[ERROR]   SubscriberNotificationSinkTest.publish_disabledUser_hasZeroRowAndSse:98->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.publish_hiddenOrdinaryMember_hasZeroRowAndSse:84->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.publish_namespaceOnlyRemovedMember_hasZeroRowAndSse:91->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.publish_privateOrdinaryMember_hasZeroRowAndSse:77->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_disabledUser_hasZeroRowAndSse:126->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_hiddenOrdinaryMember_hasZeroRowAndSse:112->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_lastPublishedVersion_nonOwnerGetsNoSink:133->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_namespaceOnlyRemovedMember_hasZeroRowAndSse:119->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_privateOrdinaryMember_hasZeroRowAndSse:105->assertDeniedAndControlSink:187 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedAndControlSink(SubscriberNotificationSinkTest.java:187)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[INFO] 
+[ERROR] Tests run: 14, Failures: 14, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for skillhub-parent 0.1.0:
+[INFO] 
+[INFO] skillhub-parent .................................... SUCCESS [  0.011 s]
+[INFO] skillhub-storage ................................... SUCCESS [  5.975 s]
+[INFO] skillhub-domain .................................... SUCCESS [  1.223 s]
+[INFO] skillhub-auth ...................................... SUCCESS [  1.402 s]
+[INFO] skillhub-notification .............................. SUCCESS [  0.509 s]
+[INFO] skillhub-infra ..................................... SUCCESS [  0.580 s]
+[INFO] skillhub-search .................................... SUCCESS [  0.381 s]
+[INFO] skillhub-app ....................................... FAILURE [ 14.827 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  28.037 s
+[INFO] Finished at: 2026-08-21T14:12:46Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.1.2:test (default-test) on project skillhub-app: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/d5de8897/workdir/skillhub/server/skillhub-app/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :skillhub-app
