@@ -68,3 +68,4 @@
 | 20260821-100125 | leader | discovery gate re-run on superseding inventory | leader/20260821-100125-discovery-gate-superseding-inventory.md | `e45ca651d13bfb7af345f964dc055dbc615481c6` | PASS |
 | 20260821-101027 | planner | HD-28 plan r1 M3 rebuild / R8 write-set proposal | planner/20260821-101027-plan-r1-m3.md | `e8aca2a43467dad0da969c182632a7b791f90621` | FROZEN |
 | 20260821-101142 | leader | Pass 1 artifact landing / provenance verification | leader/20260821-101142-pass1-artifact-landing-and-provenance-verification.md | `98df543544fd5b877d287e59bbd52bf07527e5ef` | PASS |
+| 20260821-102507 | planner | HD-28 plan r1 M3b scope ruling / R8 write-set activation | planner/20260821-102507-plan-r1-m3b-scope-ruling.md | `e8aca2a43467dad0da969c182632a7b791f90621` | FROZEN |
