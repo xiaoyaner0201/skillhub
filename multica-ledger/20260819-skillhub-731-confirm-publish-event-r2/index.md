@@ -62,6 +62,7 @@
 | 20260821-092115 | leader | implementation gate / PLAN_GAP on expected_before | leader/20260821-092115-implementation-gate-and-plan-gap.md | `f025cd9ea0cb1979184104634612a4638aa2a670` | PASS |
 | 20260821-093209 | planner | HD-28 plan r1 M2 expected-before / inventory conflict | planner/20260821-093209-plan-r1-m2-expected-before-return.md | `e8aca2a43467dad0da969c182632a7b791f90621` | RETURN |
 | 20260821-094207 | leader | plan gate re-run on M2 / EVIDENCE_GAP on inventory | leader/20260821-094207-m2-regate-return-and-evidence-gap.md | `a1b3a91a7074b0294d69afb982cc2a97505b8416` | RETURN |
+| 20260821-094307 | reviewer | review pass1 BLIND_BEHAVIOR_AUDIT | reviewer/20260821-094307-review-pass1-blind-behavior-audit.md | `e8aca2a43467dad0da969c182632a7b791f90621` | RETURN |
 | 20260821-094709 | qa | inventory EVIDENCE_GAP supersession | qa/20260821-094709-behavior-inventory-evidence-gap.md | `e8aca2a43467dad0da969c182632a7b791f90621` | FROZEN |
 | 20260821-095600 | leader | Pass 1 intake / scope arithmetic / escalation | leader/20260821-095600-pass1-intake-scope-arithmetic-and-escalation.md | `95750507f9594ff5ff7effd72e58813977ffc772` | RETURN |
 | 20260821-100125 | leader | discovery gate re-run on superseding inventory | leader/20260821-100125-discovery-gate-superseding-inventory.md | `e45ca651d13bfb7af345f964dc055dbc615481c6` | PASS |
