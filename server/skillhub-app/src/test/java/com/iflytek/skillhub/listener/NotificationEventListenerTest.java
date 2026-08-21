@@ -345,17 +345,37 @@ class NotificationEventListenerTest {
     }
 
     @Test
-    void publishFanoutFailsClosedBeforeDispatchWhenNamespaceReadFails() {
+    void publishNamespaceReadFailureWarnsWithoutSubscriberPiiAndRethrows() {
         Skill skill = skill(1L, "owner", "owner");
         skill.setLatestVersionId(10L);
         when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
-        when(skillSubscriptionService.findSubscribersBySkillId(1L)).thenReturn(List.of("user-1"));
-        when(namespaceRepository.findById(5L)).thenThrow(new IllegalStateException("namespace unavailable"));
+        when(skillSubscriptionService.findSubscribersBySkillId(1L))
+                .thenReturn(List.of("subscriber-pii-sentinel"));
+        IllegalStateException failure = new IllegalStateException("namespace unavailable");
+        when(namespaceRepository.findById(5L)).thenThrow(failure);
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(() ->
-                listener.onSkillPublishedForSubscribers(new SkillPublishedEvent(1L, 10L, "owner")))
-                .isInstanceOf(IllegalStateException.class);
+        CapturedFailure captured = captureLogsAndFailure(() ->
+                listener.onSkillPublishedForSubscribers(new SkillPublishedEvent(1L, 10L, "owner")));
 
+        assertNamespaceReadFailureWarning(captured.events(), failure);
+        assertThat(captured.failure()).isSameAs(failure);
+        verifyNoInteractions(dispatcher);
+    }
+
+    @Test
+    void yankNamespaceReadFailureWarnsWithoutSubscriberPiiAndRethrows() {
+        Skill skill = skill(1L, "owner", "owner");
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
+        when(skillSubscriptionService.findSubscribersBySkillId(1L))
+                .thenReturn(List.of("subscriber-pii-sentinel"));
+        IllegalStateException failure = new IllegalStateException("namespace unavailable");
+        when(namespaceRepository.findById(5L)).thenThrow(failure);
+
+        CapturedFailure captured = captureLogsAndFailure(() -> listener.onSkillVersionYankedForSubscribers(
+                new SkillVersionYankedEvent(1L, 10L, "actor", true)));
+
+        assertNamespaceReadFailureWarning(captured.events(), failure);
+        assertThat(captured.failure()).isSameAs(failure);
         verifyNoInteractions(dispatcher);
     }
 
@@ -437,7 +457,7 @@ class NotificationEventListenerTest {
         verifyNoMoreInteractions(dispatcher);
     }
 
-    private List<ILoggingEvent> captureLogs(Runnable action) {
+    private <T> T withCapturedLogs(java.util.function.Function<List<ILoggingEvent>, T> action) {
         Logger logger = (Logger) LoggerFactory.getLogger(NotificationEventListener.class);
         Level previousLevel = logger.getLevel();
         ListAppender<ILoggingEvent> appender = new ListAppender<>();
@@ -445,13 +465,30 @@ class NotificationEventListenerTest {
         logger.setLevel(Level.WARN);
         logger.addAppender(appender);
         try {
-            action.run();
-            return List.copyOf(appender.list);
+            return action.apply(appender.list);
         } finally {
             logger.detachAppender(appender);
             logger.setLevel(previousLevel);
             appender.stop();
         }
+    }
+
+    private List<ILoggingEvent> captureLogs(Runnable action) {
+        return withCapturedLogs(events -> {
+            action.run();
+            return List.copyOf(events);
+        });
+    }
+
+    private CapturedFailure captureLogsAndFailure(Runnable action) {
+        return withCapturedLogs(events -> {
+            try {
+                action.run();
+                return new CapturedFailure(List.copyOf(events), null);
+            } catch (Throwable failure) {
+                return new CapturedFailure(List.copyOf(events), failure);
+            }
+        });
     }
 
     private void assertMissingNamespaceWarning(List<ILoggingEvent> events) {
@@ -461,5 +498,19 @@ class NotificationEventListenerTest {
                     .contains("skillId=1", "namespaceId=5")
                     .doesNotContain("subscriber-pii-sentinel");
         });
+    }
+
+    private void assertNamespaceReadFailureWarning(List<ILoggingEvent> events, Throwable failure) {
+        assertThat(events).singleElement().satisfies(event -> {
+            assertThat(event.getLevel()).isEqualTo(Level.WARN);
+            assertThat(event.getFormattedMessage())
+                    .contains("skillId=1", "namespaceId=5")
+                    .doesNotContain("subscriber-pii-sentinel");
+            assertThat(event.getThrowableProxy()).isNotNull();
+            assertThat(event.getThrowableProxy().getMessage()).isEqualTo(failure.getMessage());
+        });
+    }
+
+    private record CapturedFailure(List<ILoggingEvent> events, Throwable failure) {
     }
 }

@@ -3,6 +3,7 @@ package com.iflytek.skillhub.listener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iflytek.skillhub.domain.event.*;
+import com.iflytek.skillhub.domain.namespace.Namespace;
 import com.iflytek.skillhub.domain.namespace.NamespaceRepository;
 import com.iflytek.skillhub.domain.skill.Skill;
 import com.iflytek.skillhub.domain.skill.SkillRepository;
@@ -78,9 +79,16 @@ public class NotificationEventListener {
             if (subscribers.isEmpty()) {
                 return;
             }
-            var namespace = namespaceRepository.findById(skill.getNamespaceId()).orElse(null);
+            Namespace namespace;
+            try {
+                namespace = namespaceRepository.findById(skill.getNamespaceId()).orElse(null);
+            } catch (RuntimeException | Error failure) {
+                log.warn("Failed to load namespace for subscriber notification [skillId={}, namespaceId={}]",
+                        skill.getId(), skill.getNamespaceId(), failure);
+                throw failure;
+            }
             if (namespace == null) {
-                log.warn("Subscriber notification skipped because namespace was not found [skillId={}, namespaceId={}]",
+                log.warn("Namespace was not found for subscriber notification [skillId={}, namespaceId={}]",
                         skill.getId(), skill.getNamespaceId());
             }
             subscribers = subscriptionEligibility.currentRecipients(skill, namespace, subscribers);
@@ -106,9 +114,16 @@ public class NotificationEventListener {
             if (subscribers.isEmpty()) {
                 return;
             }
-            var namespace = namespaceRepository.findById(skill.getNamespaceId()).orElse(null);
+            Namespace namespace;
+            try {
+                namespace = namespaceRepository.findById(skill.getNamespaceId()).orElse(null);
+            } catch (RuntimeException | Error failure) {
+                log.warn("Failed to load namespace for subscriber notification [skillId={}, namespaceId={}]",
+                        skill.getId(), skill.getNamespaceId(), failure);
+                throw failure;
+            }
             if (namespace == null) {
-                log.warn("Subscriber notification skipped because namespace was not found [skillId={}, namespaceId={}]",
+                log.warn("Namespace was not found for subscriber notification [skillId={}, namespaceId={}]",
                         skill.getId(), skill.getNamespaceId());
             }
             subscribers = subscriptionEligibility.yankedRecipients(skill, namespace, subscribers, event.wasPublished());

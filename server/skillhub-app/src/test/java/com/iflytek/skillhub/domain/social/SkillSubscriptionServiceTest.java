@@ -145,8 +145,10 @@ class SkillSubscriptionServiceTest {
         account.setStatus(UserStatus.DISABLED);
         when(userAccountRepository.findById("user-1")).thenReturn(Optional.of(account));
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.subscribe(1L, "user-1"))
-                .isInstanceOf(DomainForbiddenException.class);
+        DomainForbiddenException exception = org.assertj.core.api.Assertions.catchThrowableOfType(
+                () -> service.subscribe(1L, "user-1"), DomainForbiddenException.class);
+
+        assertThat(exception.messageCode()).isEqualTo("error.skill.subscription.noPermission");
 
         verifyNoInteractions(subscriptionRepository);
         verify(skillRepository, never()).incrementSubscriptionCount(anyLong());
@@ -165,8 +167,10 @@ class SkillSubscriptionServiceTest {
         when(namespaceRepository.findById(5L)).thenReturn(Optional.of(namespace));
         when(namespaceMemberRepository.findByNamespaceIdAndUserId(5L, "user-1")).thenReturn(Optional.empty());
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.subscribe(1L, "user-1"))
-                .isInstanceOf(DomainForbiddenException.class);
+        DomainForbiddenException exception = org.assertj.core.api.Assertions.catchThrowableOfType(
+                () -> service.subscribe(1L, "user-1"), DomainForbiddenException.class);
+
+        assertThat(exception.messageCode()).isEqualTo("error.skill.subscription.noPermission");
 
         verifyNoInteractions(subscriptionRepository);
         verify(skillRepository, never()).incrementSubscriptionCount(anyLong());
@@ -206,8 +210,10 @@ class SkillSubscriptionServiceTest {
                     .thenReturn(Optional.of(new NamespaceMember(5L, "user-1", scenario.role())));
         }
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.subscribe(1L, "user-1"))
-                .isInstanceOf(DomainForbiddenException.class);
+        DomainForbiddenException exception = org.assertj.core.api.Assertions.catchThrowableOfType(
+                () -> service.subscribe(1L, "user-1"), DomainForbiddenException.class);
+
+        assertThat(exception.messageCode()).isEqualTo("error.skill.subscription.noPermission");
 
         verifyNoInteractions(subscriptionRepository);
         verify(skillRepository, never()).incrementSubscriptionCount(anyLong());
