@@ -72,3 +72,6 @@
 | 20260821-102535 | leader | approval ruling (scope b) / M3 dispatch constraints | leader/20260821-102535-approval-ruling-scope-b-and-m3-dispatch.md | `e786a5e3e2cdd25f43e373f0f25200c9df5ea168` | — |
 | 20260821-103056 | leader | plan gate re-run on M3b / code dispatch | leader/20260821-103056-plan-gate-m3b-pass-and-code-dispatch.md | `e786a5e3e2cdd25f43e373f0f25200c9df5ea168` | PASS |
 | 20260821-103525 | leader | M3b digest corroboration / effective F3 draft digest binding | leader/20260821-103525-m3b-digest-corroboration-and-f3-binding.md | `e786a5e3e2cdd25f43e373f0f25200c9df5ea168` | PASS |
+| 20260821-111250 | coder | HD-28 R5 TDD RED / R8 compatibility probe | coder/20260821-111250-tdd-red.md | `e8aca2a43467dad0da969c182632a7b791f90621` | — |
+| 20260821-111251 | coder | HD-28 R5/R2/R8 TDD GREEN | coder/20260821-111251-tdd-green.md | `88f064e37e0eeb371bbc66f5dfb1cd5e2ba3de05` | — |
+| 20260821-111252 | coder | HD-28 R5/R2/R8 regression | coder/20260821-111252-regression.md | `88f064e37e0eeb371bbc66f5dfb1cd5e2ba3de05` | — |
