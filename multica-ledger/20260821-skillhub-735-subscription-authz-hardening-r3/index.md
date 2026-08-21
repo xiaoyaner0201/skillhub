@@ -6,7 +6,8 @@
 - 风险等级：`HIGH_RISK`（auth/authz、PRIVATE 可见性、event/listener/fan-out、async 事务边界四类同时命中）
 - 冻结计划：`planner/20260821-125849-plan-r1.md`（SHA-256 `4465119ef0f150a578893cbf70fa7f4c66c81e0d13696620a8757de3334f35de`），artifact `planner/20260821-125849-plan-gate-r1.json`（`39510ad88cff8cb34f7efc584eb9818a47e6f1cb032c0bf2c11caf3c018d2236`），Plan Gate `PASS`（leader 独立复跑，20260821-133911），人工批准 20260821 by dongsjoa
 - 冻结 inventory：`qa/behavior-inventory.v1.json`（SHA-256 `efd911ad203add676cf925c8e20e1cb40251415d1a90600b2ad3de2f48131eae`，`D2`，15 candidates，produced_by_run `8e9589ec-f00d-4f62-9942-ce12f43146de`）
-- 当前状态：VERIFYING（exact tree `922195602c92f0f420e17df9021ae39727c95f8d`，业务 commit `046c04ed`，其后仅 ledger commit）
+- QA 产物：`qa/qa-gate-r1.json`（SHA-256 `1f16d21a5432b18bc89eb143b731a5a072f032a2809dd803e9c260310c668cd2`），Gate receipt `PASS`（leader 独立复跑，20260821-172933），artifact verdict `overall=UNVERIFIED`（25 BLOCKED probe / 8 blocking UNVERIFIED / 5 开放 HIGH+BLOCKER）
+- 当前状态：REWORK（候选 `046c04ed` / tree `922195602c92f0f420e17df9021ae39727c95f8d` 经 QA + Review Pass 1 双路 RETURN，已退回 Planner；该 tree 冻结解除，后续候选另起）
 
 ## 前序工作面（不在本分支，未被改写）
 
@@ -27,3 +28,4 @@
 | 20260821-161203 | qa | blind QA charter | qa/20260821-161203-blind-qa-charter.md | `9221956` | FROZEN |
 | 20260821-161836 | reviewer | Pass 1 blind behavior audit | reviewer/20260821-161836-blind-behavior-audit-pass1.md | `9221956` | FROZEN |
 | 20260821-172100 | qa | QA execution | qa/20260821-172100-qa-execution.md | `9221956` | RETURN |
+| 20260821-172933 | leader | QA Gate 复跑 + delta 归并 + 返修路由 | leader/20260821-172933-qa-gate-and-delta-merge.md | `9221956` | RETURN |
