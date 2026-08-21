@@ -58,3 +58,4 @@
 | 20260821-082539 | leader | plan r1 approval / M1 artifact-drift route | leader/20260821-082539-plan-r1-approval-m1-route.md | `f84f2acef7eaf26d409893a08eb4161eb2a31f4c` | RETURN |
 | 20260821-083820 | planner | HD-28 plan r1 M1 artifact re-freeze | planner/20260821-083820-plan-r1-m1.md | — | FROZEN |
 | 20260821-084606 | leader | plan gate re-run on M1 / code dispatch | leader/20260821-084606-plan-m1-regate-and-code-dispatch.md | `27649c954e41aed9c0aa0ac1e9bc454b78a38909` | PASS |
+| 20260821-091620 | coder | RED→GREEN / regression | coder/20260821-091620-red-green-regression.md | `e8aca2a43467dad0da969c182632a7b791f90621` | — |
