@@ -4,7 +4,7 @@
 - Base：`d2403bb5911953b8f53e62c3f0a9edc291363944`
 - 冻结计划：`planner/20260821-083820-plan-r1-m1.md`（HD-28 生效，artifact `d5948e67…0c7e`）；HD-7 终态为 `planner/20260819-190045-plan-r6.md`
 - 风险分级：`HIGH_RISK`（authz / PRIVATE / event fan-out / async listener，见 `leader/20260821-072735-hd28-dispatch.md`）
-- 当前状态：PLAN 返修（Review Pass 1 产物已落地 `2479b0e8`，形式与实质均成立，Overall RETURN；discovery gate 已对 inventory `7644ce1e…7820` 复跑 PASS。exact tree `e8aca2a4…` 冻结不动。等 规划 出 M3：绑新 inventory digest + `expected_before` 校准 + R5/R2 + R8 的 write_set 修订（方案 A 已核机械可行）。R4/R3/R1 与 (a)/(b)/(c) 待 千乘妍 裁定，(c) 的含义已更正——Review Gate 三态无「PASS with declared exception」。Pass 2 待 QA 产物。HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
+- 当前状态：**CODE 进行中**（审批人 `20260821-102312` 裁定范围取 **(b)**：HD-28 收敛为 R5/R2/R8，R4/R3/R1 移出本链；R8 采方案 A。M3b `3b42b8ff` 已过 **plan gate PASS**，validator 与三条硬约束两侧都过，生效计划为 `planner/20260821-102507-plan-r1-m3b-scope-ruling.md`，生效 inventory `7644ce1e…7820`。已派 实现 一轮批量 Code；落地后 exact tree `e8aca2a4…` 冻结解除，Implementation Gate 与 Review Pass 1 自动作废并重跑。**F3 只有 `pr-body-draft-m3b.md` 可用，`…-m3.md` 已 supersede 且含 R1 细节，禁止用于发布。** R6/R9/R10/R11 四条 LOW 归属未裁，不阻塞。HD-7 终态为 PUBLISHED，Draft PR #735 OPEN，上游未合并）
 
 ## 分录
 
@@ -69,3 +69,5 @@
 | 20260821-101027 | planner | HD-28 plan r1 M3 rebuild / R8 write-set proposal | planner/20260821-101027-plan-r1-m3.md | `e8aca2a43467dad0da969c182632a7b791f90621` | FROZEN |
 | 20260821-101142 | leader | Pass 1 artifact landing / provenance verification | leader/20260821-101142-pass1-artifact-landing-and-provenance-verification.md | `98df543544fd5b877d287e59bbd52bf07527e5ef` | PASS |
 | 20260821-102507 | planner | HD-28 plan r1 M3b scope ruling / R8 write-set activation | planner/20260821-102507-plan-r1-m3b-scope-ruling.md | `e8aca2a43467dad0da969c182632a7b791f90621` | FROZEN |
+| 20260821-102535 | leader | approval ruling (scope b) / M3 dispatch constraints | leader/20260821-102535-approval-ruling-scope-b-and-m3-dispatch.md | `e786a5e3e2cdd25f43e373f0f25200c9df5ea168` | — |
+| 20260821-103056 | leader | plan gate re-run on M3b / code dispatch | leader/20260821-103056-plan-gate-m3b-pass-and-code-dispatch.md | `e786a5e3e2cdd25f43e373f0f25200c9df5ea168` | PASS |
