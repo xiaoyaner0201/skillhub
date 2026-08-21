@@ -54,3 +54,4 @@
 | 20260821-073605 | qa | behavior discovery | qa/20260821-073605-behavior-discovery.md | `d35a58c983b1ea3d0fa4830e2c0ca3bd43283673` | FROZEN |
 | 20260821-074243 | leader | discovery gate | leader/20260821-074243-discovery-gate.md | `8c5b7249414f37b6e626dbe19bf5ce4b4382d9ed` | PASS |
 | 20260821-075744 | planner | HD-28 plan r1 | planner/20260821-075744-plan-r1.md | — | FROZEN |
+| 20260821-081557 | leader | plan r1 gate | leader/20260821-081557-plan-r1-gate.md | `ccc7320337592d8f66890ee5316dc3fd8d29f06a` | PASS |
