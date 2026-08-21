@@ -1,0 +1,7 @@
+Failed to load native library:jansi-2.4.2-6ad65630d146063d-libjansi.so. The native library file at /tmp/jansi-2.4.2-6ad65630d146063d-libjansi.so is not executable, make sure that the directory is mounted on a partition without the noexec flag, or set the jansi.tmpdir system property to point to a proper location.  osinfo: Linux/arm64
+java.lang.UnsatisfiedLinkError: /tmp/jansi-2.4.2-6ad65630d146063d-libjansi.so: /tmp/jansi-2.4.2-6ad65630d146063d-libjansi.so: failed to map segment from shared object
+WARNING: A Java agent has been loaded dynamically (/home/agent/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
