@@ -1,0 +1,306 @@
+{
+  "schema_version": "behavior-inventory.v1",
+  "subject": {
+    "repo": "xiaoyaner0201/skillhub",
+    "base_commit": "23658e0f94f5d6ac1290978671a75eca5d56ef94",
+    "base_tree": "d35a58c983b1ea3d0fa4830e2c0ca3bd43283673"
+  },
+  "generator": {
+    "name": "qa-run-b4535e97-structured-manual-enumerator",
+    "version": "1.0",
+    "mode": "source-first event-consumer and sink traversal corroborated by targeted git-grep",
+    "maturity": "D1",
+    "produced_by_run_id": "b4535e97-7654-47ff-84c0-8c97cadedc18",
+    "produced_by_context_id": "01a0233a-aea5-75a1-b194-715bdcf26ddd",
+    "produced_at": "2026-08-21T07:36:05Z",
+    "command": "git grep -n -E 'SkillPublishedEvent|SkillVersionYankedEvent|findSubscribersBySkillId|SubscriptionMetadataAccessPolicy|error.skill.subscription.noPermission|dispatcher\\.dispatch|rebuildBySkill|findByUserId\\(' 23658e0f94f5d6ac1290978671a75eca5d56ef94 -- server",
+    "coverage_note": "D1 structured manual enumeration of statically visible Java/Spring publishers, annotated listeners, repository relationships, authorization filters, persistence calls, SSE payloads, API error rendering, and subscription readback at the frozen tree. It is not a completeness upper bound: dynamic bean/event registration, reflection, runtime conditional wiring, AOP/proxy and transaction ordering, executor rejection, repository adapter behavior, transport serialization, database triggers, frontend consumption, and paths not matched or recognized by the targeted search remain UNVERIFIED and require Planner disposition plus later blind review and dynamic probes. The historical fixtures/skillhub-java script was not used as a D2/D3 discoverer."
+  },
+  "candidates": [
+    {
+      "candidate_id": "subscription-create-authz-and-response",
+      "producer": "PUT /api/v1|web/skills/{skillId}/subscription",
+      "consumer": "SkillSubscriptionController.subscribeSkill -> SkillSubscriptionService.subscribe",
+      "relationship_source": "authenticated principal userId plus UserAccountRepository, NamespaceRepository, NamespaceMemberRepository and existing skill_subscription row",
+      "eligibility_boundary": "SubscriptionMetadataAccessPolicy.canAccessCurrent at request time; deny is DomainForbiddenException rendered through GlobalExceptionHandler and ApiResponseFactory/MessageSource",
+      "sinks": [
+        "authorized: skill_subscription INSERT, skill.subscription_count increment, then SkillSubscribedEvent publication",
+        "denied: HTTP 403 ApiResponse message localized from error.skill.subscription.noPermission; no subscription persistence or event"
+      ],
+      "affected_invariants": [
+        "AUTHZ_CURRENT_READ_REQUIRED_TO_SUBSCRIBE",
+        "PRIVATE_METADATA_CONFIDENTIALITY",
+        "CROSS_NAMESPACE_ISOLATION",
+        "FAIL_CLOSED_ON_MISSING_AUTHORITY_FACTS",
+        "LOCALIZED_FORBIDDEN_RESPONSE",
+        "SUBSCRIPTION_WRITE_ATOMICITY_AND_IDEMPOTENCE"
+      ],
+      "required_states": [
+        "PUBLIC active account",
+        "NAMESPACE_ONLY current member",
+        "PRIVATE owner",
+        "PRIVATE namespace ADMIN or OWNER manager",
+        "PRIVATE ordinary member",
+        "cross-namespace member",
+        "removed or downgraded member",
+        "inactive or missing account",
+        "missing namespace",
+        "archived namespace with and without a role",
+        "hidden skill",
+        "skill without latest version",
+        "already subscribed idempotent request",
+        "English and Chinese locale denial"
+      ],
+      "must_fail_old": true,
+      "verification_status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java",
+        "symbol": "subscribe"
+      }
+    },
+    {
+      "candidate_id": "retained-subscription-row-readback",
+      "producer": "pre-existing skill_subscription rows retained after access revocation or visibility change",
+      "consumer": "MySkillAppService.listMySubscriptions and SkillSubscriptionService.isSubscribed",
+      "relationship_source": "SkillSubscriptionRepository.findByUserId/findBySkillIdAndUserId",
+      "eligibility_boundary": "no SubscriptionMetadataAccessPolicy check is present on these readback paths at the frozen tree; downstream MySkillQueryRepository behavior is outside the targeted traversal",
+      "sinks": [
+        "GET /api/web/me/subscriptions paged SkillSummaryResponse",
+        "GET /api/web/skills/{skillId}/subscription boolean response",
+        "retained skill_subscription database state and unchanged subscription_count"
+      ],
+      "affected_invariants": [
+        "PRIVATE_METADATA_CONFIDENTIALITY",
+        "STALE_RELATIONSHIP_SEMANTICS",
+        "DATABASE_POLICY_CONSISTENCY",
+        "NO_UNAUTHORIZED_NOTIFICATION_DESPITE_RETAINED_ROW"
+      ],
+      "required_states": [
+        "ordinary member retaining a PRIVATE subscription",
+        "removed or downgraded member",
+        "visibility changed from PUBLIC or NAMESPACE_ONLY to PRIVATE",
+        "archived namespace",
+        "deleted or missing skill",
+        "maintainer choice: retain, prune now, or follow-up migration"
+      ],
+      "must_fail_old": false,
+      "verification_status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/MySkillAppService.java",
+        "symbol": "listMySubscriptions"
+      }
+    },
+    {
+      "candidate_id": "published-owner-notification",
+      "producer": "SkillPublishedEvent from confirmPublish, autoPublish, review approval, or promotion approval",
+      "consumer": "NotificationEventListener.onSkillPublished",
+      "relationship_source": "event.publisherId compared with current Skill.ownerId",
+      "eligibility_boundary": "only publisherId equal to skill owner proceeds; NotificationDispatcher additionally enforces current IN_APP preference",
+      "sinks": [
+        "notification table row for the owner with eventType SKILL_PUBLISHED",
+        "owner SSE payload containing id, category, eventType, title, bodyJson, entityType, entityId and createdAt",
+        "GET /notifications recipient-visible persisted payload with skillId, skillName, slug, optional namespace and version"
+      ],
+      "affected_invariants": [
+        "RECIPIENT_IS_EVENT_PUBLISHING_OWNER",
+        "NO_OWNER_NOTIFICATION_FOR_ADMIN_OR_REVIEWER_PUBLISHER",
+        "PREFERENCE_SUPPRESSES_PERSISTENCE_AND_TRANSPORT",
+        "PRIVATE_METADATA_CONFIDENTIALITY"
+      ],
+      "required_states": [
+        "owner confirm-publishes PRIVATE skill",
+        "namespace manager confirm-publishes another user's PRIVATE skill",
+        "reviewer publishes through approval",
+        "promotion approval creates target skill",
+        "preference enabled",
+        "preference disabled",
+        "SSE succeeds",
+        "SSE fails after persistence",
+        "missing skill or version or namespace"
+      ],
+      "must_fail_old": true,
+      "verification_status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "symbol": "onSkillPublished"
+      }
+    },
+    {
+      "candidate_id": "published-subscriber-fanout",
+      "producer": "SkillPublishedEvent from confirmPublish, autoPublish, review approval, or promotion approval",
+      "consumer": "NotificationEventListener.onSkillPublishedForSubscribers",
+      "relationship_source": "SkillSubscriptionService.findSubscribersBySkillId -> persisted skill_subscription user IDs, de-duplicated before authoritative account/member batch loading",
+      "eligibility_boundary": "SubscriptionRecipientEligibility.currentRecipients -> SubscriptionMetadataAccessPolicy.canAccessCurrent using event-time account, namespace, visibility, hidden/latest-version and namespace-role facts; publisher is skipped; NotificationDispatcher preference is a final boundary",
+      "sinks": [
+        "one notification table row per eligible non-publisher recipient with eventType SUBSCRIPTION_NEW_VERSION",
+        "one SSE push per persisted notification with the same recipient and payload fields",
+        "GET /notifications recipient-visible payload containing skillId, skillName, slug, optional namespace and version"
+      ],
+      "affected_invariants": [
+        "EVENT_TIME_CURRENT_READ_AUTHORIZATION",
+        "PRIVATE_METADATA_CONFIDENTIALITY",
+        "CROSS_NAMESPACE_ISOLATION",
+        "REVOCATION_AND_DOWNGRADE_TAKE_EFFECT",
+        "FAIL_CLOSED_ON_MISSING_AUTHORITY_FACTS",
+        "EXACT_RECIPIENT_AND_PAYLOAD",
+        "ASYNC_AFTER_COMMIT_FAILURE_ISOLATION"
+      ],
+      "required_states": [
+        "PUBLIC eligible subscriber",
+        "NAMESPACE_ONLY current member",
+        "PRIVATE owner or manager",
+        "PRIVATE ordinary member",
+        "removed member",
+        "downgraded manager",
+        "cross-namespace member",
+        "inactive or missing account",
+        "missing or archived namespace",
+        "hidden skill",
+        "no latest version",
+        "publisher also subscribed",
+        "duplicate subscriber IDs",
+        "preference disabled",
+        "SSE failure after persistence",
+        "executor rejection or async exception"
+      ],
+      "must_fail_old": true,
+      "verification_status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "symbol": "onSkillPublishedForSubscribers"
+      }
+    },
+    {
+      "candidate_id": "published-namespace-missing-diagnostic",
+      "producer": "SkillPublishedEvent reaching subscriber fan-out with non-empty persisted subscriber candidates",
+      "consumer": "NotificationEventListener.onSkillPublishedForSubscribers",
+      "relationship_source": "skill.namespaceId resolved through NamespaceRepository.findById",
+      "eligibility_boundary": "null namespace is passed to currentRecipients and fails closed for every candidate",
+      "sinks": [
+        "zero notification rows and zero SSE pushes when namespace is missing",
+        "one WARN diagnostic containing skillId and namespaceId but no subscriber IDs or other user-identifying data"
+      ],
+      "affected_invariants": [
+        "FAIL_CLOSED_NAMESPACE_LOOKUP",
+        "DIAGNOSTIC_OBSERVABILITY_WITHOUT_PII",
+        "RECIPIENT_SET_UNCHANGED_BY_LOGGING"
+      ],
+      "required_states": [
+        "namespace repository returns empty with non-empty subscriber list",
+        "namespace present with identical recipients before and after logging-only change",
+        "empty subscriber list avoids namespace lookup and warning",
+        "warning field values and absence of subscriber IDs"
+      ],
+      "must_fail_old": true,
+      "verification_status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "symbol": "onSkillPublishedForSubscribers namespace lookup"
+      }
+    },
+    {
+      "candidate_id": "yanked-subscriber-fanout",
+      "producer": "SkillGovernanceService.yankVersion -> SkillVersionYankedEvent(wasPublished=true)",
+      "consumer": "NotificationEventListener.onSkillVersionYankedForSubscribers",
+      "relationship_source": "SkillSubscriptionService.findSubscribersBySkillId -> persisted skill_subscription user IDs and authoritative event-time account/member facts",
+      "eligibility_boundary": "SubscriptionRecipientEligibility.yankedRecipients -> canAccessYankedPublication requires wasPublished and current read eligibility; actor is skipped; NotificationDispatcher preference is a final boundary",
+      "sinks": [
+        "one notification table row per eligible non-actor recipient with eventType SUBSCRIPTION_VERSION_YANKED",
+        "one SSE push per persisted notification with the same recipient and payload fields",
+        "GET /notifications recipient-visible payload containing skillId, skillName, slug, optional namespace and yanked version"
+      ],
+      "affected_invariants": [
+        "EVENT_TIME_CURRENT_READ_AUTHORIZATION",
+        "PRIVATE_METADATA_CONFIDENTIALITY",
+        "CROSS_NAMESPACE_ISOLATION",
+        "REVOCATION_AND_DOWNGRADE_TAKE_EFFECT",
+        "WAS_PUBLISHED_PROVENANCE_REQUIRED",
+        "EXACT_RECIPIENT_AND_PAYLOAD",
+        "ASYNC_AFTER_COMMIT_FAILURE_ISOLATION"
+      ],
+      "required_states": [
+        "wasPublished true and eligible subscriber",
+        "wasPublished false",
+        "removed or downgraded subscriber",
+        "cross-namespace subscriber",
+        "inactive or missing account",
+        "missing or archived namespace",
+        "actor also subscribed",
+        "duplicate subscriber IDs",
+        "preference disabled",
+        "SSE failure after persistence",
+        "executor rejection or async exception"
+      ],
+      "must_fail_old": true,
+      "verification_status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "symbol": "onSkillVersionYankedForSubscribers"
+      }
+    },
+    {
+      "candidate_id": "yanked-namespace-missing-diagnostic",
+      "producer": "SkillVersionYankedEvent reaching subscriber fan-out with non-empty persisted subscriber candidates",
+      "consumer": "NotificationEventListener.onSkillVersionYankedForSubscribers",
+      "relationship_source": "skill.namespaceId resolved through NamespaceRepository.findById",
+      "eligibility_boundary": "null namespace is passed to yankedRecipients and fails closed for every candidate",
+      "sinks": [
+        "zero notification rows and zero SSE pushes when namespace is missing",
+        "one WARN diagnostic containing skillId and namespaceId but no subscriber IDs or other user-identifying data"
+      ],
+      "affected_invariants": [
+        "FAIL_CLOSED_NAMESPACE_LOOKUP",
+        "DIAGNOSTIC_OBSERVABILITY_WITHOUT_PII",
+        "RECIPIENT_SET_UNCHANGED_BY_LOGGING"
+      ],
+      "required_states": [
+        "namespace repository returns empty with non-empty subscriber list",
+        "namespace present with identical recipients before and after logging-only change",
+        "empty subscriber list avoids namespace lookup and warning",
+        "warning field values and absence of subscriber IDs"
+      ],
+      "must_fail_old": true,
+      "verification_status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "symbol": "onSkillVersionYankedForSubscribers namespace lookup"
+      }
+    },
+    {
+      "candidate_id": "published-search-index-rebuild",
+      "producer": "SkillPublishedEvent from confirmPublish, autoPublish, review approval, or promotion approval",
+      "consumer": "SearchIndexEventListener.onSkillPublished -> PostgresSearchRebuildService.rebuildBySkill",
+      "relationship_source": "event.skillId reloads Skill, Namespace, latest SkillVersion metadata and labels from authoritative repositories",
+      "eligibility_boundary": "listener runs asynchronously AFTER_COMMIT; toDocument requires the skill and namespace but does not itself filter visibility, so recipient authorization is delegated to downstream search query paths not closed by this D1 traversal",
+      "sinks": [
+        "skill_search_document PostgreSQL UPSERT containing namespace, owner, title, summary, keywords, search text, semantic vector, visibility and status",
+        "recipient-visible search results derived from the indexed document; downstream query authorization remains UNVERIFIED"
+      ],
+      "affected_invariants": [
+        "SEARCH_INDEX_CONSISTENCY_AFTER_PUBLISH",
+        "PRIVATE_AND_NAMESPACE_VISIBILITY_ENFORCED_AT_QUERY_BOUNDARY",
+        "NO_PRECOMMIT_INDEX_STATE",
+        "ASYNC_FAILURE_OBSERVABILITY"
+      ],
+      "required_states": [
+        "confirmPublish PRIVATE skill",
+        "autoPublish PUBLIC or NAMESPACE_ONLY skill",
+        "review approval",
+        "promotion approval",
+        "existing search document update",
+        "new search document insert",
+        "missing skill",
+        "missing namespace",
+        "missing or malformed latest-version metadata",
+        "embedding or database failure",
+        "unauthorized search caller"
+      ],
+      "must_fail_old": true,
+      "verification_status": "UNVERIFIED",
+      "evidence": {
+        "path": "server/skillhub-search/src/main/java/com/iflytek/skillhub/search/event/SearchIndexEventListener.java",
+        "symbol": "onSkillPublished"
+      }
+    }
+  ]
+}
