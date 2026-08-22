@@ -33,3 +33,4 @@
 | 20260822-141107 | planner | plan r2 delta + local Plan Gate | planner/20260822-141107-plan-r2.md；planner/20260822-141107-plan-gate-r2.json；planner/20260822-141107-plan-gate-receipt-r2.json | `9221956` | FROZEN / GATE PASS（独立复跑与人工批准待调度） |
 | 20260822-143334 | leader | Plan Gate r2 独立复跑 + Council 名额校验 + 转人工批准 | leader/20260822-143334-plan-gate-r2.md；leader/20260822-143334-plan-gate-receipt-r2-leader.json | `c81497c`（plan subject base） | PASS（人工批准待办） |
 | 20260822-145214 | leader | 受理人工批准 + 加绑条件机械核验 + 并行派 Planner delta / Coder RED | leader/20260822-145214-plan-approved-r2-dispatch.md | `c81497c` | APPROVED（加绑条件 2 回 Planner） |
+| 20260822-150358 | planner | plan r2 加绑条件 2 evidence contract 窄 delta | planner/20260822-150358-plan-r2-evidence-addendum.md | `c81497c`（plan subject base） | FROZEN |
