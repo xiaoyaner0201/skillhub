@@ -8,7 +8,7 @@
 - 冻结 inventory：`qa/behavior-inventory.v1.json`（SHA-256 `efd911ad203add676cf925c8e20e1cb40251415d1a90600b2ad3de2f48131eae`，`D2`，15 candidates，produced_by_run `8e9589ec-f00d-4f62-9942-ce12f43146de`）
 - QA 产物：`qa/qa-gate-r1.json`（SHA-256 `1f16d21a5432b18bc89eb143b731a5a072f032a2809dd803e9c260310c668cd2`），Gate receipt `PASS`（leader 独立复跑，20260821-172933），artifact verdict `overall=UNVERIFIED`（25 BLOCKED probe / 8 blocking UNVERIFIED / 5 开放 HIGH+BLOCKER）
 - 冻结计划 r2：`planner/20260822-141107-plan-r2.md`（SHA-256 `c5eb23e39079d6d106428900e04b73089c12cc34c49d79c84611d5745ba937c9`），artifact `planner/20260822-141107-plan-gate-r2.json`（`61d54ad3dc94ae60ea546aa85322aea6e946d2c4ec064428f2525ffcebf04238`），Plan Gate `PASS`（leader 独立复跑，20260822-143334），Plan Run `13699b09-a56a-4b08-8e07-57c355cb3686`，人工批准 20260822-1445 by dongsjoa（附 5 条加绑条件，其中条件 2 的指定测试经核验不适用，已回 Planner）
-- 当前状态：PLAN_APPROVED_R2（加绑条件 2 已闭合并经人工确认：原指派 `PromotionApprovalFlowIntegrationTest` 于 20260822-1511 由 dongsjoa **撤销**，替代 probe `SubscriberNotificationRuntimeIntegrationTest#promotionApproved_saturatedConfiguredExecutor_persistsCommittedRowBeforeRealManagerSse` **批准**；写集增量 0、机器 artifact 逐字节未变，不重跑 Plan Gate 获人工确认。GREEN 段已获放行但未派：Coder RED 段 Run 执行中，须先经 leader 复核 `RED_BASE_SHA`/`RED_DELTA_SHA` 可达）
+- 当前状态：PLAN_APPROVED_R2 / **Coder lane BLOCKED**（codex session `01a02a28` rollout 毒化，Coder 四次 Run 确定性失败；RED 产物只存在于宿主机抢救目录，fork 分支 head 仍 `a17eab1d`，两个 RED commit 在任何 ref 上均不可达，故 RED intake 未开始。加绑条件 2 已闭合并经人工确认：原指派 `PromotionApprovalFlowIntegrationTest` 于 20260822-1511 由 dongsjoa **撤销**，替代 probe `SubscriberNotificationRuntimeIntegrationTest#promotionApproved_saturatedConfiguredExecutor_persistsCommittedRowBeforeRealManagerSse` **批准**；写集增量 0、机器 artifact 逐字节未变，不重跑 Plan Gate 获人工确认。GREEN 段已获放行但未派：`green_dispatch_gate` 仍关闭，须先经 leader 在可读 ref 上实跑复核 `RED_BASE_SHA`/`RED_DELTA_SHA` 可达）
 
 ## 前序工作面（不在本分支，未被改写）
 
@@ -36,3 +36,4 @@
 | 20260822-150358 | planner | plan r2 加绑条件 2 evidence contract 窄 delta | planner/20260822-150358-plan-r2-evidence-addendum.md | `c81497c`（plan subject base） | FROZEN |
 | 20260822-150907 | leader | evidence addendum 受理 + probe 真实性核验 | leader/20260822-150907-evidence-addendum-accepted.md | `c81497c` | ACCEPTED（加绑条件 2 闭合，不重跑 Gate） |
 | 20260822-152000 | leader | 人工撤销原指派 + 批准替代 probe 受理；断言槽位与 preference 闸门核验 | leader/20260822-152000-cond2-ratified-superseding.md | `c81497c` | SUPERSEDING（REVOKED + APPROVED；GREEN 段放行但待 RED intake） |
+| 20260822-165500 | leader | Coder lane 阻塞登记 + 产物可达性/写集初核 | leader/20260822-165500-coder-lane-blocked-session-poisoned.md | `c81497c` | BLOCKED（runtime/infra，非工程 finding） |
