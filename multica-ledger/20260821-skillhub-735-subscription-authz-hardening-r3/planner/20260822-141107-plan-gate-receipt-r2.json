@@ -1,0 +1,31 @@
+{
+  "schema_version": "gate-receipt.v1",
+  "gate": "plan",
+  "result": "PASS",
+  "runs": [
+    {
+      "phase": "PLAN",
+      "run_id": "13699b09-a56a-4b08-8e07-57c355cb3686",
+      "context_id": "01a0245b-3485-7d62-8601-0e432a47f693"
+    }
+  ],
+  "inputs": [
+    {
+      "kind": "artifact",
+      "path": "/workspaces/140e8421-7099-4023-91fd-4c09406f46a2/553ad2f2/workdir/skillhub/multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/planner/20260822-141107-plan-gate-r2.json",
+      "sha256": "61d54ad3dc94ae60ea546aa85322aea6e946d2c4ec064428f2525ffcebf04238"
+    },
+    {
+      "kind": "inventory",
+      "path": "/workspaces/140e8421-7099-4023-91fd-4c09406f46a2/553ad2f2/workdir/skillhub/multica-ledger/20260821-skillhub-735-subscription-authz-hardening-r3/qa/behavior-inventory.v1.json",
+      "sha256": "efd911ad203add676cf925c8e20e1cb40251415d1a90600b2ad3de2f48131eae"
+    }
+  ],
+  "validator": {
+    "name": "validate_gate.py",
+    "version": "0.1",
+    "sha256": "a7100d86232e21df4f032d07ecbc7e055f2353020be0858230db131a47ca4892"
+  },
+  "warnings": [],
+  "errors": []
+}

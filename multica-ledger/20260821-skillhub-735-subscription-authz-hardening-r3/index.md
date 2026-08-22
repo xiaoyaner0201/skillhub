@@ -29,3 +29,4 @@
 | 20260821-161836 | reviewer | Pass 1 blind behavior audit | reviewer/20260821-161836-blind-behavior-audit-pass1.md | `9221956` | FROZEN |
 | 20260821-172100 | qa | QA execution | qa/20260821-172100-qa-execution.md | `9221956` | RETURN |
 | 20260821-172933 | leader | QA Gate 复跑 + delta 归并 + 返修路由 | leader/20260821-172933-qa-gate-and-delta-merge.md | `9221956` | RETURN |
+| 20260822-141107 | planner | plan r2 delta + local Plan Gate | planner/20260822-141107-plan-r2.md；planner/20260822-141107-plan-gate-r2.json；planner/20260822-141107-plan-gate-receipt-r2.json | `9221956` | FROZEN / GATE PASS（独立复跑与人工批准待调度） |
