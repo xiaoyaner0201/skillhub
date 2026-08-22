@@ -8,7 +8,7 @@
 - 冻结 inventory：`qa/behavior-inventory.v1.json`（SHA-256 `efd911ad203add676cf925c8e20e1cb40251415d1a90600b2ad3de2f48131eae`，`D2`，15 candidates，produced_by_run `8e9589ec-f00d-4f62-9942-ce12f43146de`）
 - QA 产物：`qa/qa-gate-r1.json`（SHA-256 `1f16d21a5432b18bc89eb143b731a5a072f032a2809dd803e9c260310c668cd2`），Gate receipt `PASS`（leader 独立复跑，20260821-172933），artifact verdict `overall=UNVERIFIED`（25 BLOCKED probe / 8 blocking UNVERIFIED / 5 开放 HIGH+BLOCKER）
 - 冻结计划 r2：`planner/20260822-141107-plan-r2.md`（SHA-256 `c5eb23e39079d6d106428900e04b73089c12cc34c49d79c84611d5745ba937c9`），artifact `planner/20260822-141107-plan-gate-r2.json`（`61d54ad3dc94ae60ea546aa85322aea6e946d2c4ec064428f2525ffcebf04238`），Plan Gate `PASS`（leader 独立复跑，20260822-143334），Plan Run `13699b09-a56a-4b08-8e07-57c355cb3686`，人工批准 20260822-1445 by dongsjoa（附 5 条加绑条件，其中条件 2 的指定测试经核验不适用，已回 Planner）
-- 当前状态：PLAN_APPROVED_R2 / **RED 未受理；Coder 第 5 次失败后已于 session 退休后原样重派（20260822-1810）**（取证分支 `20260822-hd30-red-rescue-session-01a02a28` head `f90d64ee` 已使 ancestry 三项 exit 0，可达性阻塞解除；但 RED 仍不受理：`ddb9560b` 为零内容 merge（树与 `a17eab1d` 逐字节相同）、加绑条件 2 的 probe 只存在于人工署名且自标 NOT RED-verified 的 `f90d64ee`、本轮无任何 RED 实跑输出进入可读 ref。写集 leaf-path 经 leader 逐字符复核越界 0，转 CLEAN。抢救物内容质量合格——断言七槽位、entityId 语义、preference 闸门约束均已核对通过——缺的是提交面与实跑留痕）
+- 当前状态：PLAN_APPROVED_R2 / **RED 未受理；Coder lane PAUSED——第 6 次失败已重定位为 `codex/gpt-5.6-sol` lane 层故障（非 session 毒化），待 boss 裁定 lane 归属（20260822-1850）**（取证分支 `20260822-hd30-red-rescue-session-01a02a28` head `f90d64ee` 已使 ancestry 三项 exit 0，可达性阻塞解除；但 RED 仍不受理：`ddb9560b` 为零内容 merge（树与 `a17eab1d` 逐字节相同）、加绑条件 2 的 probe 只存在于人工署名且自标 NOT RED-verified 的 `f90d64ee`、本轮无任何 RED 实跑输出进入可读 ref。写集 leaf-path 经 leader 逐字符复核越界 0，转 CLEAN。抢救物内容质量合格——断言七槽位、entityId 语义、preference 闸门约束均已核对通过——缺的是提交面与实跑留痕）
 
 ## 前序工作面（不在本分支，未被改写）
 
@@ -39,3 +39,4 @@
 | 20260822-165500 | leader | Coder lane 阻塞登记 + 产物可达性/写集初核 | leader/20260822-165500-coder-lane-blocked-session-poisoned.md | `c81497c` | BLOCKED（runtime/infra，非工程 finding） |
 | 20260822-174500 | leader | RED intake（rescue 分支）：ancestry 实跑 + 树内容核验 + leaf-path 复核 + 新 session 重派 | leader/20260822-174500-red-intake-rescue-branch.md | `c81497c` | NOT ACCEPTED（可达性 MET，RED 未受理；写集转 CLEAN） |
 | 20260822-181000 | leader | Coder 第 5 次失败登记 + leader 前提更正（comment 触发默认 resume）+ 退休后原样重派 | leader/20260822-181000-coder-5th-failure-session-retired-redispatch.md | `c81497c` | RE-DISPATCHED（scope 不变，附预置升级判据） |
+| 20260822-185000 | leader | 第 6 次失败：归因从 session 毒化重定位到 lane；判据表作废；Coder 暂停重派 | leader/20260822-185000-coder-lane-fault-relocated-paused.md | `c81497c` | PAUSED（待 boss 裁定 lane 归属；工程结论全部不动） |
