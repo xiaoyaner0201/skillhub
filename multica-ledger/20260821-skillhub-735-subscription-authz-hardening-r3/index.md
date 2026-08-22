@@ -7,7 +7,8 @@
 - 冻结计划：`planner/20260821-125849-plan-r1.md`（SHA-256 `4465119ef0f150a578893cbf70fa7f4c66c81e0d13696620a8757de3334f35de`），artifact `planner/20260821-125849-plan-gate-r1.json`（`39510ad88cff8cb34f7efc584eb9818a47e6f1cb032c0bf2c11caf3c018d2236`），Plan Gate `PASS`（leader 独立复跑，20260821-133911），人工批准 20260821 by dongsjoa
 - 冻结 inventory：`qa/behavior-inventory.v1.json`（SHA-256 `efd911ad203add676cf925c8e20e1cb40251415d1a90600b2ad3de2f48131eae`，`D2`，15 candidates，produced_by_run `8e9589ec-f00d-4f62-9942-ce12f43146de`）
 - QA 产物：`qa/qa-gate-r1.json`（SHA-256 `1f16d21a5432b18bc89eb143b731a5a072f032a2809dd803e9c260310c668cd2`），Gate receipt `PASS`（leader 独立复跑，20260821-172933），artifact verdict `overall=UNVERIFIED`（25 BLOCKED probe / 8 blocking UNVERIFIED / 5 开放 HIGH+BLOCKER）
-- 当前状态：REWORK（候选 `046c04ed` / tree `922195602c92f0f420e17df9021ae39727c95f8d` 经 QA + Review Pass 1 双路 RETURN，已退回 Planner；该 tree 冻结解除，后续候选另起）
+- 冻结计划 r2：`planner/20260822-141107-plan-r2.md`（SHA-256 `c5eb23e39079d6d106428900e04b73089c12cc34c49d79c84611d5745ba937c9`），artifact `planner/20260822-141107-plan-gate-r2.json`（`61d54ad3dc94ae60ea546aa85322aea6e946d2c4ec064428f2525ffcebf04238`），Plan Gate `PASS`（leader 独立复跑，20260822-143334），Plan Run `13699b09-a56a-4b08-8e07-57c355cb3686`，**人工批准待办**
+- 当前状态：PLAN_GATE_R2_AWAITING_APPROVAL（plan r2 delta 已冻结、Gate 机械项全数 PASS，等 dongsjoa 真实人工批准；批准前不派 Code/TDD。候选 `046c04ed` / tree `922195602c92f0f420e17df9021ae39727c95f8d` 冻结已解除，其 QA + Review Pass 1 双路 RETURN 结论按 append-only 保留、不被本轮 PASS 改写，后续候选另起）
 
 ## 前序工作面（不在本分支，未被改写）
 
@@ -30,3 +31,4 @@
 | 20260821-172100 | qa | QA execution | qa/20260821-172100-qa-execution.md | `9221956` | RETURN |
 | 20260821-172933 | leader | QA Gate 复跑 + delta 归并 + 返修路由 | leader/20260821-172933-qa-gate-and-delta-merge.md | `9221956` | RETURN |
 | 20260822-141107 | planner | plan r2 delta + local Plan Gate | planner/20260822-141107-plan-r2.md；planner/20260822-141107-plan-gate-r2.json；planner/20260822-141107-plan-gate-receipt-r2.json | `9221956` | FROZEN / GATE PASS（独立复跑与人工批准待调度） |
+| 20260822-143334 | leader | Plan Gate r2 独立复跑 + Council 名额校验 + 转人工批准 | leader/20260822-143334-plan-gate-r2.md；leader/20260822-143334-plan-gate-receipt-r2-leader.json | `c81497c`（plan subject base） | PASS（人工批准待办） |
