@@ -145,10 +145,14 @@ class SubscriberNotificationSinkTest {
     }
 
     @Test
-    void yank_lastPublishedVersion_nonOwnerGetsNoSink() {
+    void yank_lastPublishedVersion_publicNonActorGetsExactRevocationSink() {
+        readableRecipients.set(List.of(DENIED, CONTROL));
         yank(SkillVisibility.PUBLIC, false, false);
 
-        assertDeniedAndControlSink("SUBSCRIPTION_VERSION_YANKED", "Skill version yanked: Test Skill");
+        verify(notificationService).create(eq(DENIED), eq(NotificationCategory.PUBLISH),
+                eq("SUBSCRIPTION_VERSION_YANKED"), eq("Skill version yanked: Test Skill"),
+                anyString(), eq("SKILL"), eq(SKILL_ID));
+        verify(sseEmitterManager).push(eq(DENIED), any());
     }
 
     @Test
