@@ -1,0 +1,307 @@
+[ERROR] Tests run: 34, Failures: 5, Errors: 0, Skipped: 0, Time elapsed: 0.736 s <<< FAILURE! -- in com.iflytek.skillhub.domain.skill.VisibilityCheckerTest
+[ERROR] com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.yankRevocationPurpose_latestNullHidden_deniesOrdinaryMemberAndAllowsOwner -- Time elapsed: 0.073 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotNull.failNull(AssertNotNull.java:49)
+	at org.junit.jupiter.api.AssertNotNull.assertNotNull(AssertNotNull.java:35)
+	at org.junit.jupiter.api.Assertions.assertNotNull(Assertions.java:312)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.canAccessForPurpose(VisibilityCheckerTest.java:301)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.yankRevocationPurpose_latestNullHidden_deniesOrdinaryMemberAndAllowsOwner(VisibilityCheckerTest.java:261)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.metadataReadPurpose_latestNull_remainsOwnerOnly -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotNull.failNull(AssertNotNull.java:49)
+	at org.junit.jupiter.api.AssertNotNull.assertNotNull(AssertNotNull.java:35)
+	at org.junit.jupiter.api.Assertions.assertNotNull(Assertions.java:312)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.canAccessForPurpose(VisibilityCheckerTest.java:301)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.metadataReadPurpose_latestNull_remainsOwnerOnly(VisibilityCheckerTest.java:284)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.yankRevocationPurpose_latestNullPrivate_deniesOrdinaryMemberAndAllowsNamespaceAdmin -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotNull.failNull(AssertNotNull.java:49)
+	at org.junit.jupiter.api.AssertNotNull.assertNotNull(AssertNotNull.java:35)
+	at org.junit.jupiter.api.Assertions.assertNotNull(Assertions.java:312)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.canAccessForPurpose(VisibilityCheckerTest.java:301)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.yankRevocationPurpose_latestNullPrivate_deniesOrdinaryMemberAndAllowsNamespaceAdmin(VisibilityCheckerTest.java:250)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.yankRevocationPurpose_latestNullPublicNonOwner_isReachable -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotNull.failNull(AssertNotNull.java:49)
+	at org.junit.jupiter.api.AssertNotNull.assertNotNull(AssertNotNull.java:35)
+	at org.junit.jupiter.api.Assertions.assertNotNull(Assertions.java:312)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.canAccessForPurpose(VisibilityCheckerTest.java:301)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.yankRevocationPurpose_latestNullPublicNonOwner_isReachable(VisibilityCheckerTest.java:242)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.yankRevocationPurpose_latestNull_stillDeniesRemovedMemberAndDisabledAccount -- Time elapsed: 0.005 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotNull.failNull(AssertNotNull.java:49)
+	at org.junit.jupiter.api.AssertNotNull.assertNotNull(AssertNotNull.java:35)
+	at org.junit.jupiter.api.Assertions.assertNotNull(Assertions.java:312)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.canAccessForPurpose(VisibilityCheckerTest.java:301)
+	at com.iflytek.skillhub.domain.skill.VisibilityCheckerTest.yankRevocationPurpose_latestNull_stillDeniesRemovedMemberAndDisabledAccount(VisibilityCheckerTest.java:274)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] Failures: 
+[ERROR]   VisibilityCheckerTest.metadataReadPurpose_latestNull_remainsOwnerOnly:284->canAccessForPurpose:301 VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+[ERROR]   VisibilityCheckerTest.yankRevocationPurpose_latestNullHidden_deniesOrdinaryMemberAndAllowsOwner:261->canAccessForPurpose:301 VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+[ERROR]   VisibilityCheckerTest.yankRevocationPurpose_latestNullPrivate_deniesOrdinaryMemberAndAllowsNamespaceAdmin:250->canAccessForPurpose:301 VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+[ERROR]   VisibilityCheckerTest.yankRevocationPurpose_latestNullPublicNonOwner_isReachable:242->canAccessForPurpose:301 VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+[ERROR]   VisibilityCheckerTest.yankRevocationPurpose_latestNull_stillDeniesRemovedMemberAndDisabledAccount:274->canAccessForPurpose:301 VisibilityChecker must expose a full-context overload carrying an explicit access purpose ==> expected: not <null>
+[ERROR] Tests run: 34, Failures: 5, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+Please refer to /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/cd0f9fa3/workdir/skillhub/server/skillhub-domain/target/surefire-reports for the individual test results.
+Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+WARNING: A Java agent has been loaded dynamically (/workspaces/140e8421-7099-4023-91fd-4c09406f46a2/cd0f9fa3/workdir/.toolchains/m2/repository/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+[ERROR] Tests run: 4, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 4.270 s <<< FAILURE! -- in com.iflytek.skillhub.auth.rbac.RbacServiceTest
+[ERROR] com.iflytek.skillhub.auth.rbac.RbacServiceTest.getUserRoleCodesByUserIds_returnsEveryUserNormalizedInInputOrderWithOneBatch -- Time elapsed: 4.057 s <<< FAILURE!
+java.lang.AssertionError: 
+[RbacService must expose the single-source batch role lookup] 
+Expecting actual not to be null
+	at com.iflytek.skillhub.auth.rbac.RbacServiceTest.getUserRoleCodesByUserIds_returnsEveryUserNormalizedInInputOrderWithOneBatch(RbacServiceTest.java:51)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.auth.rbac.RbacServiceTest.getUserRoleCodes_andBatchLookup_shareTheSameNormalizationForUnboundUsers -- Time elapsed: 0.032 s <<< FAILURE!
+java.lang.AssertionError: 
+[RbacService must expose the single-source batch role lookup] 
+Expecting actual not to be null
+	at com.iflytek.skillhub.auth.rbac.RbacServiceTest.invokeBatch(RbacServiceTest.java:115)
+	at com.iflytek.skillhub.auth.rbac.RbacServiceTest.getUserRoleCodes_andBatchLookup_shareTheSameNormalizationForUnboundUsers(RbacServiceTest.java:101)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.auth.rbac.RbacServiceTest.getUserRoleCodesByUserIds_keepsSuperAdminAndEveryRoleOfMultiBoundUser -- Time elapsed: 0.010 s <<< FAILURE!
+java.lang.AssertionError: 
+[RbacService must expose the single-source batch role lookup] 
+Expecting actual not to be null
+	at com.iflytek.skillhub.auth.rbac.RbacServiceTest.invokeBatch(RbacServiceTest.java:115)
+	at com.iflytek.skillhub.auth.rbac.RbacServiceTest.getUserRoleCodesByUserIds_keepsSuperAdminAndEveryRoleOfMultiBoundUser(RbacServiceTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.auth.rbac.RbacServiceTest.getUserRoleCodesByUserIds_emptyInputReturnsEmptyMapWithoutTouchingRepository -- Time elapsed: 0.015 s <<< FAILURE!
+java.lang.AssertionError: 
+[RbacService must expose the single-source batch role lookup] 
+Expecting actual not to be null
+	at com.iflytek.skillhub.auth.rbac.RbacServiceTest.invokeBatch(RbacServiceTest.java:115)
+	at com.iflytek.skillhub.auth.rbac.RbacServiceTest.getUserRoleCodesByUserIds_emptyInputReturnsEmptyMapWithoutTouchingRepository(RbacServiceTest.java:88)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] Failures: 
+[ERROR]   RbacServiceTest.getUserRoleCodesByUserIds_emptyInputReturnsEmptyMapWithoutTouchingRepository:88->invokeBatch:115 [RbacService must expose the single-source batch role lookup] 
+Expecting actual not to be null
+[ERROR]   RbacServiceTest.getUserRoleCodesByUserIds_keepsSuperAdminAndEveryRoleOfMultiBoundUser:76->invokeBatch:115 [RbacService must expose the single-source batch role lookup] 
+Expecting actual not to be null
+[ERROR]   RbacServiceTest.getUserRoleCodesByUserIds_returnsEveryUserNormalizedInInputOrderWithOneBatch:51 [RbacService must expose the single-source batch role lookup] 
+Expecting actual not to be null
+[ERROR]   RbacServiceTest.getUserRoleCodes_andBatchLookup_shareTheSameNormalizationForUnboundUsers:101->invokeBatch:115 [RbacService must expose the single-source batch role lookup] 
+Expecting actual not to be null
+[ERROR] Tests run: 4, Failures: 4, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+Please refer to /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/cd0f9fa3/workdir/skillhub/server/skillhub-auth/target/surefire-reports for the individual test results.
+Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+WARNING: A Java agent has been loaded dynamically (/workspaces/140e8421-7099-4023-91fd-4c09406f46a2/cd0f9fa3/workdir/.toolchains/m2/repository/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+[ERROR] Tests run: 17, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 7.099 s <<< FAILURE! -- in com.iflytek.skillhub.listener.SubscriberNotificationSinkTest
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_lastPublishedVersion_publicNonActorGetsExactRevocationSink -- Time elapsed: 0.091 s <<< FAILURE!
+Wanted but not invoked:
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_lastPublishedVersion_publicNonActorGetsExactRevocationSink(SubscriberNotificationSinkTest.java:152)
+
+However, there was exactly 1 interaction with this mock:
+notificationService.create(
+    "control-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    "{"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}",
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40)
+
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_lastPublishedVersion_publicNonActorGetsExactRevocationSink(SubscriberNotificationSinkTest.java:152)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yankLatestNull_privateOrdinaryMemberDenied_namespaceAdminStillNotified -- Time elapsed: 0.029 s <<< FAILURE!
+Wanted but not invoked:
+notificationService.create(
+    "control-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    <any string>,
+    <any string>,
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+Actually, there were zero interactions with this mock.
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yankLatestNull_privateOrdinaryMemberDenied_namespaceAdminStillNotified(SubscriberNotificationSinkTest.java:165)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yankLatestNull_removedNamespaceMemberDenied_currentMemberStillNotified -- Time elapsed: 0.033 s <<< FAILURE!
+Wanted but not invoked:
+notificationService.create(
+    "control-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    <any string>,
+    <any string>,
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+Actually, there were zero interactions with this mock.
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yankLatestNull_removedNamespaceMemberDenied_currentMemberStillNotified(SubscriberNotificationSinkTest.java:185)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yankLatestNull_disabledAccountDenied_activePublicSubscriberStillNotified -- Time elapsed: 0.027 s <<< FAILURE!
+Wanted but not invoked:
+notificationService.create(
+    "control-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    <any string>,
+    <any string>,
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+Actually, there were zero interactions with this mock.
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yankLatestNull_disabledAccountDenied_activePublicSubscriberStillNotified(SubscriberNotificationSinkTest.java:195)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] Failures: 
+[ERROR]   SubscriberNotificationSinkTest.yankLatestNull_disabledAccountDenied_activePublicSubscriberStillNotified:195->assertDeniedZeroSinkAndControlNotified:356 
+Wanted but not invoked:
+notificationService.create(
+    "control-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    <any string>,
+    <any string>,
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+Actually, there were zero interactions with this mock.
+
+[ERROR]   SubscriberNotificationSinkTest.yankLatestNull_privateOrdinaryMemberDenied_namespaceAdminStillNotified:165->assertDeniedZeroSinkAndControlNotified:356 
+Wanted but not invoked:
+notificationService.create(
+    "control-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    <any string>,
+    <any string>,
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+Actually, there were zero interactions with this mock.
+
+[ERROR]   SubscriberNotificationSinkTest.yankLatestNull_removedNamespaceMemberDenied_currentMemberStillNotified:185->assertDeniedZeroSinkAndControlNotified:356 
+Wanted but not invoked:
+notificationService.create(
+    "control-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    <any string>,
+    <any string>,
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedZeroSinkAndControlNotified(SubscriberNotificationSinkTest.java:356)
+Actually, there were zero interactions with this mock.
+
+[ERROR]   SubscriberNotificationSinkTest.yank_lastPublishedVersion_publicNonActorGetsExactRevocationSink:152 
+Wanted but not invoked:
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_lastPublishedVersion_publicNonActorGetsExactRevocationSink(SubscriberNotificationSinkTest.java:152)
+
+However, there was exactly 1 interaction with this mock:
+notificationService.create(
+    "control-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    "{"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}",
+    "SKILL",
+    42L
+);
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40)
+
+
+[ERROR] Tests run: 17, Failures: 4, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+Please refer to /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/cd0f9fa3/workdir/skillhub/server/skillhub-app/target/surefire-reports for the individual test results.
+Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.

@@ -232,8 +232,95 @@ class VisibilityCheckerTest {
                 NamespaceRole.MEMBER, Set.of()));
     }
 
+    // --- YANK_REVOCATION_NOTICE_REACHABILITY (plan-r2 R-P1-01) ---
+    // The revocation notice must survive the latest-null state that this very yank created,
+    // and must not relax any other guard. Purpose is looked up reflectively so the probe
+    // compiles against the pre-fix checker and fails on the missing behavior, not on javac.
+
+    @Test
+    void yankRevocationPurpose_latestNullPublicNonOwner_isReachable() {
+        assertTrue(canAccessForPurpose(unpublishedPublicSkill, account(OTHER_USER_ID), liveNamespace(),
+                null, Set.of("USER"), "YANK_REVOCATION_NOTICE"));
+    }
+
+    @Test
+    void yankRevocationPurpose_latestNullPrivate_deniesOrdinaryMemberAndAllowsNamespaceAdmin() {
+        Skill privateDraft = new Skill(NAMESPACE_ID, "private-draft", OWNER_ID, SkillVisibility.PRIVATE);
+
+        assertFalse(canAccessForPurpose(privateDraft, account(OTHER_USER_ID), liveNamespace(),
+                NamespaceRole.MEMBER, Set.of("USER"), "YANK_REVOCATION_NOTICE"));
+        assertTrue(canAccessForPurpose(privateDraft, account(ADMIN_USER_ID), liveNamespace(),
+                NamespaceRole.ADMIN, Set.of("USER"), "YANK_REVOCATION_NOTICE"));
+    }
+
+    @Test
+    void yankRevocationPurpose_latestNullHidden_deniesOrdinaryMemberAndAllowsOwner() {
+        Skill hiddenDraft = new Skill(NAMESPACE_ID, "hidden-draft", OWNER_ID, SkillVisibility.PUBLIC);
+        hiddenDraft.setHidden(true);
+
+        assertFalse(canAccessForPurpose(hiddenDraft, account(OTHER_USER_ID), liveNamespace(),
+                NamespaceRole.MEMBER, Set.of("USER"), "YANK_REVOCATION_NOTICE"));
+        assertTrue(canAccessForPurpose(hiddenDraft, account(OWNER_ID), liveNamespace(),
+                null, Set.of("USER"), "YANK_REVOCATION_NOTICE"));
+    }
+
+    @Test
+    void yankRevocationPurpose_latestNull_stillDeniesRemovedMemberAndDisabledAccount() {
+        Skill namespaceOnlyDraft =
+                new Skill(NAMESPACE_ID, "ns-draft", OWNER_ID, SkillVisibility.NAMESPACE_ONLY);
+        UserAccount disabled = account(OTHER_USER_ID);
+        disabled.setStatus(UserStatus.DISABLED);
+
+        assertFalse(canAccessForPurpose(namespaceOnlyDraft, account(OTHER_USER_ID), liveNamespace(),
+                null, Set.of("USER"), "YANK_REVOCATION_NOTICE"));
+        assertFalse(canAccessForPurpose(unpublishedPublicSkill, disabled, liveNamespace(),
+                null, Set.of("USER"), "YANK_REVOCATION_NOTICE"));
+        assertFalse(canAccessForPurpose(unpublishedPublicSkill, account(OTHER_USER_ID),
+                archivedNamespace(), null, Set.of("USER"), "YANK_REVOCATION_NOTICE"));
+    }
+
+    @Test
+    void metadataReadPurpose_latestNull_remainsOwnerOnly() {
+        assertFalse(canAccessForPurpose(unpublishedPublicSkill, account(OTHER_USER_ID), liveNamespace(),
+                NamespaceRole.ADMIN, Set.of("USER"), "METADATA_READ"));
+        assertTrue(canAccessForPurpose(unpublishedPublicSkill, account(OWNER_ID), liveNamespace(),
+                null, Set.of("USER"), "METADATA_READ"));
+        assertFalse(checker.canAccess(unpublishedPublicSkill, account(OTHER_USER_ID), liveNamespace(),
+                NamespaceRole.ADMIN, Set.of("USER")));
+    }
+
+    private boolean canAccessForPurpose(Skill skill, UserAccount account, Namespace namespace,
+                                        NamespaceRole namespaceRole, Set<String> platformRoles,
+                                        String purposeName) {
+        java.lang.reflect.Method method = java.util.Arrays.stream(VisibilityChecker.class.getMethods())
+                .filter(candidate -> candidate.getName().equals("canAccess"))
+                .filter(candidate -> candidate.getParameterCount() == 6)
+                .filter(candidate -> candidate.getParameterTypes()[5].isEnum())
+                .findFirst()
+                .orElse(null);
+        assertNotNull(method,
+                "VisibilityChecker must expose a full-context overload carrying an explicit access purpose");
+        Object purpose = java.util.Arrays.stream(method.getParameterTypes()[5].getEnumConstants())
+                .filter(constant -> ((Enum<?>) constant).name().equals(purposeName))
+                .findFirst()
+                .orElse(null);
+        assertNotNull(purpose, "VisibilityChecker access purpose " + purposeName + " is missing");
+        try {
+            return (Boolean) method.invoke(checker, skill, account, namespace, namespaceRole,
+                    platformRoles, purpose);
+        } catch (java.lang.reflect.InvocationTargetException exception) {
+            throw new AssertionError("VisibilityChecker purpose overload failed", exception.getCause());
+        } catch (ReflectiveOperationException exception) {
+            throw new AssertionError("VisibilityChecker purpose overload was not accessible", exception);
+        }
+    }
+
     private UserAccount account(String userId) {
         return new UserAccount(userId, userId, userId + "@example.com", null);
+    }
+
+    private Namespace liveNamespace() {
+        return new Namespace("live", "Live", OWNER_ID);
     }
 
     private Namespace archivedNamespace() {

@@ -156,6 +156,58 @@ class SubscriberNotificationSinkTest {
     }
 
     @Test
+    void yankLatestNull_privateOrdinaryMemberDenied_namespaceAdminStillNotified() {
+        arrangeRevocation(SkillVisibility.PRIVATE, false, NamespaceRole.MEMBER, false, true);
+
+        listener.onSkillVersionYankedForSubscribers(
+                new SkillVersionYankedEvent(SKILL_ID, VERSION_ID, "actor-user"));
+
+        assertDeniedZeroSinkAndControlNotified("SUBSCRIPTION_VERSION_YANKED");
+    }
+
+    @Test
+    void yankLatestNull_hiddenOrdinaryMemberDenied_namespaceAdminStillNotified() {
+        arrangeRevocation(SkillVisibility.PUBLIC, true, NamespaceRole.MEMBER, false, true);
+
+        listener.onSkillVersionYankedForSubscribers(
+                new SkillVersionYankedEvent(SKILL_ID, VERSION_ID, "actor-user"));
+
+        assertDeniedZeroSinkAndControlNotified("SUBSCRIPTION_VERSION_YANKED");
+    }
+
+    @Test
+    void yankLatestNull_removedNamespaceMemberDenied_currentMemberStillNotified() {
+        arrangeRevocation(SkillVisibility.NAMESPACE_ONLY, false, null, false, true);
+
+        listener.onSkillVersionYankedForSubscribers(
+                new SkillVersionYankedEvent(SKILL_ID, VERSION_ID, "actor-user"));
+
+        assertDeniedZeroSinkAndControlNotified("SUBSCRIPTION_VERSION_YANKED");
+    }
+
+    @Test
+    void yankLatestNull_disabledAccountDenied_activePublicSubscriberStillNotified() {
+        arrangeRevocation(SkillVisibility.PUBLIC, false, null, true, true);
+
+        listener.onSkillVersionYankedForSubscribers(
+                new SkillVersionYankedEvent(SKILL_ID, VERSION_ID, "actor-user"));
+
+        assertDeniedZeroSinkAndControlNotified("SUBSCRIPTION_VERSION_YANKED");
+    }
+
+    @Test
+    void publishLatestNull_keepsOwnerOnlyMetadataRuleForEverySubscriber() {
+        arrangeRevocation(SkillVisibility.PUBLIC, false, NamespaceRole.MEMBER, false, false);
+
+        listener.onSkillPublishedForSubscribers(
+                new SkillPublishedEvent(SKILL_ID, VERSION_ID, "publisher-user"));
+
+        verify(notificationService, never()).create(anyString(), any(), anyString(), anyString(),
+                anyString(), anyString(), any());
+        verify(sseEmitterManager, never()).push(anyString(), any());
+    }
+
+    @Test
     void publish_namespaceOnlyCurrentMember_receivesExactPayload() {
         publish(SkillVisibility.NAMESPACE_ONLY, false, true);
 
@@ -235,6 +287,75 @@ class SubscriberNotificationSinkTest {
         when(namespaceMemberRepository.findByNamespaceIdAndUserIdIn(
                 5L, List.of(DENIED, CONTROL))).thenReturn(memberships);
         when(userRoleBindingRepository.findByUserIdIn(List.of(DENIED, CONTROL))).thenReturn(List.of());
+    }
+
+    /**
+     * Fixture for the self-invalidating latest-null state: this yank cleared
+     * {@code latestVersionId}, the skill owner is a third party, and the two subscribers differ
+     * only by the guard under test.
+     */
+    private void arrangeRevocation(SkillVisibility visibility, boolean hidden,
+                                   NamespaceRole deniedRole, boolean deniedDisabled,
+                                   boolean stubSink) {
+        Skill skill = new Skill(5L, "test-skill", "owner-user", visibility);
+        ReflectionTestUtils.setField(skill, "id", SKILL_ID);
+        skill.setDisplayName("Test Skill");
+        skill.setHidden(hidden);
+        skill.setLatestVersionId(null);
+        when(skillRepository.findById(SKILL_ID)).thenReturn(Optional.of(skill));
+        when(subscriptionService.findSubscribersBySkillId(SKILL_ID))
+                .thenReturn(List.of(DENIED, CONTROL));
+        if (stubSink) {
+            when(preferenceService.isEnabled(anyString(), eq(NotificationCategory.PUBLISH), any()))
+                    .thenReturn(true);
+            when(notificationService.create(anyString(), eq(NotificationCategory.PUBLISH), anyString(),
+                    anyString(), anyString(), eq("SKILL"), eq(SKILL_ID)))
+                    .thenAnswer(invocation -> notification(
+                            invocation.getArgument(0),
+                            invocation.getArgument(2),
+                            invocation.getArgument(3),
+                            invocation.getArgument(4)));
+        }
+
+        Namespace namespace = new Namespace("demo", "Demo", "owner-user");
+        ReflectionTestUtils.setField(namespace, "id", 5L);
+        when(namespaceRepository.findById(5L)).thenReturn(Optional.of(namespace));
+
+        UserAccount deniedAccount = account(DENIED);
+        if (deniedDisabled) {
+            deniedAccount.setStatus(UserStatus.DISABLED);
+        }
+        when(userAccountRepository.findByIdIn(List.of(DENIED, CONTROL)))
+                .thenReturn(List.of(deniedAccount, account(CONTROL)));
+
+        NamespaceRole controlRole;
+        if (visibility == SkillVisibility.NAMESPACE_ONLY) {
+            controlRole = NamespaceRole.MEMBER;
+        } else if (visibility == SkillVisibility.PUBLIC && !hidden) {
+            controlRole = null;
+        } else {
+            controlRole = NamespaceRole.ADMIN;
+        }
+        List<NamespaceMember> memberships = new java.util.ArrayList<>();
+        if (deniedRole != null) {
+            memberships.add(new NamespaceMember(5L, DENIED, deniedRole));
+        }
+        if (controlRole != null) {
+            memberships.add(new NamespaceMember(5L, CONTROL, controlRole));
+        }
+        when(namespaceMemberRepository.findByNamespaceIdAndUserIdIn(5L, List.of(DENIED, CONTROL)))
+                .thenReturn(memberships);
+        when(userRoleBindingRepository.findByUserIdIn(List.of(DENIED, CONTROL))).thenReturn(List.of());
+    }
+
+    private void assertDeniedZeroSinkAndControlNotified(String eventType) {
+        verify(notificationService, never()).create(eq(DENIED), any(), anyString(), anyString(),
+                anyString(), anyString(), any());
+        verify(sseEmitterManager, never()).push(eq(DENIED), any());
+
+        verify(notificationService).create(eq(CONTROL), eq(NotificationCategory.PUBLISH),
+                eq(eventType), anyString(), anyString(), eq("SKILL"), eq(SKILL_ID));
+        verify(sseEmitterManager).push(eq(CONTROL), any());
     }
 
     private Notification notification(String recipientId, String eventType, String title, String bodyJson) {
