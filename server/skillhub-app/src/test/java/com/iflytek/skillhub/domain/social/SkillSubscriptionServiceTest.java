@@ -26,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
@@ -209,30 +208,21 @@ class SkillSubscriptionServiceTest {
     }
 
     /**
-     * Keeps the RED probes executable on both sides of the planned API extension. Before the
-     * production overload exists this invokes the insecure two-argument entry point; afterwards it
-     * invokes the authenticated platform-role entry point used by the controller.
+     * Every probe goes through the authenticated platform-role entry point the controller calls.
+     * The empty-role overload no longer exists, so no test can hide where the roles came from.
      */
     private void subscribe(Long skillId, String userId, Set<String> platformRoles) {
-        Method method = Arrays.stream(SkillSubscriptionService.class.getMethods())
-                .filter(candidate -> candidate.getName().equals("subscribe"))
-                .filter(candidate -> candidate.getParameterCount() == 3)
-                .findFirst()
-                .orElse(null);
-        if (method == null) {
-            service.subscribe(skillId, userId);
-            return;
-        }
-        try {
-            method.invoke(service, skillId, userId, platformRoles);
-        } catch (InvocationTargetException exception) {
-            if (exception.getCause() instanceof RuntimeException runtimeException) {
-                throw runtimeException;
-            }
-            throw new IllegalStateException(exception.getCause());
-        } catch (ReflectiveOperationException exception) {
-            throw new IllegalStateException(exception);
-        }
+        service.subscribe(skillId, userId, platformRoles);
+    }
+
+    @Test
+    void subscribe_exposesOnlyThePlatformRoleAwareEntryPoint() {
+        assertThat(Arrays.stream(SkillSubscriptionService.class.getMethods())
+                .filter(method -> method.getName().equals("subscribe"))
+                .map(Method::getParameterCount)
+                .toList())
+                .as("the empty-role two-argument subscribe must not survive")
+                .containsExactly(3);
     }
 
     private Skill skill(SkillVisibility visibility, boolean hidden) {

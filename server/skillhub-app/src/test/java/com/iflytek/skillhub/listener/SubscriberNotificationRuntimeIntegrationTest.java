@@ -394,23 +394,7 @@ class SubscriberNotificationRuntimeIntegrationTest {
     }
 
     private void stubBatchRbacFailure(List<String> recipients, RuntimeException failure) {
-        Method batchMethod = java.util.Arrays.stream(RbacService.class.getMethods())
-                .filter(method -> method.getName().equals("getUserRoleCodesByUserIds"))
-                .filter(method -> method.getParameterCount() == 1)
-                .filter(method -> Collection.class.isAssignableFrom(method.getParameterTypes()[0]))
-                .findFirst()
-                .orElse(null);
-        if (batchMethod == null) {
-            return;
-        }
-        Object stubbingTarget = doThrow(failure).when(rbacService);
-        try {
-            batchMethod.invoke(stubbingTarget, recipients);
-        } catch (InvocationTargetException exception) {
-            throw new AssertionError("Could not install RbacService batch failure", exception.getCause());
-        } catch (ReflectiveOperationException exception) {
-            throw new AssertionError("Could not access RbacService batch method", exception);
-        }
+        doThrow(failure).when(rbacService).getUserRoleCodesByUserIds(recipients);
     }
 
     private void publishInCommittedTransaction(SubscriberFixture fixture,
@@ -506,23 +490,62 @@ class SubscriberNotificationRuntimeIntegrationTest {
         ThreadPoolTaskExecutor executor = configuredExecutor();
         awaitExecutorIdle();
         CountDownLatch release = new CountDownLatch(1);
-        int fillers = executor.getMaxPoolSize()
-                + executor.getThreadPoolExecutor().getQueue().remainingCapacity();
-        for (int i = 0; i < fillers; i++) {
-            executor.execute(() -> {
-                try {
-                    release.await();
-                } catch (InterruptedException exception) {
-                    Thread.currentThread().interrupt();
+        Thread saturator = Thread.currentThread();
+        // How many fillers the pool absorbs depends on how many worker threads a previous test left
+        // alive, so a fixed count can overshoot into CallerRunsPolicy and park the saturating thread
+        // on the very latch only it can release. Submit until the pool reports saturation, and let a
+        // filler handed back by CallerRunsPolicy return at once - being handed one already proves the
+        // pool is full. The production executor keeps its own core/max/queue/policy untouched.
+        Runnable filler = () -> {
+            if (Thread.currentThread() == saturator) {
+                return;
+            }
+            try {
+                release.await();
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+            }
+        };
+        try {
+            Instant deadline = Instant.now().plus(EVENT_TIMEOUT);
+            while (!isSaturated(executor) && Instant.now().isBefore(deadline)) {
+                boolean queueHasRoom =
+                        executor.getThreadPoolExecutor().getQueue().remainingCapacity() > 0;
+                boolean poolCanGrow = executor.getPoolSize() < executor.getMaxPoolSize();
+                if (queueHasRoom || poolCanGrow) {
+                    // Submitting on a full queue is what makes the pool grow past its core size: only
+                    // a failed offer spawns another worker. A filler count computed up front cannot
+                    // converge, because every worker that wakes frees one queue slot again.
+                    executor.execute(filler);
+                } else {
+                    Thread.sleep(10L);
                 }
-            });
+            }
+            if (!isSaturated(executor)) {
+                throw new AssertionError(
+                        "configured executor did not reach 4 active workers and 100 queued tasks; observed "
+                                + executorState(executor));
+            }
+            assertThat(executor.getThreadPoolExecutor().isShutdown()).isFalse();
+        } catch (Throwable failure) {
+            // Fillers already parked would outlive this test and make every later awaitExecutorIdle
+            // fail, hiding the one real cause behind a cascade.
+            release.countDown();
+            throw failure;
         }
-        awaitCondition(() -> executor.getActiveCount() == executor.getMaxPoolSize()
-                        && executor.getThreadPoolExecutor().getQueue().remainingCapacity() == 0,
-                EVENT_TIMEOUT,
-                "configured executor did not reach 4 active workers and 100 queued tasks");
-        assertThat(executor.getThreadPoolExecutor().isShutdown()).isFalse();
         return new ExecutorSaturation(executor, release);
+    }
+
+    private String executorState(ThreadPoolTaskExecutor executor) {
+        return "active=" + executor.getActiveCount()
+                + " pool=" + executor.getPoolSize()
+                + " queued=" + executor.getThreadPoolExecutor().getQueue().size()
+                + " remainingCapacity=" + executor.getThreadPoolExecutor().getQueue().remainingCapacity();
+    }
+
+    private boolean isSaturated(ThreadPoolTaskExecutor executor) {
+        return executor.getActiveCount() == executor.getMaxPoolSize()
+                && executor.getThreadPoolExecutor().getQueue().remainingCapacity() == 0;
     }
 
     private ThreadPoolTaskExecutor configuredExecutor() {
@@ -535,7 +558,7 @@ class SubscriberNotificationRuntimeIntegrationTest {
         awaitCondition(() -> executor.getActiveCount() == 0
                         && executor.getThreadPoolExecutor().getQueue().isEmpty(),
                 EVENT_TIMEOUT,
-                "configured executor did not become idle");
+                "configured executor did not become idle; observed " + executorState(executor));
     }
 
     private void awaitCondition(java.util.function.BooleanSupplier condition,

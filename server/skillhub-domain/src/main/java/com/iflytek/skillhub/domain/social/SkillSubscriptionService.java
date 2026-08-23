@@ -17,6 +17,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -44,11 +46,6 @@ public class SkillSubscriptionService {
         this.namespaceMemberRepository = namespaceMemberRepository;
         this.visibilityChecker = visibilityChecker;
         this.eventPublisher = eventPublisher;
-    }
-
-    @Transactional
-    public void subscribe(Long skillId, String userId) {
-        subscribe(skillId, userId, Set.of());
     }
 
     @Transactional
@@ -91,8 +88,19 @@ public class SkillSubscriptionService {
         return subscriptionRepository.findBySkillIdAndUserId(skillId, userId).isPresent();
     }
 
+    /**
+     * Subscribers of a skill in stable subscription order.
+     *
+     * <p>The persistence query carries no ordering of its own, so the fan-out recipient order would
+     * otherwise depend on the storage engine. Ordering by the generated subscription id makes the
+     * downstream notification order reproducible without changing the recipient set.
+     */
     public List<String> findSubscribersBySkillId(Long skillId) {
-        return subscriptionRepository.findAllBySkillId(skillId).stream()
+        List<SkillSubscription> subscriptions =
+                new ArrayList<>(subscriptionRepository.findAllBySkillId(skillId));
+        subscriptions.sort(Comparator.comparing(SkillSubscription::getId,
+                Comparator.nullsLast(Comparator.naturalOrder())));
+        return subscriptions.stream()
                 .map(SkillSubscription::getUserId)
                 .distinct()
                 .toList();

@@ -7,6 +7,7 @@ import com.iflytek.skillhub.domain.namespace.NamespaceRepository;
 import com.iflytek.skillhub.domain.skill.Skill;
 import com.iflytek.skillhub.domain.skill.SkillRepository;
 import com.iflytek.skillhub.domain.skill.SkillVersionRepository;
+import com.iflytek.skillhub.domain.skill.VisibilityChecker.AccessPurpose;
 import com.iflytek.skillhub.domain.social.SkillSubscriptionService;
 import com.iflytek.skillhub.notification.domain.NotificationCategory;
 import com.iflytek.skillhub.notification.service.NotificationDispatcher;
@@ -81,7 +82,8 @@ public class NotificationEventListener {
             if (namespace.isEmpty()) {
                 return;
             }
-            subscribers = subscriberAccessResolver.resolveReadableSubscribers(skill, namespace.get(), subscribers);
+            subscribers = subscriberAccessResolver.resolveReadableSubscribers(
+                    skill, namespace.get(), subscribers, AccessPurpose.METADATA_READ);
             String title = "Skill updated: " + skillDisplayName(skill);
             Map<String, Object> body = bodyWithSkill(skill);
             versionLabel(event.versionId(), body);
@@ -108,7 +110,10 @@ public class NotificationEventListener {
             if (namespace.isEmpty()) {
                 return;
             }
-            subscribers = subscriberAccessResolver.resolveReadableSubscribers(skill, namespace.get(), subscribers);
+            // This yank may itself have cleared latestVersionId; the revocation notice must not be
+            // silenced by the state it created, so it carries its own access purpose.
+            subscribers = subscriberAccessResolver.resolveReadableSubscribers(
+                    skill, namespace.get(), subscribers, AccessPurpose.YANK_REVOCATION_NOTICE);
             String title = "Skill version yanked: " + skillDisplayName(skill);
             Map<String, Object> body = bodyWithSkill(skill);
             versionLabel(event.versionId(), body);

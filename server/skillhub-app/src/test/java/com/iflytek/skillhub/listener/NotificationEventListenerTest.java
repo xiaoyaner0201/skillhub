@@ -6,6 +6,7 @@ import com.iflytek.skillhub.domain.namespace.Namespace;
 import com.iflytek.skillhub.domain.namespace.NamespaceRepository;
 import com.iflytek.skillhub.domain.skill.Skill;
 import com.iflytek.skillhub.domain.skill.SkillRepository;
+import com.iflytek.skillhub.domain.skill.VisibilityChecker;
 import com.iflytek.skillhub.domain.skill.SkillVisibility;
 import com.iflytek.skillhub.domain.skill.SkillVersionRepository;
 import com.iflytek.skillhub.domain.social.SkillSubscriptionService;
@@ -239,7 +240,8 @@ class NotificationEventListenerTest {
         when(skillSubscriptionService.findSubscribersBySkillId(1L))
                 .thenReturn(List.of("publisher", "reader"));
         when(subscriberAccessResolver.resolveReadableSubscribers(
-                skill, namespace, List.of("publisher", "reader")))
+                skill, namespace, List.of("publisher", "reader"),
+                VisibilityChecker.AccessPurpose.METADATA_READ))
                 .thenReturn(List.of("publisher", "reader"));
         when(objectMapper.writeValueAsString(any())).thenReturn("{}");
 
@@ -260,7 +262,8 @@ class NotificationEventListenerTest {
         when(skillSubscriptionService.findSubscribersBySkillId(1L))
                 .thenReturn(List.of("actor", "reader"));
         when(subscriberAccessResolver.resolveReadableSubscribers(
-                skill, namespace, List.of("actor", "reader")))
+                skill, namespace, List.of("actor", "reader"),
+                VisibilityChecker.AccessPurpose.YANK_REVOCATION_NOTICE))
                 .thenReturn(List.of("actor", "reader"));
         when(objectMapper.writeValueAsString(any())).thenReturn("{}");
 

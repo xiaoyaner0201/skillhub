@@ -1,7 +1,5 @@
 package com.iflytek.skillhub.listener;
 
-import com.iflytek.skillhub.auth.entity.Role;
-import com.iflytek.skillhub.auth.entity.UserRoleBinding;
 import com.iflytek.skillhub.auth.repository.UserRoleBindingRepository;
 import com.iflytek.skillhub.auth.rbac.RbacService;
 import com.iflytek.skillhub.domain.namespace.Namespace;
@@ -11,6 +9,7 @@ import com.iflytek.skillhub.domain.namespace.NamespaceRole;
 import com.iflytek.skillhub.domain.skill.Skill;
 import com.iflytek.skillhub.domain.skill.SkillVisibility;
 import com.iflytek.skillhub.domain.skill.VisibilityChecker;
+import com.iflytek.skillhub.domain.skill.VisibilityChecker.AccessPurpose;
 import com.iflytek.skillhub.domain.user.UserAccount;
 import com.iflytek.skillhub.domain.user.UserAccountRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,61 +72,86 @@ class SubscriberAccessResolverTest {
         when(namespaceMemberRepository.findByNamespaceIdAndUserIdIn(
                 5L, List.of("alpha", "beta", "denied")))
                 .thenReturn(List.of(alphaMember, betaMember));
-        when(userRoleBindingRepository.findByUserIdIn(List.of("alpha", "beta", "denied")))
-                .thenReturn(List.of());
-        when(visibilityChecker.canAccess(skill, alpha, namespace, NamespaceRole.MEMBER, Set.of()))
+        when(rbacService.getUserRoleCodesByUserIds(List.of("alpha", "beta", "denied")))
+                .thenReturn(Map.of("alpha", Set.of("USER"), "beta", Set.of("USER"),
+                        "denied", Set.of("USER")));
+        when(visibilityChecker.canAccess(skill, alpha, namespace, NamespaceRole.MEMBER,
+                Set.of("USER"), AccessPurpose.METADATA_READ))
                 .thenReturn(true);
-        when(visibilityChecker.canAccess(skill, beta, namespace, NamespaceRole.ADMIN, Set.of()))
+        when(visibilityChecker.canAccess(skill, beta, namespace, NamespaceRole.ADMIN,
+                Set.of("USER"), AccessPurpose.METADATA_READ))
                 .thenReturn(true);
 
         List<String> filtered = resolver.resolveReadableSubscribers(
-                skill, namespace, List.of("alpha", "beta", "denied", "alpha"));
+                skill, namespace, List.of("alpha", "beta", "denied", "alpha"),
+                AccessPurpose.METADATA_READ);
 
         assertThat(filtered).containsExactlyElementsOf(List.of("alpha", "beta"));
         verify(userAccountRepository).findByIdIn(List.of("alpha", "beta", "denied"));
         verify(namespaceMemberRepository).findByNamespaceIdAndUserIdIn(
                 5L, List.of("alpha", "beta", "denied"));
-        verify(userRoleBindingRepository).findByUserIdIn(List.of("alpha", "beta", "denied"));
+        verify(rbacService).getUserRoleCodesByUserIds(List.of("alpha", "beta", "denied"));
+        verifyNoInteractions(userRoleBindingRepository);
     }
 
     @Test
     void roleCodesAreFactsPassedToCheckerWithoutResolverDecision() {
         UserAccount user = account("super");
         NamespaceMember membership = new NamespaceMember(5L, "super", NamespaceRole.MEMBER);
-        Role role = new Role();
-        ReflectionTestUtils.setField(role, "code", "SUPER_ADMIN");
         when(userAccountRepository.findByIdIn(List.of("super"))).thenReturn(List.of(user));
         when(namespaceMemberRepository.findByNamespaceIdAndUserIdIn(5L, List.of("super")))
                 .thenReturn(List.of(membership));
-        when(userRoleBindingRepository.findByUserIdIn(List.of("super")))
-                .thenReturn(List.of(new UserRoleBinding("super", role)));
-        when(visibilityChecker.canAccess(
-                skill, user, namespace, NamespaceRole.MEMBER, Set.of("SUPER_ADMIN")))
+        when(rbacService.getUserRoleCodesByUserIds(List.of("super")))
+                .thenReturn(Map.of("super", Set.of("SUPER_ADMIN")));
+        when(visibilityChecker.canAccess(skill, user, namespace, NamespaceRole.MEMBER,
+                Set.of("SUPER_ADMIN"), AccessPurpose.METADATA_READ))
                 .thenReturn(true);
 
-        assertThat(resolver.resolveReadableSubscribers(skill, namespace, List.of("super")))
+        assertThat(resolver.resolveReadableSubscribers(skill, namespace, List.of("super"),
+                AccessPurpose.METADATA_READ))
                 .containsExactly("super");
+    }
+
+    @Test
+    void accessPurposeIsForwardedVerbatimWithoutResolverBranching() {
+        UserAccount reader = account("reader");
+        when(userAccountRepository.findByIdIn(List.of("reader"))).thenReturn(List.of(reader));
+        when(namespaceMemberRepository.findByNamespaceIdAndUserIdIn(5L, List.of("reader")))
+                .thenReturn(List.of());
+        when(rbacService.getUserRoleCodesByUserIds(List.of("reader")))
+                .thenReturn(Map.of("reader", Set.of("USER")));
+        when(visibilityChecker.canAccess(skill, reader, namespace, null, Set.of("USER"),
+                AccessPurpose.YANK_REVOCATION_NOTICE))
+                .thenReturn(true);
+
+        assertThat(resolver.resolveReadableSubscribers(skill, namespace, List.of("reader"),
+                AccessPurpose.YANK_REVOCATION_NOTICE))
+                .containsExactly("reader");
+        verify(visibilityChecker).canAccess(skill, reader, namespace, null, Set.of("USER"),
+                AccessPurpose.YANK_REVOCATION_NOTICE);
     }
 
     @Test
     void batchFailure_happensBeforeEveryPublishedSink() {
         when(userAccountRepository.findByIdIn(anyList())).thenThrow(new IllegalStateException("batch failed"));
 
-        assertThatThrownBy(() -> resolver.resolveReadableSubscribers(skill, namespace, List.of("user")))
+        assertThatThrownBy(() -> resolver.resolveReadableSubscribers(skill, namespace,
+                List.of("user"), AccessPurpose.METADATA_READ))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("batch failed");
         verify(namespaceMemberRepository, never()).findByNamespaceIdAndUserIdIn(any(), any());
-        verify(userRoleBindingRepository, never()).findByUserIdIn(any());
+        verify(rbacService, never()).getUserRoleCodesByUserIds(any());
     }
 
     @Test
     void batchFailure_happensBeforeEveryYankedSink() {
         when(userAccountRepository.findByIdIn(anyList())).thenThrow(new IllegalStateException("batch failed"));
 
-        assertThatThrownBy(() -> resolver.resolveReadableSubscribers(skill, namespace, List.of("user")))
+        assertThatThrownBy(() -> resolver.resolveReadableSubscribers(skill, namespace,
+                List.of("user"), AccessPurpose.YANK_REVOCATION_NOTICE))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("batch failed");
-        verify(visibilityChecker, never()).canAccess(any(), any(), any(), any(), any());
+        verify(visibilityChecker, never()).canAccess(any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -136,7 +160,6 @@ class SubscriberAccessResolverTest {
         when(userAccountRepository.findByIdIn(List.of("unbound"))).thenReturn(List.of(unbound));
         when(namespaceMemberRepository.findByNamespaceIdAndUserIdIn(5L, List.of("unbound")))
                 .thenReturn(List.of());
-        when(userRoleBindingRepository.findByUserIdIn(List.of("unbound"))).thenReturn(List.of());
         RbacService normalizedRbac = mock(RbacService.class, invocation -> {
             if (invocation.getMethod().getName().equals("getUserRoleCodesByUserIds")) {
                 return Map.of("unbound", Set.of("USER"));
@@ -144,13 +167,15 @@ class SubscriberAccessResolverTest {
             return RETURNS_DEFAULTS.answer(invocation);
         });
         resolver = newResolver(normalizedRbac);
-        when(visibilityChecker.canAccess(eq(skill), eq(unbound), eq(namespace), eq(null), anySet()))
+        when(visibilityChecker.canAccess(eq(skill), eq(unbound), eq(namespace), eq(null), anySet(),
+                eq(AccessPurpose.METADATA_READ)))
                 .thenReturn(true);
 
-        assertThat(resolver.resolveReadableSubscribers(skill, namespace, List.of("unbound")))
+        assertThat(resolver.resolveReadableSubscribers(skill, namespace, List.of("unbound"),
+                AccessPurpose.METADATA_READ))
                 .containsExactly("unbound");
         verify(visibilityChecker).canAccess(
-                skill, unbound, namespace, null, Set.of("USER"));
+                skill, unbound, namespace, null, Set.of("USER"), AccessPurpose.METADATA_READ);
         verifyNoInteractions(userRoleBindingRepository);
     }
 

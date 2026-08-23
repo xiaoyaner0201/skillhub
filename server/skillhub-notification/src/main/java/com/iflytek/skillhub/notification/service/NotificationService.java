@@ -7,6 +7,7 @@ import com.iflytek.skillhub.domain.shared.exception.DomainNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
@@ -23,7 +24,16 @@ public class NotificationService {
         this.clock = clock;
     }
 
-    @Transactional
+    /**
+     * Persists a notification in its own physical transaction.
+     *
+     * <p>The subscriber fan-out runs from an {@code afterCommit} callback where the source
+     * transaction resources may still be bound. A {@code REQUIRED} write would join that
+     * already-committed transaction and never be committed itself, so the row must not be visible
+     * only inside a doomed transaction — {@code REQUIRES_NEW} suspends any residual transaction,
+     * commits the row, and returns before the caller pushes the SSE.
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Notification create(String recipientId, NotificationCategory category,
                                 String eventType, String title, String bodyJson,
                                 String entityType, Long entityId) {

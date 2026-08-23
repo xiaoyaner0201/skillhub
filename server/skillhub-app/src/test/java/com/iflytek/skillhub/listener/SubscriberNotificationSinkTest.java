@@ -75,7 +75,7 @@ class SubscriberNotificationSinkTest {
         SubscriberAccessResolver subscriberAccessResolver = new SubscriberAccessResolver(
                 userAccountRepository,
                 namespaceMemberRepository,
-                userRoleBindingRepository,
+                new com.iflytek.skillhub.auth.rbac.RbacService(userRoleBindingRepository, null),
                 new com.iflytek.skillhub.domain.skill.VisibilityChecker());
         listener = new NotificationEventListener(
                 skillRepository,

@@ -7,7 +7,12 @@ import com.iflytek.skillhub.auth.repository.UserRoleBindingRepository;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,7 +38,39 @@ public class RbacService {
     }
 
     public Set<String> getUserRoleCodes(String userId) {
-        return PlatformRoleDefaults.withDefaultUserRole(roleBindingRepo.findByUserId(userId).stream()
+        return normalizeRoleCodes(roleBindingRepo.findByUserId(userId));
+    }
+
+    /**
+     * Single source for batch platform-role derivation.
+     *
+     * <p>Input is de-duplicated in encounter order; an empty input never touches the repository and
+     * a non-empty input issues exactly one {@code findByUserIdIn}. Every requested user is present
+     * in the result — a user without an explicit binding normalizes to the default user role — and
+     * the map iterates in the de-duplicated input order.
+     */
+    public Map<String, Set<String>> getUserRoleCodesByUserIds(Collection<String> userIds) {
+        List<String> distinctIds = userIds == null
+            ? List.of()
+            : userIds.stream().filter(Objects::nonNull).distinct().toList();
+        Map<String, Set<String>> roleCodesByUserId = new LinkedHashMap<>();
+        if (distinctIds.isEmpty()) {
+            return roleCodesByUserId;
+        }
+
+        Map<String, List<UserRoleBinding>> bindingsByUserId = new LinkedHashMap<>();
+        for (UserRoleBinding binding : roleBindingRepo.findByUserIdIn(distinctIds)) {
+            bindingsByUserId.computeIfAbsent(binding.getUserId(), key -> new ArrayList<>()).add(binding);
+        }
+        for (String userId : distinctIds) {
+            roleCodesByUserId.put(userId,
+                normalizeRoleCodes(bindingsByUserId.getOrDefault(userId, List.of())));
+        }
+        return roleCodesByUserId;
+    }
+
+    private Set<String> normalizeRoleCodes(Collection<UserRoleBinding> bindings) {
+        return PlatformRoleDefaults.withDefaultUserRole(bindings.stream()
             .map(rb -> rb.getRole().getCode())
             .collect(Collectors.toSet()));
     }
