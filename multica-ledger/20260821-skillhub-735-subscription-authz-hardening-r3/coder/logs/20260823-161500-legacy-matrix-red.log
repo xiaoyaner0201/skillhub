@@ -1,0 +1,15 @@
+HD30_LEGACY_MATRIX anonymous-public=true
+HD30_LEGACY_MATRIX ordinary-public=true
+HD30_LEGACY_MATRIX anonymous-namespace-only=false
+HD30_LEGACY_MATRIX nonmember-namespace-only=false
+HD30_LEGACY_MATRIX member-namespace-only=true
+HD30_LEGACY_MATRIX owner-private=true
+HD30_LEGACY_MATRIX member-private=false
+HD30_LEGACY_MATRIX admin-private=true
+HD30_LEGACY_MATRIX ordinary-hidden=false
+HD30_LEGACY_MATRIX owner-hidden=true
+HD30_LEGACY_MATRIX admin-hidden=true
+HD30_LEGACY_MATRIX ordinary-latest-null=false
+HD30_LEGACY_MATRIX owner-latest-null=true
+HD30_LEGACY_MATRIX super-admin-private=true
+HD30_LEGACY_MATRIX non-super-platform-role-private=false
