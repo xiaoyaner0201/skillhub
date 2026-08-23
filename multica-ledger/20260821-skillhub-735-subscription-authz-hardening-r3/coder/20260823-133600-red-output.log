@@ -1,0 +1,783 @@
+### RED run #3 - upstream-base sensitivity check
+### branch: agent/hd30-red-base-20260823 = e8cab738 (iflytek/skillhub main) + 9f3e5858 (4 RED test files)
+### commit: 9f3e5858dee2e04c1d22b91bdb31d93505396de5   tree: 918c75cb852cddb4c6c0cb61b7905f95e46586c7   parent: e8cab7389f5dc1084fdc1cdf70bafd314d0a3d50
+### purpose: prove the 9f3e5858 RED tests fail against PRISTINE upstream production code,
+###          i.e. before any of the r3 hardening exists. -Dmaven.test.failure.ignore=true
+###          so every target class reports instead of the reactor halting.
+### started(UTC): 2026-08-23T13:36:27Z
+
+Failed to load native library:jansi-2.4.2-2ee1bdf7d1ebb3b8-libjansi.so. The native library file at /tmp/jansi-2.4.2-2ee1bdf7d1ebb3b8-libjansi.so is not executable, make sure that the directory is mounted on a partition without the noexec flag, or set the jansi.tmpdir system property to point to a proper location.  osinfo: Linux/arm64
+java.lang.UnsatisfiedLinkError: /tmp/jansi-2.4.2-2ee1bdf7d1ebb3b8-libjansi.so: /tmp/jansi-2.4.2-2ee1bdf7d1ebb3b8-libjansi.so: failed to map segment from shared object
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] skillhub-parent                                                    [pom]
+[INFO] skillhub-storage                                                   [jar]
+[INFO] skillhub-domain                                                    [jar]
+[INFO] skillhub-auth                                                      [jar]
+[INFO] skillhub-notification                                              [jar]
+[INFO] skillhub-infra                                                     [jar]
+[INFO] skillhub-search                                                    [jar]
+[INFO] skillhub-app                                                       [jar]
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-parent >----------------
+[INFO] Building skillhub-parent 0.1.0                                     [1/8]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ---------------< com.iflytek.skillhub:skillhub-storage >----------------
+[INFO] Building skillhub-storage 0.1.0                                    [2/8]
+[INFO]   from skillhub-storage/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-storage ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-storage/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-storage/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-storage ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 8 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-storage ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-storage/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-storage ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 2 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-storage ---
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-domain >----------------
+[INFO] Building skillhub-domain 0.1.0                                     [3/8]
+[INFO]   from skillhub-domain/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-domain ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-domain/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-domain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-domain ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 165 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-domain ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-domain ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 35 source files with javac [debug release 21] to target/test-classes
+[INFO] /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/review/PromotionServiceTest.java: /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/review/PromotionServiceTest.java uses unchecked or unsafe operations.
+[INFO] /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/review/PromotionServiceTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-domain ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.iflytek.skillhub.domain.skill.VisibilityCheckerLegacyCompatibilityTest
+HD30_LEGACY_MATRIX anonymous-public=true
+HD30_LEGACY_MATRIX ordinary-public=true
+HD30_LEGACY_MATRIX anonymous-namespace-only=false
+HD30_LEGACY_MATRIX nonmember-namespace-only=false
+HD30_LEGACY_MATRIX member-namespace-only=true
+HD30_LEGACY_MATRIX owner-private=true
+HD30_LEGACY_MATRIX member-private=false
+HD30_LEGACY_MATRIX admin-private=true
+HD30_LEGACY_MATRIX ordinary-hidden=false
+HD30_LEGACY_MATRIX owner-hidden=true
+HD30_LEGACY_MATRIX admin-hidden=true
+HD30_LEGACY_MATRIX ordinary-latest-null=false
+HD30_LEGACY_MATRIX owner-latest-null=true
+HD30_LEGACY_MATRIX super-admin-private=true
+HD30_LEGACY_MATRIX non-super-platform-role-private=false
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.229 s -- in com.iflytek.skillhub.domain.skill.VisibilityCheckerLegacyCompatibilityTest
+[INFO] Running com.iflytek.skillhub.domain.skill.VisibilityCheckerTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.378 s -- in com.iflytek.skillhub.domain.skill.VisibilityCheckerTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] -----------------< com.iflytek.skillhub:skillhub-auth >-----------------
+[INFO] Building skillhub-auth 0.1.0                                       [4/8]
+[INFO]   from skillhub-auth/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-auth ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-auth/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-auth/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-auth ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 79 source files with javac [debug release 21] to target/classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-auth ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-auth ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 19 source files with javac [debug release 21] to target/test-classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-auth ---
+[INFO] 
+[INFO] -------------< com.iflytek.skillhub:skillhub-notification >-------------
+[INFO] Building skillhub-notification 0.1.0                               [5/8]
+[INFO]   from skillhub-notification/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-notification ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-notification/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-notification/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-notification ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 12 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-notification ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-notification/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-notification ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 6 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-notification ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.iflytek.skillhub.notification.service.NotificationServiceTest
+WARNING: A Java agent has been loaded dynamically (/home/agent/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.263 s -- in com.iflytek.skillhub.notification.service.NotificationServiceTest
+[INFO] Running com.iflytek.skillhub.notification.service.NotificationDispatcherTest
+13:37:51.422 [main] WARN com.iflytek.skillhub.notification.service.NotificationDispatcher -- Failed to push SSE notification to user user-1
+java.lang.RuntimeException: SSE failure
+	at com.iflytek.skillhub.notification.sse.SseEmitterManager.push(SseEmitterManager.java:71)
+	at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:45)
+	at com.iflytek.skillhub.notification.service.NotificationDispatcherTest.dispatch_shouldStillPersistWhenSsePushFails(NotificationDispatcherTest.java:82)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:218)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:214)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:139)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.086 s -- in com.iflytek.skillhub.notification.service.NotificationDispatcherTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-infra >-----------------
+[INFO] Building skillhub-infra 0.1.0                                      [6/8]
+[INFO]   from skillhub-infra/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-infra ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-infra/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-infra/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-infra ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 40 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-infra ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-infra/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-infra ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 3 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-infra ---
+[INFO] 
+[INFO] ----------------< com.iflytek.skillhub:skillhub-search >----------------
+[INFO] Building skillhub-search 0.1.0                                     [7/8]
+[INFO]   from skillhub-search/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-search ---
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-search/src/main/resources
+[INFO] skip non existing resourceDirectory /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-search/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-search ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 17 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-search ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-search ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 6 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-search ---
+[INFO] 
+[INFO] -----------------< com.iflytek.skillhub:skillhub-app >------------------
+[INFO] Building skillhub-app 0.1.0                                        [8/8]
+[INFO]   from skillhub-app/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ skillhub-app ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 49 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ skillhub-app ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 316 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ skillhub-app ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ skillhub-app ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 148 source files with javac [debug release 21] to target/test-classes
+[INFO] /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-app/src/test/java/com/iflytek/skillhub/exception/GlobalExceptionHandlerTest.java: /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-app/src/test/java/com/iflytek/skillhub/exception/GlobalExceptionHandlerTest.java uses or overrides a deprecated API.
+[INFO] /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-app/src/test/java/com/iflytek/skillhub/exception/GlobalExceptionHandlerTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-app/src/test/java/com/iflytek/skillhub/filter/AuthContextFilterTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-app/src/test/java/com/iflytek/skillhub/filter/AuthContextFilterTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ skillhub-app ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.iflytek.skillhub.controller.portal.SkillSubscriptionControllerTest
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+WARNING: A Java agent has been loaded dynamically (/home/agent/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+main dict load finished, time elapsed 19263 ms
+model load finished, time elapsed 275 ms.
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 278.4 s -- in com.iflytek.skillhub.controller.portal.SkillSubscriptionControllerTest
+[INFO] Running com.iflytek.skillhub.listener.SubscriberNotificationSinkTest
+[ERROR] Tests run: 9, Failures: 9, Errors: 0, Skipped: 0, Time elapsed: 1.305 s <<< FAILURE! -- in com.iflytek.skillhub.listener.SubscriberNotificationSinkTest
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_privateOrdinaryMember_hasZeroRowAndSse -- Time elapsed: 0.854 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_privateOrdinaryMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:82)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_lastPublishedVersion_nonOwnerGetsNoSink -- Time elapsed: 0.027 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_lastPublishedVersion_nonOwnerGetsNoSink(SubscriberNotificationSinkTest.java:130)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_namespaceOnlyRemovedMember_hasZeroRowAndSse -- Time elapsed: 0.031 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_namespaceOnlyRemovedMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:94)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_privateOrdinaryMember_hasZeroRowAndSse -- Time elapsed: 0.028 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_privateOrdinaryMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:106)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_disabledUser_hasZeroRowAndSse -- Time elapsed: 0.032 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_disabledUser_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:124)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_hiddenOrdinaryMember_hasZeroRowAndSse -- Time elapsed: 0.076 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_hiddenOrdinaryMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:88)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_hiddenOrdinaryMember_hasZeroRowAndSse -- Time elapsed: 0.033 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_hiddenOrdinaryMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:112)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_disabledUser_hasZeroRowAndSse -- Time elapsed: 0.026 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.publish_disabledUser_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:100)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_namespaceOnlyRemovedMember_hasZeroRowAndSse -- Time elapsed: 0.117 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+	at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.yank_namespaceOnlyRemovedMember_hasZeroRowAndSse(SubscriberNotificationSinkTest.java:118)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running com.iflytek.skillhub.listener.NotificationEventListenerTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.427 s -- in com.iflytek.skillhub.listener.NotificationEventListenerTest
+[INFO] Running com.iflytek.skillhub.exception.SubscriptionMessageBundleTest
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.664 s <<< FAILURE! -- in com.iflytek.skillhub.exception.SubscriptionMessageBundleTest
+[ERROR] com.iflytek.skillhub.exception.SubscriptionMessageBundleTest.subscriptionPermissionMessage_resolvesEnglishAndChinese -- Time elapsed: 0.662 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  "error.skill.subscription.noPermission"
+not to be equal to:
+  "error.skill.subscription.noPermission"
+
+	at com.iflytek.skillhub.exception.SubscriptionMessageBundleTest.subscriptionPermissionMessage_resolvesEnglishAndChinese(SubscriptionMessageBundleTest.java:27)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest
+[ERROR] Tests run: 13, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 0.652 s <<< FAILURE! -- in com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest
+[ERROR] com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_privateOrdinaryMember_deniesBeforeMutation -- Time elapsed: 0.162 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.assertForbiddenWithoutMutation(SkillSubscriptionServiceTest.java:202)
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_privateOrdinaryMember_deniesBeforeMutation(SkillSubscriptionServiceTest.java:138)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_hiddenOrdinaryMember_deniesBeforeMutation -- Time elapsed: 0.016 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.assertForbiddenWithoutMutation(SkillSubscriptionServiceTest.java:202)
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_hiddenOrdinaryMember_deniesBeforeMutation(SkillSubscriptionServiceTest.java:145)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill -- Time elapsed: 0.014 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.assertForbiddenWithoutMutation(SkillSubscriptionServiceTest.java:202)
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill(SkillSubscriptionServiceTest.java:164)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation -- Time elapsed: 0.012 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.assertForbiddenWithoutMutation(SkillSubscriptionServiceTest.java:202)
+	at com.iflytek.skillhub.domain.social.SkillSubscriptionServiceTest.subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation(SkillSubscriptionServiceTest.java:154)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   SkillSubscriptionServiceTest.subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill:164->assertForbiddenWithoutMutation:202 
+Expecting code to raise a throwable.
+[ERROR]   SkillSubscriptionServiceTest.subscribe_hiddenOrdinaryMember_deniesBeforeMutation:145->assertForbiddenWithoutMutation:202 
+Expecting code to raise a throwable.
+[ERROR]   SkillSubscriptionServiceTest.subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation:154->assertForbiddenWithoutMutation:202 
+Expecting code to raise a throwable.
+[ERROR]   SkillSubscriptionServiceTest.subscribe_privateOrdinaryMember_deniesBeforeMutation:138->assertForbiddenWithoutMutation:202 
+Expecting code to raise a throwable.
+[ERROR]   SubscriptionMessageBundleTest.subscriptionPermissionMessage_resolvesEnglishAndChinese:27 
+Expecting actual:
+  "error.skill.subscription.noPermission"
+not to be equal to:
+  "error.skill.subscription.noPermission"
+
+[ERROR]   SubscriberNotificationSinkTest.publish_disabledUser_hasZeroRowAndSse:100->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.publish_hiddenOrdinaryMember_hasZeroRowAndSse:88->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.publish_namespaceOnlyRemovedMember_hasZeroRowAndSse:94->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.publish_privateOrdinaryMember_hasZeroRowAndSse:82->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_NEW_VERSION",
+    "Skill updated: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_NEW_VERSION, Skill updated: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_disabledUser_hasZeroRowAndSse:124->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_hiddenOrdinaryMember_hasZeroRowAndSse:112->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_lastPublishedVersion_nonOwnerGetsNoSink:130->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_namespaceOnlyRemovedMember_hasZeroRowAndSse:118->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[ERROR]   SubscriberNotificationSinkTest.yank_privateOrdinaryMember_hasZeroRowAndSse:106->assertDeniedHasNoSink:201 
+notificationService.create(
+    "denied-user",
+    PUBLISH,
+    "SUBSCRIPTION_VERSION_YANKED",
+    "Skill version yanked: Test Skill",
+    <any string>,
+    "SKILL",
+    42L
+);
+Never wanted here:
+-> at com.iflytek.skillhub.listener.SubscriberNotificationSinkTest.assertDeniedHasNoSink(SubscriberNotificationSinkTest.java:201)
+But invoked here:
+-> at com.iflytek.skillhub.notification.service.NotificationDispatcher.dispatch(NotificationDispatcher.java:40) with arguments: [denied-user, PUBLISH, SUBSCRIPTION_VERSION_YANKED, Skill version yanked: Test Skill, {"skillId":42,"skillName":"Test Skill","slug":"test-skill","namespace":"demo"}, SKILL, 42]
+
+[INFO] 
+[ERROR] Tests run: 42, Failures: 14, Errors: 0, Skipped: 0
+[INFO] 
+[ERROR] There are test failures.
+
+Please refer to /workspaces/140e8421-7099-4023-91fd-4c09406f46a2/6e3a1644/workdir/hd30-red-base/server/skillhub-app/target/surefire-reports for the individual test results.
+Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for skillhub-parent 0.1.0:
+[INFO] 
+[INFO] skillhub-parent .................................... SUCCESS [  0.026 s]
+[INFO] skillhub-storage ................................... SUCCESS [ 25.567 s]
+[INFO] skillhub-domain .................................... SUCCESS [ 24.742 s]
+[INFO] skillhub-auth ...................................... SUCCESS [  5.068 s]
+[INFO] skillhub-notification .............................. SUCCESS [  8.208 s]
+[INFO] skillhub-infra ..................................... SUCCESS [  2.652 s]
+[INFO] skillhub-search .................................... SUCCESS [  1.976 s]
+[INFO] skillhub-app ....................................... SUCCESS [05:10 min]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  06:22 min
+[INFO] Finished at: 2026-08-23T13:43:06Z
+[INFO] ------------------------------------------------------------------------
+EXIT=0
