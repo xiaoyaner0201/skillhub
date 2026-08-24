@@ -1,0 +1,698 @@
+{
+  "schema_version": "plan-gate.v1",
+  "artifact": {
+    "revision": 1,
+    "path": "multica-ledger/20260824-hd32-skillhub-735-subscription-authz-hardening/planner/20260824-040000-plan-r1.md",
+    "sha256": "1c2b92a6571a239335d300d5a2b363ae5a12ea95b223555c7703731988a42e6f",
+    "run_id": "50739374-3ed1-4be6-8c59-ade3d98da490",
+    "context_id": "plan-context-50739374-3ed1-4be6-8c59-ade3d98da490"
+  },
+  "subject": {
+    "repo": "skillhub",
+    "base_commit": "e8cab7389f5dc1084fdc1cdf70bafd314d0a3d50",
+    "base_tree": "c81497cf7eb98f0568b8b30c9af1e67797bca27a",
+    "discovery_inventory_path": "multica-ledger/20260824-hd32-skillhub-735-subscription-authz-hardening/qa/behavior-inventory.v1.json",
+    "discovery_inventory_sha256": "aabf1b09bfea56b78c75f950a5bf3b5472e0cc30a5435681b3d199bd1ccfc1b1",
+    "discovery_generator_version": "semgrep-1.132.0+rules-v1"
+  },
+  "source_contract": [
+    {
+      "contract_id": "REQ_SUBSCRIBE_CURRENT_READ",
+      "kind": "REQUIREMENT",
+      "statement": "Reject subscription creation before every mutation when the current user cannot read skill metadata.",
+      "evidence": ["HD-32 maintainer item 1", "SkillSubscriptionService.subscribe on base"]
+    },
+    {
+      "contract_id": "REQ_FANOUT_CURRENT_READ",
+      "kind": "REQUIREMENT",
+      "statement": "Published and yanked subscriber fanout use current visibility and access facts before recipient dispatch.",
+      "evidence": ["HD-32 maintainer item 2", "NotificationEventListener subscriber methods"]
+    },
+    {
+      "contract_id": "REQ_SINGLE_VISIBILITY_SOURCE",
+      "kind": "REQUIREMENT",
+      "statement": "VisibilityChecker is the only visibility decision source; fact resolvers must not introduce a parallel model.",
+      "evidence": ["HD-32 maintainer item 3", "VisibilityChecker.java"]
+    },
+    {
+      "contract_id": "REQ_FIVE_SCENARIOS_I18N",
+      "kind": "REQUIREMENT",
+      "statement": "English and Chinese denial messages plus private, namespace-only, hidden, removed-member and disabled-user tests are required on subscribe and fanout paths.",
+      "evidence": ["HD-32 maintainer item 4"]
+    },
+    {
+      "contract_id": "REQ_PRIVATE_OWNER_MANAGER",
+      "kind": "REQUIREMENT",
+      "statement": "PRIVATE metadata access retains owner or namespace ADMIN/OWNER behavior while the absent SubscriptionMetadataAccessPolicy class is not reintroduced.",
+      "evidence": ["HD-32 explicit boundary", "base VisibilityChecker PRIVATE branch", "PR #735 historical policy readback"]
+    },
+    {
+      "contract_id": "REQ_STALE_READ_CONFIDENTIALITY",
+      "kind": "INFERENCE",
+      "statement": "Stale subscription rows must be filtered at current-read time from /me/subscriptions, including response total, without deleting rows.",
+      "evidence": ["inventory r1-my-subscriptions-stale-row-read", "repository privacy and tenant-isolation invariants"]
+    },
+    {
+      "contract_id": "FACT_POLICY_ABSENT_BASE",
+      "kind": "FACT",
+      "statement": "SubscriptionMetadataAccessPolicy is absent from base and candidate r3 and therefore cannot be an existing base interface to preserve.",
+      "evidence": ["git ls-tree e8cab738", "git ls-tree 6a61b740", "PR #735 head e071afb4 contains the class"]
+    },
+    {
+      "contract_id": "FACT_VISIBILITY_EIGHT_CALLERS",
+      "kind": "FACT",
+      "statement": "VisibilityChecker has eight production call sites whose observable behavior must remain compatible.",
+      "evidence": ["inventory r3-visibility-shared-policy-surface", "D2 Semgrep findings"]
+    },
+    {
+      "contract_id": "INFER_FULL_CONTEXT_CHECKER",
+      "kind": "INFERENCE",
+      "statement": "A full-context VisibilityChecker overload centralizes account, namespace, membership, platform-role and narrow access-purpose semantics while old overloads remain unchanged.",
+      "evidence": ["VisibilityChecker existing overloads", "inventory r3 authority candidates"]
+    },
+    {
+      "contract_id": "INFER_REQUIRES_NEW_NOTIFICATION",
+      "kind": "INFERENCE",
+      "statement": "NotificationService.create requires a new physical transaction so AFTER_COMMIT CallerRuns persists before SSE.",
+      "evidence": ["AsyncConfig CallerRunsPolicy", "NotificationDispatcher persist-before-SSE flow", "LabelSearchSyncIntegrationTest afterCommit precedent"]
+    },
+    {
+      "contract_id": "ASSUME_MESSAGE_COPY",
+      "kind": "ASSUMPTION",
+      "statement": "The denial code resolves to the frozen English and Chinese copy in plan-r1.",
+      "evidence": ["planner/20260824-040000-plan-r1.md#1"]
+    },
+    {
+      "contract_id": "ASSUME_RELATIONSHIP_COMPAT",
+      "kind": "ASSUMPTION",
+      "statement": "Unsubscribe remains a revocation escape and isSubscribed remains an own-row boolean because neither response exposes metadata.",
+      "evidence": ["SkillSubscriptionController and SkillSubscriptionService base behavior"]
+    },
+    {
+      "contract_id": "NON_GOAL_NO_DATA_CLEANUP",
+      "kind": "NON_GOAL",
+      "statement": "No migration, prune, historical row cleanup or subscription count repair is included.",
+      "evidence": ["HD-32 business boundary"]
+    },
+    {
+      "contract_id": "NON_GOAL_NO_CONFIRM_PUBLISH",
+      "kind": "NON_GOAL",
+      "statement": "No confirmPublish, event producer or event record change is included because #738 is already in base.",
+      "evidence": ["HD-32 scope", "base e8cab738 contains #738"]
+    },
+    {
+      "contract_id": "NON_GOAL_NO_WORKFLOW_PUBLICATION",
+      "kind": "NON_GOAL",
+      "statement": "No workflow file, public PR branch or publication state is modified in the engineering plan.",
+      "evidence": ["HD-32 boundary", "Project publication boundary"]
+    }
+  ],
+  "changed_behavior": [
+    {
+      "path_id": "subscription-create",
+      "inventory_candidate_ids": ["r1-subscribe-create"],
+      "producer": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java", "symbol": "subscribeSkill"},
+      "trigger": "Authenticated PUT subscription with principal userId and platformRoles",
+      "consumers": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java", "symbol": "subscribe"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "full-context canAccess METADATA_READ"}
+      ],
+      "sinks": [
+        {"sink_id": "subscribe-row", "kind": "PERSISTENCE", "ref": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionRepository.java", "symbol": "save"}, "observable": "Allowed request creates at most one row; denied request creates none"},
+        {"sink_id": "subscribe-counter-event", "kind": "EXTERNAL_EFFECT", "ref": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java", "symbol": "incrementSubscriptionCount and publishEvent"}, "observable": "Allowed non-idempotent request increments and publishes once; denied request does neither"},
+        {"sink_id": "subscribe-i18n-error", "kind": "USER_VISIBLE", "ref": {"path": "server/skillhub-app/src/main/resources/messages.properties", "symbol": "error.skill.subscription.noPermission"}, "observable": "English and Chinese MessageSource return localized copy rather than raw code"}
+      ],
+      "states": [
+        {"state_id": "subscribe-public-active", "actor_state": "active ordinary user", "relationship_state": "not subscribed", "namespace_relation": "published PUBLIC non-member", "expected_effect": "ALLOW"},
+        {"state_id": "subscribe-namespace-member", "actor_state": "active user", "relationship_state": "not subscribed", "namespace_relation": "current MEMBER reading NAMESPACE_ONLY", "expected_effect": "ALLOW"},
+        {"state_id": "subscribe-private-manager", "actor_state": "active namespace ADMIN or OWNER", "relationship_state": "not subscribed", "namespace_relation": "PRIVATE skill namespace", "expected_effect": "ALLOW"},
+        {"state_id": "subscribe-private-denied", "actor_state": "active ordinary member", "relationship_state": "not subscribed", "namespace_relation": "PRIVATE without manager access", "expected_effect": "DENY"},
+        {"state_id": "subscribe-hidden-denied", "actor_state": "active ordinary member", "relationship_state": "not subscribed", "namespace_relation": "hidden skill", "expected_effect": "DENY"},
+        {"state_id": "subscribe-removed-denied", "actor_state": "active former member", "relationship_state": "not subscribed", "namespace_relation": "removed from NAMESPACE_ONLY namespace", "expected_effect": "DENY"},
+        {"state_id": "subscribe-disabled-denied", "actor_state": "disabled account", "relationship_state": "not subscribed", "namespace_relation": "otherwise readable PUBLIC", "expected_effect": "DENY"},
+        {"state_id": "subscribe-authority-failure", "actor_state": "unknown", "relationship_state": "not subscribed", "namespace_relation": "account, namespace or member load throws", "expected_effect": "FAIL_CLOSED"}
+      ],
+      "contract_ids": ["REQ_SUBSCRIBE_CURRENT_READ", "REQ_SINGLE_VISIBILITY_SOURCE", "REQ_FIVE_SCENARIOS_I18N", "REQ_PRIVATE_OWNER_MANAGER", "INFER_FULL_CONTEXT_CHECKER", "ASSUME_MESSAGE_COPY"],
+      "invariant_ids": ["AUTHZ_CURRENT_METADATA_READ", "PRIVATE_OWNER_MANAGER_BOUNDARY", "ACCOUNT_STATUS_FAIL_CLOSED", "SUBSCRIBE_ATOMICITY"]
+    },
+    {
+      "path_id": "subscription-unsubscribe",
+      "inventory_candidate_ids": ["r1-unsubscribe-revocation-escape"],
+      "producer": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java", "symbol": "unsubscribeSkill"},
+      "trigger": "Authenticated DELETE after metadata read access is lost",
+      "consumers": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java", "symbol": "unsubscribe"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionRepository.java", "symbol": "findBySkillIdAndUserId own row"}
+      ],
+      "sinks": [
+        {"sink_id": "unsubscribe-delete-counter-event", "kind": "PERSISTENCE", "ref": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java", "symbol": "unsubscribe"}, "observable": "Own stale row deletion still decrements once and publishes SkillUnsubscribedEvent once"}
+      ],
+      "states": [
+        {"state_id": "unsubscribe-after-revocation", "actor_state": "authenticated former reader", "relationship_state": "stale own row exists", "namespace_relation": "private, hidden, removed or disabled after subscribe", "expected_effect": "UNCHANGED"},
+        {"state_id": "unsubscribe-no-row", "actor_state": "authenticated user", "relationship_state": "no own row", "namespace_relation": "any", "expected_effect": "UNCHANGED"}
+      ],
+      "contract_ids": ["ASSUME_RELATIONSHIP_COMPAT", "NON_GOAL_NO_DATA_CLEANUP"],
+      "invariant_ids": ["REVOCATION_ESCAPE_PATH", "SUBSCRIPTION_COUNTER_INTEGRITY"]
+    },
+    {
+      "path_id": "subscription-status-read",
+      "inventory_candidate_ids": ["r1-is-subscribed-read"],
+      "producer": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java", "symbol": "checkSubscribed"},
+      "trigger": "GET caller's own subscription relationship",
+      "consumers": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java", "symbol": "isSubscribed"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java", "symbol": "anonymous false; authenticated own userId"}
+      ],
+      "sinks": [
+        {"sink_id": "subscription-own-boolean", "kind": "USER_VISIBLE", "ref": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java", "symbol": "ApiResponse<Boolean>"}, "observable": "Authenticated caller sees own row boolean and anonymous sees false without metadata"}
+      ],
+      "states": [
+        {"state_id": "status-stale-own-row", "actor_state": "authenticated former reader", "relationship_state": "stale own row", "namespace_relation": "private, hidden or removed", "expected_effect": "UNCHANGED"},
+        {"state_id": "status-anonymous", "actor_state": "anonymous", "relationship_state": "unknown", "namespace_relation": "any", "expected_effect": "UNCHANGED"}
+      ],
+      "contract_ids": ["ASSUME_RELATIONSHIP_COMPAT", "NON_GOAL_NO_DATA_CLEANUP"],
+      "invariant_ids": ["OWN_RELATION_COMPATIBILITY"]
+    },
+    {
+      "path_id": "my-subscriptions-current-read",
+      "inventory_candidate_ids": ["r1-my-subscriptions-stale-row-read"],
+      "producer": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/MeController.java", "symbol": "listMySubscriptions"},
+      "trigger": "Authenticated GET /me/subscriptions over retained rows",
+      "consumers": [
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/MySkillAppService.java", "symbol": "listMySubscriptions"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/repository/JpaMySkillQueryRepository.java", "symbol": "getSkillSummaries"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "full-context canAccess METADATA_READ per retained row"}
+      ],
+      "sinks": [
+        {"sink_id": "my-subscriptions-visible-page", "kind": "USER_VISIBLE", "ref": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/MySkillAppService.java", "symbol": "PageResponse<SkillSummaryResponse>"}, "observable": "Items and total include only rows whose skill metadata is currently readable"},
+        {"sink_id": "my-subscriptions-retained-row", "kind": "PERSISTENCE", "ref": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionRepository.java", "symbol": "retained stale row"}, "observable": "Read-time filtering performs no delete, count decrement or cleanup mutation"}
+      ],
+      "states": [
+        {"state_id": "stale-read-current-public", "actor_state": "active subscriber", "relationship_state": "current readable row", "namespace_relation": "PUBLIC", "expected_effect": "ALLOW"},
+        {"state_id": "stale-read-private-denied", "actor_state": "active ordinary former reader", "relationship_state": "retained row", "namespace_relation": "PRIVATE without manager role", "expected_effect": "DENY"},
+        {"state_id": "stale-read-removed-denied", "actor_state": "active removed member", "relationship_state": "retained row", "namespace_relation": "NAMESPACE_ONLY", "expected_effect": "DENY"},
+        {"state_id": "stale-read-hidden-denied", "actor_state": "active ordinary user", "relationship_state": "retained row", "namespace_relation": "hidden skill", "expected_effect": "DENY"},
+        {"state_id": "stale-read-disabled-denied", "actor_state": "disabled account", "relationship_state": "retained rows", "namespace_relation": "mixed skills", "expected_effect": "DENY"},
+        {"state_id": "stale-read-deleted-skill-row", "actor_state": "active subscriber", "relationship_state": "retained row references a missing skill", "namespace_relation": "deleted or cascaded skill state", "expected_effect": "DENY"},
+        {"state_id": "stale-read-mixed-page", "actor_state": "active user", "relationship_state": "visible and stale retained rows", "namespace_relation": "mixed namespaces", "expected_effect": "ALLOW"},
+        {"state_id": "stale-read-authority-failure", "actor_state": "unknown", "relationship_state": "retained rows", "namespace_relation": "account, member or RBAC load throws", "expected_effect": "FAIL_CLOSED"}
+      ],
+      "contract_ids": ["REQ_STALE_READ_CONFIDENTIALITY", "REQ_SINGLE_VISIBILITY_SOURCE", "REQ_PRIVATE_OWNER_MANAGER", "NON_GOAL_NO_DATA_CLEANUP"],
+      "invariant_ids": ["STALE_ROW_METADATA_CONFIDENTIALITY", "VISIBLE_PAGINATION_NO_COUNT_LEAK", "NO_READ_TIME_CLEANUP", "ACCOUNT_STATUS_FAIL_CLOSED"]
+    },
+    {
+      "path_id": "published-subscriber-fanout",
+      "inventory_candidate_ids": ["r2-published-subscriber-fanout"],
+      "producer": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillPublishService.java", "symbol": "existing SkillPublishedEvent producers"},
+      "trigger": "SkillPublishedEvent after source transaction commit",
+      "consumers": [
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java", "symbol": "onSkillPublishedForSubscribers"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java", "symbol": "resolveReadableSubscribers"},
+        {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationDispatcher.java", "symbol": "dispatch"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "full-context METADATA_READ"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java", "symbol": "skip publisher"}
+      ],
+      "sinks": [
+        {"sink_id": "published-notification-row", "kind": "PERSISTENCE", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationService.java", "symbol": "create"}, "observable": "One SUBSCRIPTION_NEW_VERSION row per eligible non-publisher recipient"},
+        {"sink_id": "published-notification-sse", "kind": "TRANSPORT", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/sse/SseEmitterManager.java", "symbol": "push"}, "observable": "Persisted row is pushed to the same recipient with exact tuple"}
+      ],
+      "states": [
+        {"state_id": "published-namespace-member", "actor_state": "active subscriber", "relationship_state": "current row", "namespace_relation": "current MEMBER reading NAMESPACE_ONLY", "expected_effect": "ALLOW"},
+        {"state_id": "published-private-denied", "actor_state": "active ordinary subscriber", "relationship_state": "retained row", "namespace_relation": "PRIVATE without manager role", "expected_effect": "DENY"},
+        {"state_id": "published-hidden-denied", "actor_state": "active ordinary subscriber", "relationship_state": "retained row", "namespace_relation": "hidden skill", "expected_effect": "DENY"},
+        {"state_id": "published-removed-denied", "actor_state": "active former member", "relationship_state": "stale row", "namespace_relation": "removed from NAMESPACE_ONLY namespace", "expected_effect": "DENY"},
+        {"state_id": "published-disabled-denied", "actor_state": "disabled subscriber", "relationship_state": "stale row", "namespace_relation": "otherwise readable PUBLIC", "expected_effect": "DENY"},
+        {"state_id": "published-publisher-skipped", "actor_state": "publisher", "relationship_state": "publisher also subscribed", "namespace_relation": "authorized", "expected_effect": "DENY"},
+        {"state_id": "published-authority-failure", "actor_state": "mixed candidates", "relationship_state": "multiple rows", "namespace_relation": "account, membership, RBAC or namespace load throws", "expected_effect": "FAIL_CLOSED"},
+        {"state_id": "published-super-admin", "actor_state": "active SUPER_ADMIN", "relationship_state": "retained row", "namespace_relation": "archived hidden PRIVATE non-member", "expected_effect": "ALLOW"}
+      ],
+      "contract_ids": ["REQ_FANOUT_CURRENT_READ", "REQ_SINGLE_VISIBILITY_SOURCE", "REQ_FIVE_SCENARIOS_I18N", "REQ_PRIVATE_OWNER_MANAGER", "INFER_FULL_CONTEXT_CHECKER"],
+      "invariant_ids": ["FANOUT_CURRENT_STATE", "PRIVATE_OWNER_MANAGER_BOUNDARY", "ACCOUNT_STATUS_FAIL_CLOSED", "NO_N_PLUS_ONE", "FAIL_CLOSED_BEFORE_RECIPIENT_SINK", "SKIP_EVENT_ACTOR"]
+    },
+    {
+      "path_id": "yanked-subscriber-fanout",
+      "inventory_candidate_ids": ["r2-yanked-subscriber-fanout"],
+      "producer": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillGovernanceService.java", "symbol": "yankVersion"},
+      "trigger": "SkillVersionYankedEvent after source transaction commit",
+      "consumers": [
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java", "symbol": "onSkillVersionYankedForSubscribers"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java", "symbol": "resolveReadableSubscribers"},
+        {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationDispatcher.java", "symbol": "dispatch"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "full-context YANK_REVOCATION_NOTICE"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java", "symbol": "skip yank actor"}
+      ],
+      "sinks": [
+        {"sink_id": "yanked-notification-row", "kind": "PERSISTENCE", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationService.java", "symbol": "create"}, "observable": "One SUBSCRIPTION_VERSION_YANKED row per eligible non-actor recipient"},
+        {"sink_id": "yanked-notification-sse", "kind": "TRANSPORT", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/sse/SseEmitterManager.java", "symbol": "push"}, "observable": "Persisted yank row is pushed to the same recipient with exact tuple"}
+      ],
+      "states": [
+        {"state_id": "yanked-namespace-member", "actor_state": "active subscriber", "relationship_state": "current row", "namespace_relation": "current MEMBER reading NAMESPACE_ONLY", "expected_effect": "ALLOW"},
+        {"state_id": "yanked-private-denied", "actor_state": "active ordinary subscriber", "relationship_state": "retained row", "namespace_relation": "PRIVATE without manager role", "expected_effect": "DENY"},
+        {"state_id": "yanked-hidden-denied", "actor_state": "active ordinary subscriber", "relationship_state": "retained row", "namespace_relation": "hidden skill", "expected_effect": "DENY"},
+        {"state_id": "yanked-removed-denied", "actor_state": "active former member", "relationship_state": "stale row", "namespace_relation": "removed from NAMESPACE_ONLY namespace", "expected_effect": "DENY"},
+        {"state_id": "yanked-disabled-denied", "actor_state": "disabled subscriber", "relationship_state": "stale row", "namespace_relation": "otherwise readable PUBLIC", "expected_effect": "DENY"},
+        {"state_id": "yanked-latest-null-revocation", "actor_state": "active non-owner subscriber", "relationship_state": "stale row after genuine last-version yank", "namespace_relation": "PUBLIC with latestVersionId cleared by same yank", "expected_effect": "ALLOW"},
+        {"state_id": "yanked-actor-skipped", "actor_state": "yank actor", "relationship_state": "actor subscribed", "namespace_relation": "authorized", "expected_effect": "DENY"},
+        {"state_id": "yanked-authority-failure", "actor_state": "mixed candidates", "relationship_state": "multiple rows", "namespace_relation": "account, membership, RBAC or namespace load throws", "expected_effect": "FAIL_CLOSED"}
+      ],
+      "contract_ids": ["REQ_FANOUT_CURRENT_READ", "REQ_SINGLE_VISIBILITY_SOURCE", "REQ_FIVE_SCENARIOS_I18N", "REQ_PRIVATE_OWNER_MANAGER", "INFER_FULL_CONTEXT_CHECKER", "NON_GOAL_NO_CONFIRM_PUBLISH"],
+      "invariant_ids": ["FANOUT_CURRENT_STATE", "PRIVATE_OWNER_MANAGER_BOUNDARY", "ACCOUNT_STATUS_FAIL_CLOSED", "NO_N_PLUS_ONE", "FAIL_CLOSED_BEFORE_RECIPIENT_SINK", "SKIP_EVENT_ACTOR", "YANK_PURPOSE_NARROWNESS"]
+    },
+    {
+      "path_id": "published-search-index-consumer",
+      "inventory_candidate_ids": ["r2-published-search-index-consumer"],
+      "producer": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/event/SkillPublishedEvent.java", "symbol": "existing event"},
+      "trigger": "The same committed SkillPublishedEvent independently reaches the search listener",
+      "consumers": [
+        {"path": "server/skillhub-search/src/main/java/com/iflytek/skillhub/search/event/SearchIndexEventListener.java", "symbol": "onSkillPublished"},
+        {"path": "server/skillhub-search/src/main/java/com/iflytek/skillhub/search/SearchRebuildService.java", "symbol": "rebuildBySkill"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-search/src/main/java/com/iflytek/skillhub/search/event/SearchIndexEventListener.java", "symbol": "AFTER_COMMIT registration independent of subscriber eligibility"}
+      ],
+      "sinks": [
+        {"sink_id": "published-search-document", "kind": "PERSISTENCE", "ref": {"path": "server/skillhub-search/src/main/java/com/iflytek/skillhub/search/SearchIndexService.java", "symbol": "persistent search document update"}, "observable": "Committed publish rebuilds once; rollback rebuilds zero; subscriber eligibility or notification failure does not suppress it"}
+      ],
+      "states": [
+        {"state_id": "search-publish-commit", "actor_state": "publisher", "relationship_state": "source transaction commits", "namespace_relation": "any publishable namespace", "expected_effect": "UNCHANGED"},
+        {"state_id": "search-publish-rollback", "actor_state": "publisher", "relationship_state": "source transaction rolls back", "namespace_relation": "any", "expected_effect": "DENY"},
+        {"state_id": "search-subscriber-failure-independent", "actor_state": "publisher and failing subscriber path", "relationship_state": "subscriber authority or notification failure", "namespace_relation": "any", "expected_effect": "UNCHANGED"},
+        {"state_id": "search-executor-saturation", "actor_state": "publisher", "relationship_state": "running shared executor saturated under CallerRunsPolicy", "namespace_relation": "any publishable namespace", "expected_effect": "UNCHANGED"}
+      ],
+      "contract_ids": ["REQ_FANOUT_CURRENT_READ", "NON_GOAL_NO_CONFIRM_PUBLISH"],
+      "invariant_ids": ["SEARCH_CONSUMER_INDEPENDENCE", "ROLLBACK_ZERO_EVENT_SINK"]
+    },
+    {
+      "path_id": "visibility-checker-consumer-regression",
+      "inventory_candidate_ids": ["r3-visibility-shared-policy-surface"],
+      "producer": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "existing canAccess overloads"},
+      "trigger": "Existing detail, list, download, tag, label, compat and audit reads",
+      "consumers": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillQueryService.java", "symbol": "three existing call sites"},
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillDownloadService.java", "symbol": "assertCanDownload"},
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillTagService.java", "symbol": "listTags"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/SkillLabelAppService.java", "symbol": "resolveSkillForRead"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/compat/CompatSkillLookupService.java", "symbol": "canAccess"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SecurityAuditController.java", "symbol": "canViewAudit"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "old overload matrix remains unchanged"}
+      ],
+      "sinks": [
+        {"sink_id": "existing-visibility-observables", "kind": "USER_VISIBLE", "ref": {"path": "server", "symbol": "eight existing call sites"}, "observable": "Payload, masking, download and audit outcomes plus normalized base/candidate matrix remain identical"}
+      ],
+      "states": [
+        {"state_id": "existing-consumer-matrix", "actor_state": "anonymous, owner, member, manager and SUPER_ADMIN", "relationship_state": "existing caller inputs", "namespace_relation": "public, namespace-only, private, hidden, latest-null and archived", "expected_effect": "UNCHANGED"}
+      ],
+      "contract_ids": ["FACT_VISIBILITY_EIGHT_CALLERS", "REQ_SINGLE_VISIBILITY_SOURCE", "REQ_PRIVATE_OWNER_MANAGER", "INFER_FULL_CONTEXT_CHECKER"],
+      "invariant_ids": ["VISIBILITY_CONSUMER_COMPAT", "PRIVATE_OWNER_MANAGER_BOUNDARY"]
+    },
+    {
+      "path_id": "subscription-policy-disposition",
+      "inventory_candidate_ids": ["r3-subscription-metadata-access-policy-contract"],
+      "producer": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "full-context overload instead of absent policy class"},
+      "trigger": "Subscribe, stale read and fanout request a metadata access decision",
+      "consumers": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java", "symbol": "subscribe"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java", "symbol": "resolveReadableSubscribers"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/MySkillAppService.java", "symbol": "listMySubscriptions"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "PRIVATE owner or ADMIN/OWNER; no SubscriptionMetadataAccessPolicy class"}
+      ],
+      "sinks": [
+        {"sink_id": "policy-subscribe-decision", "kind": "USER_VISIBLE", "ref": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java", "symbol": "allow or DomainForbiddenException"}, "observable": "PRIVATE owner and manager allow; ordinary member deny"},
+        {"sink_id": "policy-recipient-decision", "kind": "EXTERNAL_EFFECT", "ref": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java", "symbol": "filtered recipient IDs"}, "observable": "Same checker result controls fanout without a parallel class"}
+      ],
+      "states": [
+        {"state_id": "policy-absent-base", "actor_state": "planner and coder", "relationship_state": "class absent", "namespace_relation": "all", "expected_effect": "UNCHANGED"},
+        {"state_id": "policy-private-owner", "actor_state": "active skill owner", "relationship_state": "metadata access", "namespace_relation": "PRIVATE", "expected_effect": "ALLOW"},
+        {"state_id": "policy-private-manager", "actor_state": "active ADMIN or OWNER", "relationship_state": "metadata access", "namespace_relation": "PRIVATE skill namespace", "expected_effect": "ALLOW"},
+        {"state_id": "policy-private-denied", "actor_state": "active ordinary member", "relationship_state": "metadata access", "namespace_relation": "PRIVATE skill namespace", "expected_effect": "DENY"},
+        {"state_id": "policy-disabled-denied", "actor_state": "disabled account", "relationship_state": "metadata access", "namespace_relation": "otherwise allowed", "expected_effect": "DENY"}
+      ],
+      "contract_ids": ["REQ_PRIVATE_OWNER_MANAGER", "FACT_POLICY_ABSENT_BASE", "REQ_SINGLE_VISIBILITY_SOURCE", "INFER_FULL_CONTEXT_CHECKER"],
+      "invariant_ids": ["PRIVATE_OWNER_MANAGER_BOUNDARY", "NO_PARALLEL_VISIBILITY_MODEL", "ACCOUNT_STATUS_FAIL_CLOSED"]
+    },
+    {
+      "path_id": "current-authority-resolution",
+      "inventory_candidate_ids": ["r3-namespace-membership-authority", "r3-rbac-account-authority"],
+      "producer": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java", "symbol": "batch authority fact loading"},
+      "trigger": "Subscribe, stale read or fanout evaluates current caller/recipient authority",
+      "consumers": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/namespace/NamespaceMemberRepository.java", "symbol": "single and batch membership reads"},
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/user/UserAccountRepository.java", "symbol": "single and batch account reads"},
+        {"path": "server/skillhub-auth/src/main/java/com/iflytek/skillhub/auth/rbac/RbacService.java", "symbol": "single-source normalized batch platform roles"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java", "symbol": "current facts decide access"}
+      ],
+      "sinks": [
+        {"sink_id": "authority-subscribe-decision", "kind": "USER_VISIBLE", "ref": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java", "symbol": "subscribe decision"}, "observable": "Current account, membership and roles reach checker before mutation"},
+        {"sink_id": "authority-recipient-set", "kind": "EXTERNAL_EFFECT", "ref": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java", "symbol": "ordered readable recipients"}, "observable": "One batch per source and no partial result on loader failure"},
+        {"sink_id": "authority-stale-read-set", "kind": "QUERY", "ref": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/MySkillAppService.java", "symbol": "visible retained rows"}, "observable": "Removed, disabled or revoked users cannot reach metadata response"}
+      ],
+      "states": [
+        {"state_id": "authority-current-member", "actor_state": "active member", "relationship_state": "current membership and default USER", "namespace_relation": "same namespace", "expected_effect": "ALLOW"},
+        {"state_id": "authority-removed-member", "actor_state": "active former member", "relationship_state": "stale row and no membership", "namespace_relation": "same historical namespace", "expected_effect": "DENY"},
+        {"state_id": "authority-disabled-user", "actor_state": "disabled user", "relationship_state": "stale row and possible bindings", "namespace_relation": "any", "expected_effect": "DENY"},
+        {"state_id": "authority-role-revoked", "actor_state": "active former SUPER_ADMIN or manager", "relationship_state": "current bindings no longer grant access", "namespace_relation": "private or hidden", "expected_effect": "DENY"},
+        {"state_id": "authority-load-failure", "actor_state": "unknown candidates", "relationship_state": "source throws", "namespace_relation": "unknown", "expected_effect": "FAIL_CLOSED"}
+      ],
+      "contract_ids": ["REQ_SUBSCRIBE_CURRENT_READ", "REQ_FANOUT_CURRENT_READ", "REQ_STALE_READ_CONFIDENTIALITY", "REQ_SINGLE_VISIBILITY_SOURCE"],
+      "invariant_ids": ["CURRENT_AUTHORITY_AT_DECISION", "ACCOUNT_STATUS_FAIL_CLOSED", "NO_N_PLUS_ONE", "FAIL_CLOSED_BEFORE_RECIPIENT_SINK"]
+    },
+    {
+      "path_id": "notification-final-sinks",
+      "inventory_candidate_ids": ["r4-notification-persistence-and-transport"],
+      "producer": {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java", "symbol": "eligible subscriber loops"},
+      "trigger": "Eligible published or yanked subscriber reaches dispatcher",
+      "consumers": [
+        {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationDispatcher.java", "symbol": "dispatch"},
+        {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationService.java", "symbol": "create REQUIRES_NEW"},
+        {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/sse/SseEmitterManager.java", "symbol": "push"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java", "symbol": "authorized recipients only"},
+        {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationPreferenceService.java", "symbol": "IN_APP preference after authorization"}
+      ],
+      "sinks": [
+        {"sink_id": "notification-durable-row", "kind": "PERSISTENCE", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationService.java", "symbol": "create"}, "observable": "Authorized enabled recipient gets a committed row before SSE"},
+        {"sink_id": "notification-live-sse", "kind": "TRANSPORT", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/sse/SseEmitterManager.java", "symbol": "push"}, "observable": "Exact row tuple is pushed to same recipient; SSE failure leaves row committed"},
+        {"sink_id": "notification-list-payload", "kind": "USER_VISIBLE", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/controller/NotificationController.java", "symbol": "recipient-scoped list"}, "observable": "Only persisted authorized-recipient rows are later visible"}
+      ],
+      "states": [
+        {"state_id": "notification-eligible-enabled", "actor_state": "eligible active recipient", "relationship_state": "IN_APP enabled", "namespace_relation": "currently readable", "expected_effect": "ALLOW"},
+        {"state_id": "notification-eligible-disabled-preference", "actor_state": "eligible active recipient", "relationship_state": "IN_APP disabled", "namespace_relation": "currently readable", "expected_effect": "DENY"},
+        {"state_id": "notification-ineligible-enabled-preference", "actor_state": "ineligible recipient", "relationship_state": "IN_APP enabled", "namespace_relation": "not currently readable", "expected_effect": "DENY"},
+        {"state_id": "notification-persist-failure", "actor_state": "eligible recipient", "relationship_state": "persistence throws", "namespace_relation": "currently readable", "expected_effect": "FAIL_CLOSED"},
+        {"state_id": "notification-sse-failure", "actor_state": "eligible recipient", "relationship_state": "row committed and SSE throws", "namespace_relation": "currently readable", "expected_effect": "UNCHANGED"},
+        {"state_id": "notification-duplicate-subscriber", "actor_state": "eligible recipient", "relationship_state": "duplicate subscriber IDs in source rows", "namespace_relation": "currently readable", "expected_effect": "UNCHANGED"}
+      ],
+      "contract_ids": ["REQ_FANOUT_CURRENT_READ", "INFER_REQUIRES_NEW_NOTIFICATION"],
+      "invariant_ids": ["FINAL_RECIPIENT_CORRECTNESS", "PERSIST_BEFORE_SSE", "PREFERENCE_NOT_AUTHORIZATION"]
+    },
+    {
+      "path_id": "spring-runtime-dispatch",
+      "inventory_candidate_ids": ["unverified-spring-runtime-dispatch"],
+      "producer": {"path": "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/service/SkillGovernanceService.java", "symbol": "transactional event publication"},
+      "trigger": "Real Spring proxy registration with commit, rollback, no transaction and CallerRuns saturation",
+      "consumers": [
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java", "symbol": "subscriber transactional async listeners"}
+      ],
+      "eligibility_filters": [
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/config/AsyncConfig.java", "symbol": "skillhubEventExecutor CallerRunsPolicy"},
+        {"path": "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java", "symbol": "current readable recipients"}
+      ],
+      "sinks": [
+        {"sink_id": "runtime-notification-row", "kind": "PERSISTENCE", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationService.java", "symbol": "create REQUIRES_NEW"}, "observable": "Commit and CallerRuns produce committed row; rollback and no transaction produce none"},
+        {"sink_id": "runtime-notification-sse", "kind": "TRANSPORT", "ref": {"path": "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/sse/SseEmitterManager.java", "symbol": "push"}, "observable": "SSE follows matching row; rollback and no transaction produce none"}
+      ],
+      "states": [
+        {"state_id": "runtime-commit", "actor_state": "authorized subscriber", "relationship_state": "source transaction commits with executor capacity", "namespace_relation": "readable", "expected_effect": "ALLOW"},
+        {"state_id": "runtime-rollback", "actor_state": "authorized subscriber", "relationship_state": "source transaction rolls back", "namespace_relation": "readable", "expected_effect": "FAIL_CLOSED"},
+        {"state_id": "runtime-no-transaction", "actor_state": "authorized subscriber", "relationship_state": "event published without transaction", "namespace_relation": "readable", "expected_effect": "FAIL_CLOSED"},
+        {"state_id": "runtime-caller-runs-saturation", "actor_state": "authorized subscriber", "relationship_state": "running executor saturated", "namespace_relation": "readable", "expected_effect": "ALLOW"}
+      ],
+      "contract_ids": ["REQ_FANOUT_CURRENT_READ", "INFER_REQUIRES_NEW_NOTIFICATION"],
+      "invariant_ids": ["AFTER_COMMIT_ASYNC_DELIVERY", "ROLLBACK_ZERO_EVENT_SINK", "CALLER_RUNS_ROW_BEFORE_SSE"]
+    },
+    {
+      "path_id": "dynamic-surface-audit",
+      "inventory_candidate_ids": ["unverified-reflection-generated-external-partial-parse"],
+      "producer": {"path": "multica-ledger/20260824-hd32-skillhub-735-subscription-authz-hardening/qa/discovery/semgrep-hd32.yml", "symbol": "D2 direct Java scan"},
+      "trigger": "Candidate exact-tree scan, Spring registry readback and blind independent audit",
+      "consumers": [
+        {"path": "server", "symbol": "runtime-configured, generated, reflection and external caller/consumer surface"}
+      ],
+      "eligibility_filters": [
+        {"path": "multica-ledger/20260824-hd32-skillhub-735-subscription-authz-hardening/qa/behavior-inventory.v1.json", "symbol": "explicit D2 coverage limitation"}
+      ],
+      "sinks": [
+        {"sink_id": "dynamic-audit-evidence", "kind": "AUDIT", "ref": {"path": "multica-ledger/20260824-hd32-skillhub-735-subscription-authz-hardening", "symbol": "candidate scan and blind review artifacts"}, "observable": "Direct and runtime deltas are reported while residual completeness remains explicit"}
+      ],
+      "states": [
+        {"state_id": "dynamic-delta-audited", "actor_state": "independent QA and reviewer", "relationship_state": "candidate calls and registrations compared", "namespace_relation": "all affected namespaces", "expected_effect": "UNCHANGED"}
+      ],
+      "contract_ids": ["REQ_SINGLE_VISIBILITY_SOURCE"],
+      "invariant_ids": ["DYNAMIC_SURFACE_NOT_ASSUMED_SAFE"]
+    }
+  ],
+  "invariants": [
+    {"invariant_id": "AUTHZ_CURRENT_METADATA_READ", "class": "AUTHORIZATION", "statement": "Subscription mutation occurs only after current metadata read access succeeds.", "applies_to_path_ids": ["subscription-create"], "state_ids": ["subscribe-public-active", "subscribe-private-denied", "subscribe-hidden-denied", "subscribe-removed-denied", "subscribe-authority-failure"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["HD-32 item 1", "VisibilityChecker"]},
+    {"invariant_id": "PRIVATE_OWNER_MANAGER_BOUNDARY", "class": "AUTHORIZATION", "statement": "PRIVATE remains readable to the owner or current namespace ADMIN/OWNER and denied to ordinary members across every new path.", "applies_to_path_ids": ["subscription-create", "my-subscriptions-current-read", "published-subscriber-fanout", "yanked-subscriber-fanout", "visibility-checker-consumer-regression", "subscription-policy-disposition"], "state_ids": ["subscribe-private-manager", "subscribe-private-denied", "stale-read-private-denied", "published-private-denied", "yanked-private-denied", "existing-consumer-matrix", "policy-private-owner", "policy-private-manager", "policy-private-denied"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["HD-32 explicit boundary", "base VisibilityChecker"]},
+    {"invariant_id": "ACCOUNT_STATUS_FAIL_CLOSED", "class": "AUTHORIZATION", "statement": "Missing or non-active accounts reach no metadata mutation, response or recipient sink, even with role bindings.", "applies_to_path_ids": ["subscription-create", "my-subscriptions-current-read", "published-subscriber-fanout", "yanked-subscriber-fanout", "subscription-policy-disposition", "current-authority-resolution"], "state_ids": ["subscribe-disabled-denied", "stale-read-disabled-denied", "published-disabled-denied", "yanked-disabled-denied", "policy-disabled-denied", "authority-disabled-user"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["HD-32 disabled-user case", "UserAccount.isActive"]},
+    {"invariant_id": "SUBSCRIBE_ATOMICITY", "class": "TRANSACTION", "statement": "Denied subscribe performs zero row, count and event effects; allowed non-idempotent subscribe performs all once.", "applies_to_path_ids": ["subscription-create"], "state_ids": ["subscribe-public-active", "subscribe-private-denied", "subscribe-hidden-denied", "subscribe-removed-denied", "subscribe-disabled-denied", "subscribe-authority-failure"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["SkillSubscriptionService @Transactional", "HD-32 item 1"]},
+    {"invariant_id": "REVOCATION_ESCAPE_PATH", "class": "AUTHORIZATION", "statement": "Loss of current metadata access does not prevent deletion of the caller's retained subscription row.", "applies_to_path_ids": ["subscription-unsubscribe"], "state_ids": ["unsubscribe-after-revocation"], "failure_semantics": "UNCHANGED", "source_evidence": ["inventory r1-unsubscribe-revocation-escape"]},
+    {"invariant_id": "SUBSCRIPTION_COUNTER_INTEGRITY", "class": "INTEGRITY", "statement": "Unsubscribe decrements exactly once only when an own row exists.", "applies_to_path_ids": ["subscription-unsubscribe"], "state_ids": ["unsubscribe-after-revocation", "unsubscribe-no-row"], "failure_semantics": "UNCHANGED", "source_evidence": ["SkillSubscriptionService.unsubscribe base behavior"]},
+    {"invariant_id": "OWN_RELATION_COMPATIBILITY", "class": "COMPATIBILITY", "statement": "isSubscribed preserves authenticated own-row boolean and anonymous false behavior without metadata.", "applies_to_path_ids": ["subscription-status-read"], "state_ids": ["status-stale-own-row", "status-anonymous"], "failure_semantics": "UNCHANGED", "source_evidence": ["base controller and service"]},
+    {"invariant_id": "STALE_ROW_METADATA_CONFIDENTIALITY", "class": "PRIVACY", "statement": "Retained rows whose skills are missing or no longer readable expose no SkillSummaryResponse fields.", "applies_to_path_ids": ["my-subscriptions-current-read"], "state_ids": ["stale-read-private-denied", "stale-read-removed-denied", "stale-read-hidden-denied", "stale-read-disabled-denied", "stale-read-deleted-skill-row", "stale-read-authority-failure"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["inventory r1-my-subscriptions-stale-row-read"]},
+    {"invariant_id": "VISIBLE_PAGINATION_NO_COUNT_LEAK", "class": "PRIVACY", "statement": "The /me/subscriptions total and items both describe the current-readable set and do not reveal stale row count.", "applies_to_path_ids": ["my-subscriptions-current-read"], "state_ids": ["stale-read-mixed-page"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["PageResponse total is recipient-visible", "plan-r1 stale disposition"]},
+    {"invariant_id": "NO_READ_TIME_CLEANUP", "class": "INTEGRITY", "statement": "Filtering /me/subscriptions performs no delete, counter decrement or migration side effect.", "applies_to_path_ids": ["my-subscriptions-current-read"], "state_ids": ["stale-read-private-denied", "stale-read-mixed-page"], "failure_semantics": "UNCHANGED", "source_evidence": ["HD-32 no prune or cleanup boundary"]},
+    {"invariant_id": "FANOUT_CURRENT_STATE", "class": "AUTHORIZATION", "statement": "Fanout uses account, membership and RBAC facts loaded at event handling time rather than subscription-time state.", "applies_to_path_ids": ["published-subscriber-fanout", "yanked-subscriber-fanout"], "state_ids": ["published-removed-denied", "published-disabled-denied", "yanked-removed-denied", "yanked-disabled-denied"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["HD-32 item 2", "inventory current authority candidates"]},
+    {"invariant_id": "NO_N_PLUS_ONE", "class": "AVAILABILITY", "statement": "Fanout and retained-row page filtering use bounded batch authority reads and no per-candidate repository lookup in their decision loops.", "applies_to_path_ids": ["published-subscriber-fanout", "yanked-subscriber-fanout", "current-authority-resolution"], "state_ids": ["published-namespace-member", "yanked-namespace-member", "authority-current-member"], "failure_semantics": "EXPLICIT_ERROR", "source_evidence": ["UserAccountRepository.findByIdIn", "UserRoleBindingRepository.findByUserIdIn"]},
+    {"invariant_id": "FAIL_CLOSED_BEFORE_RECIPIENT_SINK", "class": "TRANSACTION", "statement": "Authority source failure occurs before every recipient row, SSE and metadata response sink.", "applies_to_path_ids": ["published-subscriber-fanout", "yanked-subscriber-fanout", "current-authority-resolution"], "state_ids": ["published-authority-failure", "yanked-authority-failure", "authority-load-failure"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["inventory no-partial-fanout invariants"]},
+    {"invariant_id": "SKIP_EVENT_ACTOR", "class": "COMPATIBILITY", "statement": "Published fanout skips publisher and yanked fanout skips actor after eligibility without affecting other recipients.", "applies_to_path_ids": ["published-subscriber-fanout", "yanked-subscriber-fanout"], "state_ids": ["published-publisher-skipped", "yanked-actor-skipped"], "failure_semantics": "UNCHANGED", "source_evidence": ["base NotificationEventListener"]},
+    {"invariant_id": "YANK_PURPOSE_NARROWNESS", "class": "AUTHORIZATION", "statement": "A genuine yank may bypass only the latest-null guard; private, hidden, membership, account, namespace and actor gates remain enforced.", "applies_to_path_ids": ["yanked-subscriber-fanout"], "state_ids": ["yanked-latest-null-revocation", "yanked-private-denied", "yanked-hidden-denied", "yanked-removed-denied", "yanked-disabled-denied", "yanked-actor-skipped"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["inventory yanked states", "plan-r1 inference"]},
+    {"invariant_id": "SEARCH_CONSUMER_INDEPENDENCE", "class": "INTEGRITY", "statement": "Subscriber eligibility, notification failure or shared-executor saturation does not suppress, duplicate or reorder the independent published search-index consumer.", "applies_to_path_ids": ["published-search-index-consumer"], "state_ids": ["search-publish-commit", "search-subscriber-failure-independent", "search-executor-saturation"], "failure_semantics": "UNCHANGED", "source_evidence": ["inventory r2-published-search-index-consumer"]},
+    {"invariant_id": "ROLLBACK_ZERO_EVENT_SINK", "class": "TRANSACTION", "statement": "Rolled-back or no-transaction event publication produces no registered AFTER_COMMIT subscriber or search sink.", "applies_to_path_ids": ["published-search-index-consumer", "spring-runtime-dispatch"], "state_ids": ["search-publish-rollback", "runtime-rollback", "runtime-no-transaction"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["TransactionalEventListener AFTER_COMMIT semantics"]},
+    {"invariant_id": "VISIBILITY_CONSUMER_COMPAT", "class": "COMPATIBILITY", "statement": "Eight existing VisibilityChecker call sites and old overload matrix remain observably identical.", "applies_to_path_ids": ["visibility-checker-consumer-regression"], "state_ids": ["existing-consumer-matrix"], "failure_semantics": "UNCHANGED", "source_evidence": ["inventory r3-visibility-shared-policy-surface"]},
+    {"invariant_id": "NO_PARALLEL_VISIBILITY_MODEL", "class": "INTEGRITY", "statement": "No SubscriptionMetadataAccessPolicy class or resolver-local visibility decision tree is introduced.", "applies_to_path_ids": ["subscription-policy-disposition"], "state_ids": ["policy-absent-base"], "failure_semantics": "UNCHANGED", "source_evidence": ["HD-32 item 3", "base class absence"]},
+    {"invariant_id": "CURRENT_AUTHORITY_AT_DECISION", "class": "AUTHORIZATION", "statement": "Current account, membership and platform-role facts determine subscribe, retained-row reads and fanout.", "applies_to_path_ids": ["current-authority-resolution"], "state_ids": ["authority-current-member", "authority-removed-member", "authority-disabled-user", "authority-role-revoked", "authority-load-failure"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["inventory authority candidates"]},
+    {"invariant_id": "FINAL_RECIPIENT_CORRECTNESS", "class": "PRIVACY", "statement": "Only eligible, de-duplicated recipients reach durable row, SSE and later list payload sinks.", "applies_to_path_ids": ["notification-final-sinks"], "state_ids": ["notification-eligible-enabled", "notification-ineligible-enabled-preference", "notification-persist-failure", "notification-duplicate-subscriber"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["inventory r4 final sinks"]},
+    {"invariant_id": "PERSIST_BEFORE_SSE", "class": "TRANSACTION", "statement": "A notification row commits before matching SSE; SSE failure does not undo the row.", "applies_to_path_ids": ["notification-final-sinks"], "state_ids": ["notification-eligible-enabled", "notification-persist-failure", "notification-sse-failure"], "failure_semantics": "EXPLICIT_ERROR", "source_evidence": ["NotificationDispatcher flow", "INFER_REQUIRES_NEW_NOTIFICATION"]},
+    {"invariant_id": "PREFERENCE_NOT_AUTHORIZATION", "class": "AUTHORIZATION", "statement": "IN_APP preference is evaluated only after authorization and cannot cause an ineligible recipient to pass.", "applies_to_path_ids": ["notification-final-sinks"], "state_ids": ["notification-eligible-disabled-preference", "notification-ineligible-enabled-preference"], "failure_semantics": "FAIL_CLOSED", "source_evidence": ["NotificationDispatcher", "inventory r4"]},
+    {"invariant_id": "AFTER_COMMIT_ASYNC_DELIVERY", "class": "TRANSACTION", "statement": "With executor capacity, the registered listener runs only after source commit and produces committed row before SSE.", "applies_to_path_ids": ["spring-runtime-dispatch"], "state_ids": ["runtime-commit"], "failure_semantics": "EXPLICIT_ERROR", "source_evidence": ["NotificationEventListener annotations", "AsyncConfig"]},
+    {"invariant_id": "CALLER_RUNS_ROW_BEFORE_SSE", "class": "TRANSACTION", "statement": "A saturated running configured executor may run on publisher thread but still commits row before SSE.", "applies_to_path_ids": ["spring-runtime-dispatch"], "state_ids": ["runtime-caller-runs-saturation"], "failure_semantics": "EXPLICIT_ERROR", "source_evidence": ["AsyncConfig CallerRunsPolicy", "NotificationService transaction inference"]},
+    {"invariant_id": "DYNAMIC_SURFACE_NOT_ASSUMED_SAFE", "class": "AVAILABILITY", "statement": "Reflection, generated, external and runtime-conditional paths remain explicit audit residuals rather than absence claims.", "applies_to_path_ids": ["dynamic-surface-audit"], "state_ids": ["dynamic-delta-audited"], "failure_semantics": "EXPLICIT_ERROR", "source_evidence": ["inventory D2 coverage_note"]}
+  ],
+  "acceptance_probes": [
+    {"probe_id": "subscribe-private-denied", "path_id": "subscription-create", "state_id": "subscribe-private-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java", "symbol": "subscribe_privateOrdinaryMember_deniesBeforeMutation"}, "sink_assertions": ["DomainForbiddenException code is exact", "zero row, counter and event while PRIVATE manager control is allowed"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_privateOrdinaryMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "subscribe-hidden-denied", "path_id": "subscription-create", "state_id": "subscribe-hidden-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java", "symbol": "subscribe_hiddenOrdinaryMember_deniesBeforeMutation"}, "sink_assertions": ["zero row, counter and event", "owner or manager control is allowed"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_hiddenOrdinaryMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "subscribe-removed-denied", "path_id": "subscription-create", "state_id": "subscribe-removed-denied", "class": "REVOCATION", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java", "symbol": "subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation"}, "sink_assertions": ["absent current membership yields zero mutation and event", "current MEMBER control is allowed"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "subscribe-disabled-denied", "path_id": "subscription-create", "state_id": "subscribe-disabled-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java", "symbol": "subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill"}, "sink_assertions": ["disabled user on PUBLIC reaches zero row, count and event", "active control succeeds"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "subscribe-authority-failure", "path_id": "subscription-create", "state_id": "subscribe-authority-failure", "class": "FAILURE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java", "symbol": "subscribe_authorityLoadFailure_hasZeroMutation"}, "sink_assertions": ["loader exception propagates or becomes explicit closed error", "zero row, count and event"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_authorityLoadFailure_hasZeroMutation -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "subscribe-message-en-zh", "path_id": "subscription-create", "state_id": "subscribe-private-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/exception/SubscriptionMessageBundleTest.java", "symbol": "subscriptionDeniedMessage_resolvesEnglishAndChinese"}, "sink_assertions": ["English copy equals frozen text", "Chinese copy equals frozen text and neither falls back to raw code"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriptionMessageBundleTest -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "unsubscribe-revocation-escape", "path_id": "subscription-unsubscribe", "state_id": "unsubscribe-after-revocation", "class": "REVOCATION", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java", "symbol": "unsubscribe_afterReadRevoked_stillDeletes"}, "sink_assertions": ["own stale row deleted", "count decremented and event published once without visibility gate"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#unsubscribe_afterReadRevoked_stillDeletes -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "PASS", "expected_after": "PASS"},
+    {"probe_id": "status-stale-own-row", "path_id": "subscription-status-read", "state_id": "status-stale-own-row", "class": "COMPATIBILITY", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionControllerTest.java", "symbol": "checkSubscribed_staleOwnRowPreservesBoolean"}, "sink_assertions": ["authenticated caller sees true for own retained row", "response contains no skill metadata"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionControllerTest#checkSubscribed_staleOwnRowPreservesBoolean -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "PASS", "expected_after": "PASS"},
+    {"probe_id": "stale-read-private-denied", "path_id": "my-subscriptions-current-read", "state_id": "stale-read-private-denied", "class": "STALE_STATE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java", "symbol": "listMySubscriptions_filtersPrivateStaleRow"}, "sink_assertions": ["no private SkillSummaryResponse item", "stale row remains and no counter mutation occurs"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_filtersPrivateStaleRow -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "stale-read-removed-denied", "path_id": "my-subscriptions-current-read", "state_id": "stale-read-removed-denied", "class": "REVOCATION", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java", "symbol": "listMySubscriptions_filtersRemovedMemberRow"}, "sink_assertions": ["removed NAMESPACE_ONLY row exposes no item", "retained database row is not deleted"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_filtersRemovedMemberRow -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "stale-read-hidden-denied", "path_id": "my-subscriptions-current-read", "state_id": "stale-read-hidden-denied", "class": "STALE_STATE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java", "symbol": "listMySubscriptions_filtersHiddenRow"}, "sink_assertions": ["hidden stale row exposes no item", "owner or manager visible control remains"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_filtersHiddenRow -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "stale-read-disabled-denied", "path_id": "my-subscriptions-current-read", "state_id": "stale-read-disabled-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java", "symbol": "listMySubscriptions_disabledUserGetsNoMetadata"}, "sink_assertions": ["disabled account receives no items", "retained rows and counts are not mutated"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_disabledUserGetsNoMetadata -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "stale-read-deleted-skill-row", "path_id": "my-subscriptions-current-read", "state_id": "stale-read-deleted-skill-row", "class": "STALE_STATE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java", "symbol": "listMySubscriptions_missingSkillRowIsOmittedWithoutCleanup"}, "sink_assertions": ["missing-skill retained row produces no metadata item or total contribution", "read performs no row or count mutation"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_missingSkillRowIsOmittedWithoutCleanup -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "PASS", "expected_after": "PASS"},
+    {"probe_id": "stale-read-mixed-visible-total", "path_id": "my-subscriptions-current-read", "state_id": "stale-read-mixed-page", "class": "STALE_STATE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java", "symbol": "listMySubscriptions_filtersStaleMetadataAndVisibleTotal"}, "sink_assertions": ["items contain only visible rows in stable order", "total equals visible set rather than underlying retained-row count"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_filtersStaleMetadataAndVisibleTotal -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "stale-read-authority-failure", "path_id": "my-subscriptions-current-read", "state_id": "stale-read-authority-failure", "class": "FAILURE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java", "symbol": "listMySubscriptions_authorityFailureReturnsNoPartialPage"}, "sink_assertions": ["no partial metadata page is returned", "no row or count cleanup side effect occurs"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_authorityFailureReturnsNoPartialPage -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "published-private-denied", "path_id": "published-subscriber-fanout", "state_id": "published-private-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "publish_privateOrdinaryMember_hasZeroRowAndSse"}, "sink_assertions": ["ordinary member gets zero row and SSE", "PRIVATE manager control gets exact row and SSE"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_privateOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "published-hidden-denied", "path_id": "published-subscriber-fanout", "state_id": "published-hidden-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "publish_hiddenOrdinaryMember_hasZeroRowAndSse"}, "sink_assertions": ["ordinary member gets zero row and SSE", "owner or manager control gets exact sink tuple"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_hiddenOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "published-removed-denied", "path_id": "published-subscriber-fanout", "state_id": "published-removed-denied", "class": "REVOCATION", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "publish_namespaceOnlyRemovedMember_hasZeroRowAndSse"}, "sink_assertions": ["stale row with absent membership gets zero row and SSE", "current MEMBER control gets exact sink tuple"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_namespaceOnlyRemovedMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "published-disabled-denied", "path_id": "published-subscriber-fanout", "state_id": "published-disabled-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "publish_disabledUser_hasZeroRowAndSse"}, "sink_assertions": ["disabled subscriber gets zero row and SSE", "active control gets exact sink tuple"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_disabledUser_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "published-publisher-skipped", "path_id": "published-subscriber-fanout", "state_id": "published-publisher-skipped", "class": "COMPATIBILITY", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/NotificationEventListenerTest.java", "symbol": "publishedFanout_skipsPublisherAfterEligibility"}, "sink_assertions": ["publisher gets zero subscriber notification", "other eligible recipient unaffected"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=NotificationEventListenerTest#publishedFanout_skipsPublisherAfterEligibility -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "PASS", "expected_after": "PASS"},
+    {"probe_id": "published-authority-failure", "path_id": "published-subscriber-fanout", "state_id": "published-authority-failure", "class": "FAILURE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationRuntimeIntegrationTest.java", "symbol": "published_authorityFailures_haveZeroFinalSink"}, "sink_assertions": ["each account, membership, RBAC and namespace failure occurs before dispatcher", "real Notification table and recording SSE stay empty"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationRuntimeIntegrationTest#published_authorityFailures_haveZeroFinalSink -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "yanked-private-denied", "path_id": "yanked-subscriber-fanout", "state_id": "yanked-private-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "yank_privateOrdinaryMember_hasZeroRowAndSse"}, "sink_assertions": ["ordinary member gets zero yank row and SSE", "PRIVATE manager control gets exact sink tuple"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_privateOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "yanked-hidden-denied", "path_id": "yanked-subscriber-fanout", "state_id": "yanked-hidden-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "yank_hiddenOrdinaryMember_hasZeroRowAndSse"}, "sink_assertions": ["ordinary member gets zero yank row and SSE", "owner or manager control gets exact tuple"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_hiddenOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "yanked-removed-denied", "path_id": "yanked-subscriber-fanout", "state_id": "yanked-removed-denied", "class": "REVOCATION", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "yank_namespaceOnlyRemovedMember_hasZeroRowAndSse"}, "sink_assertions": ["removed member gets zero row and SSE", "current MEMBER control gets exact tuple"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_namespaceOnlyRemovedMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "yanked-disabled-denied", "path_id": "yanked-subscriber-fanout", "state_id": "yanked-disabled-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "yank_disabledUser_hasZeroRowAndSse"}, "sink_assertions": ["disabled subscriber gets zero row and SSE", "active control gets exact tuple"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_disabledUser_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "yanked-actor-skipped", "path_id": "yanked-subscriber-fanout", "state_id": "yanked-actor-skipped", "class": "COMPATIBILITY", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/NotificationEventListenerTest.java", "symbol": "yankedFanout_skipsActorAfterEligibility"}, "sink_assertions": ["actor gets zero subscriber notification", "other eligible recipient unaffected"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=NotificationEventListenerTest#yankedFanout_skipsActorAfterEligibility -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "PASS", "expected_after": "PASS"},
+    {"probe_id": "yanked-authority-failure", "path_id": "yanked-subscriber-fanout", "state_id": "yanked-authority-failure", "class": "FAILURE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationRuntimeIntegrationTest.java", "symbol": "yanked_authorityFailures_haveZeroFinalSink"}, "sink_assertions": ["each authority failure occurs before dispatcher", "real Notification table and recording SSE stay empty"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationRuntimeIntegrationTest#yanked_authorityFailures_haveZeroFinalSink -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "search-rollback-zero", "path_id": "published-search-index-consumer", "state_id": "search-publish-rollback", "class": "FAILURE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationRuntimeIntegrationTest.java", "symbol": "publishedRollback_hasZeroNotificationAndSearchSinks"}, "sink_assertions": ["rollback invokes zero search rebuild", "rollback produces zero notification row and SSE"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationRuntimeIntegrationTest#publishedRollback_hasZeroNotificationAndSearchSinks -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "visibility-legacy-differential", "path_id": "visibility-checker-consumer-regression", "state_id": "existing-consumer-matrix", "class": "COMPATIBILITY", "entry": {"path": "server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/skill/VisibilityCheckerLegacyCompatibilityTest.java", "symbol": "legacyOverloads_emitStableCompatibilityMatrix"}, "sink_assertions": ["same source emits identical normalized case lines on base and candidate", "eight consumer regression suites stay green and production caller files are unchanged"], "command": "run VisibilityCheckerLegacyCompatibilityTest at base and candidate; diff normalized matrix; run eight consumer suites", "expected_before": "PASS", "expected_after": "PASS"},
+    {"probe_id": "policy-private-denied", "path_id": "subscription-policy-disposition", "state_id": "policy-private-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/skill/VisibilityCheckerTest.java", "symbol": "fullContext_privateOrdinaryMemberDeniedManagersAllowed"}, "sink_assertions": ["ordinary member is false while owner, ADMIN and OWNER are true", "SubscriptionMetadataAccessPolicy.java is absent from candidate diff"], "command": "cd server && ./mvnw -pl skillhub-domain -am -Dtest=VisibilityCheckerTest#fullContext_privateOrdinaryMemberDeniedManagersAllowed -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "policy-disabled-denied", "path_id": "subscription-policy-disposition", "state_id": "policy-disabled-denied", "class": "NEGATIVE", "entry": {"path": "server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/skill/VisibilityCheckerTest.java", "symbol": "fullContext_disabledAccountDeniedEvenWithRoles"}, "sink_assertions": ["disabled account false with manager and SUPER_ADMIN roles", "no caller re-allows a false checker result"], "command": "cd server && ./mvnw -pl skillhub-domain -am -Dtest=VisibilityCheckerTest#fullContext_disabledAccountDeniedEvenWithRoles -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "authority-removed-member", "path_id": "current-authority-resolution", "state_id": "authority-removed-member", "class": "REVOCATION", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java", "symbol": "removedMember_isDeniedFromCurrentFacts"}, "sink_assertions": ["absent current membership reaches checker as no role", "stale subscription row is never treated as authority"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberAccessResolverTest#removedMember_isDeniedFromCurrentFacts -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "authority-disabled-user", "path_id": "current-authority-resolution", "state_id": "authority-disabled-user", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java", "symbol": "disabledUser_isDeniedEvenWithBindings"}, "sink_assertions": ["disabled account excluded", "role bindings cannot override inactive status"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberAccessResolverTest#disabledUser_isDeniedEvenWithBindings -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "authority-role-revoked", "path_id": "current-authority-resolution", "state_id": "authority-role-revoked", "class": "REVOCATION", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java", "symbol": "revokedManagerAndSuperAdminRolesTakeEffect"}, "sink_assertions": ["current bindings without manager or SUPER_ADMIN deny private or hidden access", "old role snapshot is not used"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberAccessResolverTest#revokedManagerAndSuperAdminRolesTakeEffect -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "authority-load-failure", "path_id": "current-authority-resolution", "state_id": "authority-load-failure", "class": "FAILURE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java", "symbol": "authorityLoaderFailureReturnsNoPartialRecipients"}, "sink_assertions": ["loader failure yields no readable recipient list", "checker and downstream sink are not partially invoked"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberAccessResolverTest#authorityLoaderFailureReturnsNoPartialRecipients -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "notification-ineligible-zero", "path_id": "notification-final-sinks", "state_id": "notification-ineligible-enabled-preference", "class": "NEGATIVE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java", "symbol": "ineligibleRecipient_preferenceEnabledStillHasZeroFinalSink"}, "sink_assertions": ["preference enabled cannot admit ineligible recipient", "zero durable row, SSE and later list item"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#ineligibleRecipient_preferenceEnabledStillHasZeroFinalSink -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "FAIL", "expected_after": "PASS"},
+    {"probe_id": "notification-preference-disabled", "path_id": "notification-final-sinks", "state_id": "notification-eligible-disabled-preference", "class": "NEGATIVE", "entry": {"path": "server/skillhub-notification/src/test/java/com/iflytek/skillhub/notification/service/NotificationDispatcherTest.java", "symbol": "disabledPreference_suppressesRowAndSseAfterAuthorization"}, "sink_assertions": ["authorized recipient with disabled preference gets zero row and SSE", "authorization is evaluated before dispatcher preference"], "command": "cd server && ./mvnw -pl skillhub-notification -am -Dtest=NotificationDispatcherTest#disabledPreference_suppressesRowAndSseAfterAuthorization -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "PASS", "expected_after": "PASS"},
+    {"probe_id": "notification-persist-failure", "path_id": "notification-final-sinks", "state_id": "notification-persist-failure", "class": "FAILURE", "entry": {"path": "server/skillhub-notification/src/test/java/com/iflytek/skillhub/notification/service/NotificationDispatcherTest.java", "symbol": "persistenceFailure_propagatesAndSkipsSse"}, "sink_assertions": ["persistence exception propagates", "SSE is never pushed"], "command": "cd server && ./mvnw -pl skillhub-notification -am -Dtest=NotificationDispatcherTest#persistenceFailure_propagatesAndSkipsSse -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "PASS", "expected_after": "PASS"},
+    {"probe_id": "runtime-rollback-zero", "path_id": "spring-runtime-dispatch", "state_id": "runtime-rollback", "class": "FAILURE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationRuntimeIntegrationTest.java", "symbol": "rollbackAndNoTransaction_skipRegisteredListenerAndAllSinks"}, "sink_assertions": ["real rollback invokes zero resolver and dispatcher", "Notification table and SSE stay empty"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationRuntimeIntegrationTest#rollbackAndNoTransaction_skipRegisteredListenerAndAllSinks -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "runtime-no-transaction-zero", "path_id": "spring-runtime-dispatch", "state_id": "runtime-no-transaction", "class": "FAILURE", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationRuntimeIntegrationTest.java", "symbol": "rollbackAndNoTransaction_skipRegisteredListenerAndAllSinks"}, "sink_assertions": ["no-transaction publication invokes zero listener sink", "Notification table and SSE stay empty"], "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationRuntimeIntegrationTest#rollbackAndNoTransaction_skipRegisteredListenerAndAllSinks -Dsurefire.failIfNoSpecifiedTests=false test", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"},
+    {"probe_id": "dynamic-registry-audit", "path_id": "dynamic-surface-audit", "state_id": "dynamic-delta-audited", "class": "COMPATIBILITY", "entry": {"path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationRuntimeIntegrationTest.java", "symbol": "springRegistry_reportsSubscriberProxyPhaseExecutorAndAllListeners"}, "sink_assertions": ["exact-tree D2 and runtime listener registry deltas are recorded", "reflection, generated and external completeness remains explicitly unproven"], "command": "rerun frozen Semgrep command and springRegistry_reportsSubscriberProxyPhaseExecutorAndAllListeners on candidate exact tree", "expected_before": "NOT_APPLICABLE", "expected_after": "PASS"}
+  ],
+  "coverage_closure": {
+    "inventory_candidate_ids": [
+      "r1-subscribe-create",
+      "r1-unsubscribe-revocation-escape",
+      "r1-is-subscribed-read",
+      "r1-my-subscriptions-stale-row-read",
+      "r2-published-subscriber-fanout",
+      "r2-yanked-subscriber-fanout",
+      "r2-published-search-index-consumer",
+      "r3-visibility-shared-policy-surface",
+      "r3-subscription-metadata-access-policy-contract",
+      "r3-namespace-membership-authority",
+      "r3-rbac-account-authority",
+      "r4-notification-persistence-and-transport",
+      "unverified-spring-runtime-dispatch",
+      "unverified-reflection-generated-external-partial-parse"
+    ],
+    "planned_path_ids": [
+      "subscription-create",
+      "subscription-unsubscribe",
+      "subscription-status-read",
+      "my-subscriptions-current-read",
+      "published-subscriber-fanout",
+      "yanked-subscriber-fanout",
+      "published-search-index-consumer",
+      "visibility-checker-consumer-regression",
+      "subscription-policy-disposition",
+      "current-authority-resolution",
+      "notification-final-sinks",
+      "spring-runtime-dispatch",
+      "dynamic-surface-audit"
+    ],
+    "excluded_candidate_ids": [],
+    "unresolved_candidate_ids": []
+  },
+  "write_set": [
+    "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java",
+    "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java",
+    "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/namespace/NamespaceMemberRepository.java",
+    "server/skillhub-infra/src/main/java/com/iflytek/skillhub/infra/jpa/NamespaceMemberJpaRepository.java",
+    "server/skillhub-auth/src/main/java/com/iflytek/skillhub/auth/rbac/RbacService.java",
+    "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationService.java",
+    "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java",
+    "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/MeController.java",
+    "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/MySkillAppService.java",
+    "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java",
+    "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+    "server/skillhub-app/src/main/resources/messages.properties",
+    "server/skillhub-app/src/main/resources/messages_zh.properties",
+    "server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/skill/VisibilityCheckerTest.java",
+    "server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/skill/VisibilityCheckerLegacyCompatibilityTest.java",
+    "server/skillhub-auth/src/test/java/com/iflytek/skillhub/auth/rbac/RbacServiceTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionControllerTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/exception/SubscriptionMessageBundleTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/NotificationEventListenerTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationRuntimeIntegrationTest.java",
+    "server/skillhub-app/src/test/java/com/iflytek/skillhub/notification/sse/RecordingSseEmitterTestConfiguration.java",
+    "server/skillhub-search/src/test/java/com/iflytek/skillhub/search/event/SearchIndexEventListenerTest.java",
+    "server/skillhub-notification/src/test/java/com/iflytek/skillhub/notification/service/NotificationServiceTest.java",
+    "server/skillhub-notification/src/test/java/com/iflytek/skillhub/notification/service/NotificationDispatcherTest.java"
+  ],
+  "work_partition": [
+    {
+      "unit_id": "subscription-authz-hardening",
+      "path_ids": [
+        "subscription-create",
+        "subscription-unsubscribe",
+        "subscription-status-read",
+        "my-subscriptions-current-read",
+        "published-subscriber-fanout",
+        "yanked-subscriber-fanout",
+        "published-search-index-consumer",
+        "visibility-checker-consumer-regression",
+        "subscription-policy-disposition",
+        "current-authority-resolution",
+        "notification-final-sinks",
+        "spring-runtime-dispatch",
+        "dynamic-surface-audit"
+      ],
+      "write_set": [
+        "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/skill/VisibilityChecker.java",
+        "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/social/SkillSubscriptionService.java",
+        "server/skillhub-domain/src/main/java/com/iflytek/skillhub/domain/namespace/NamespaceMemberRepository.java",
+        "server/skillhub-infra/src/main/java/com/iflytek/skillhub/infra/jpa/NamespaceMemberJpaRepository.java",
+        "server/skillhub-auth/src/main/java/com/iflytek/skillhub/auth/rbac/RbacService.java",
+        "server/skillhub-notification/src/main/java/com/iflytek/skillhub/notification/service/NotificationService.java",
+        "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionController.java",
+        "server/skillhub-app/src/main/java/com/iflytek/skillhub/controller/portal/MeController.java",
+        "server/skillhub-app/src/main/java/com/iflytek/skillhub/service/MySkillAppService.java",
+        "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/SubscriberAccessResolver.java",
+        "server/skillhub-app/src/main/java/com/iflytek/skillhub/listener/NotificationEventListener.java",
+        "server/skillhub-app/src/main/resources/messages.properties",
+        "server/skillhub-app/src/main/resources/messages_zh.properties",
+        "server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/skill/VisibilityCheckerTest.java",
+        "server/skillhub-domain/src/test/java/com/iflytek/skillhub/domain/skill/VisibilityCheckerLegacyCompatibilityTest.java",
+        "server/skillhub-auth/src/test/java/com/iflytek/skillhub/auth/rbac/RbacServiceTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/controller/portal/SkillSubscriptionControllerTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/exception/SubscriptionMessageBundleTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/NotificationEventListenerTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationRuntimeIntegrationTest.java",
+        "server/skillhub-app/src/test/java/com/iflytek/skillhub/notification/sse/RecordingSseEmitterTestConfiguration.java",
+        "server/skillhub-search/src/test/java/com/iflytek/skillhub/search/event/SearchIndexEventListenerTest.java",
+        "server/skillhub-notification/src/test/java/com/iflytek/skillhub/notification/service/NotificationServiceTest.java",
+        "server/skillhub-notification/src/test/java/com/iflytek/skillhub/notification/service/NotificationDispatcherTest.java"
+      ],
+      "depends_on": [],
+      "shared_resources": [
+        "VisibilityChecker full-context contract used by subscribe, stale read and fanout",
+        "batch authority seams and current-state fixtures",
+        "real Spring transaction/executor/Notification/SSE fixture",
+        "one reachable RED-to-GREEN ancestry and exact subject tree"
+      ],
+      "no_split_rationale": "The policy signature, retained-row read filter, authority batch seams, subscriber listeners, notification transaction and runtime fixtures share production files and one invariant set; splitting would create conflicting writes and unverifiable partial policy states."
+    }
+  ],
+  "council_nomination": {
+    "required": true,
+    "declined_lenses": [
+      {"anchor": "Linus Torvalds-style", "reason": "Interface simplicity has a real but smaller surface than the independent privacy, event-consistency and final-sink evidence questions filling the three available seats."}
+    ],
+    "members": [
+      {
+        "lens_id": "stale-disclosure-dissent",
+        "anchor": "Bruce Schneier-style",
+        "rationale": "my-subscriptions-current-read and subscription-policy-disposition decide whether retained private/hidden/removed/disabled rows or a narrow yank purpose can expose metadata despite STALE_ROW_METADATA_CONFIDENTIALITY and PRIVATE_OWNER_MANAGER_BOUNDARY.",
+        "referenced_path_ids": ["my-subscriptions-current-read", "subscription-policy-disposition", "yanked-subscriber-fanout"],
+        "referenced_invariant_ids": ["STALE_ROW_METADATA_CONFIDENTIALITY", "VISIBLE_PAGINATION_NO_COUNT_LEAK", "PRIVATE_OWNER_MANAGER_BOUNDARY", "YANK_PURPOSE_NARROWNESS"],
+        "must_answer": [
+          "Under what concrete state is the plan wrong because a retained row still leaks SkillSummaryResponse fields or total count?",
+          "Can YANK_REVOCATION_NOTICE be invoked by any non-yank path or bypass private, hidden, removed-member or disabled-user denial?",
+          "Does keeping PRIVATE manager access match every new path without reintroducing SubscriptionMetadataAccessPolicy or resolver-local rules?",
+          "Can stale rows or old RBAC snapshots become authority after membership, account or role revocation?"
+        ],
+        "dissent_role": true
+      },
+      {
+        "lens_id": "derived-event-consistency",
+        "anchor": "Martin Kleppmann-style",
+        "rationale": "spring-runtime-dispatch, notification-final-sinks and published-search-index-consumer share one SkillPublishedEvent but derive independent durable notification and search records across AFTER_COMMIT, CallerRuns, REQUIRES_NEW and failure boundaries.",
+        "referenced_path_ids": ["spring-runtime-dispatch", "notification-final-sinks", "published-search-index-consumer", "published-subscriber-fanout"],
+        "referenced_invariant_ids": ["PERSIST_BEFORE_SSE", "CALLER_RUNS_ROW_BEFORE_SSE", "SEARCH_CONSUMER_INDEPENDENCE", "ROLLBACK_ZERO_EVENT_SINK"],
+        "must_answer": [
+          "Do ordinary async and CallerRuns both occur after source commit with notification row committed strictly before matching SSE?",
+          "Do rollback and no-transaction publication yield zero notification and search sinks through registered proxies?",
+          "Can subscriber authority or notification failure suppress, duplicate or reorder the independent search rebuild consumer?",
+          "Can any authority loader failure emit a partial recipient set before it fails?"
+        ],
+        "dissent_role": false
+      },
+      {
+        "lens_id": "final-sink-falsification",
+        "anchor": "Kent Beck-style",
+        "rationale": "subscription-create, my-subscriptions-current-read and both fanout paths need RED evidence that fails on actual mutation, visible page, durable row and SSE sinks rather than on helpers, mocks or broken scaffolding.",
+        "referenced_path_ids": ["subscription-create", "my-subscriptions-current-read", "published-subscriber-fanout", "yanked-subscriber-fanout", "dynamic-surface-audit"],
+        "referenced_invariant_ids": ["SUBSCRIBE_ATOMICITY", "VISIBLE_PAGINATION_NO_COUNT_LEAK", "FINAL_RECIPIENT_CORRECTNESS", "DYNAMIC_SURFACE_NOT_ASSUMED_SAFE"],
+        "must_answer": [
+          "Do RED tests compile on the reachable base and fail because old behavior reaches row, count, event, metadata page or recipient sink?",
+          "Does the mixed stale-page probe detect both leaked items and leaked total while proving no cleanup mutation?",
+          "Do runtime probes traverse real Spring proxy, transaction, configured executor, durable Notification row and recording SSE rather than a direct listener substitute?",
+          "Do private, hidden, removed-member and disabled-user denials assert zero final row and SSE with an allowed control?",
+          "Does candidate D2 plus runtime registry evidence preserve residual reflection, generated and external uncertainty instead of declaring completeness?"
+        ],
+        "dissent_role": false
+      }
+    ]
+  }
+}

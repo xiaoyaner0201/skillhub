@@ -16,3 +16,4 @@
 | 20260824-024121 | leader | intake+dispatch | leader/20260824-024121-intake-dispatch.md | — | — |
 | 20260824-030408 | qa | behavior discovery | qa/20260824-030408-behavior-discovery.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | FROZEN |
 | 20260824-030834 | leader | discovery gate + dispatch plan | leader/20260824-030834-discovery-gate-dispatch-plan.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | PASS |
+| 20260824-040000 | planner | plan r1 | planner/20260824-040000-plan-r1.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | FROZEN |
