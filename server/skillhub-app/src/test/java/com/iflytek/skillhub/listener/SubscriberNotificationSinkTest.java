@@ -152,7 +152,7 @@ class SubscriberNotificationSinkTest {
 
     /** Probe published-private-denied. */
     @Test
-    void publish_privateOrdinaryMember_reachesNeitherSink() {
+    void publish_privateOrdinaryMember_hasZeroRowAndSse() {
         givenSkill(SkillVisibility.PRIVATE, false);
         givenSubscribers(ORDINARY_MEMBER, OWNER);
 
@@ -164,7 +164,7 @@ class SubscriberNotificationSinkTest {
 
     /** Probe published-hidden-denied. */
     @Test
-    void publish_hiddenOrdinaryMember_reachesNeitherSink() {
+    void publish_hiddenOrdinaryMember_hasZeroRowAndSse() {
         givenSkill(SkillVisibility.PUBLIC, true);
         givenSubscribers(ORDINARY_MEMBER, OWNER);
 
@@ -182,7 +182,7 @@ class SubscriberNotificationSinkTest {
      * (reported as a Stage 1 plan gap).
      */
     @Test
-    void publish_namespaceOnlyRemovedMember_reachesNeitherSink() {
+    void publish_namespaceOnlyRemovedMember_hasZeroRowAndSse() {
         givenSkill(SkillVisibility.NAMESPACE_ONLY, false);
         givenSubscribers(FORMER_MEMBER, OWNER);
 
@@ -198,7 +198,7 @@ class SubscriberNotificationSinkTest {
 
     /** Probe yanked-private-denied. */
     @Test
-    void yank_privateOrdinaryMember_reachesNeitherSink() {
+    void yank_privateOrdinaryMember_hasZeroRowAndSse() {
         givenSkill(SkillVisibility.PRIVATE, false);
         givenSubscribers(ORDINARY_MEMBER, OWNER);
 
@@ -210,7 +210,7 @@ class SubscriberNotificationSinkTest {
 
     /** Probe yanked-hidden-denied. */
     @Test
-    void yank_hiddenOrdinaryMember_reachesNeitherSink() {
+    void yank_hiddenOrdinaryMember_hasZeroRowAndSse() {
         givenSkill(SkillVisibility.PUBLIC, true);
         givenSubscribers(ORDINARY_MEMBER, OWNER);
 
@@ -222,7 +222,7 @@ class SubscriberNotificationSinkTest {
 
     /** Probe yanked-removed-denied; same owner-as-control deviation as the publish variant. */
     @Test
-    void yank_namespaceOnlyRemovedMember_reachesNeitherSink() {
+    void yank_namespaceOnlyRemovedMember_hasZeroRowAndSse() {
         givenSkill(SkillVisibility.NAMESPACE_ONLY, false);
         givenSubscribers(FORMER_MEMBER, OWNER);
 
@@ -244,7 +244,7 @@ class SubscriberNotificationSinkTest {
      * recipient opts in and still reaches zero sinks.
      */
     @Test
-    void ineligibleRecipient_withPreferenceExplicitlyEnabled_stillReachesNeitherSink() {
+    void ineligibleRecipient_preferenceEnabledStillHasZeroFinalSink() {
         givenSkill(SkillVisibility.PRIVATE, false);
         givenSubscribers(ORDINARY_MEMBER, OWNER);
         lenient().when(preferenceRepository.findByUserIdAndCategoryAndChannel(
