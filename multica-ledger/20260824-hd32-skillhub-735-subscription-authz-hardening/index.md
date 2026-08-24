@@ -22,3 +22,4 @@
 | 20260824-040000 | planner | plan r1 | planner/20260824-040000-plan-r1.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | FROZEN |
 | 20260824-033836 | leader | plan gate + dispatch code | leader/20260824-033836-plan-gate-dispatch-code.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | PASS |
 | 20260824-044027 | leader | code 重编排 + dispatch stage 1 | leader/20260824-044027-code-restage-dispatch.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | — |
+| 20260824-063345 | leader | stage 1 重派（换 lane）+ upstream 漂移读回 | leader/20260824-063345-stage1-redispatch-new-lane.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | — |
