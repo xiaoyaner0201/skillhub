@@ -9,7 +9,8 @@
 - 冻结计划：`planner/20260824-040000-plan-r1.md` sha256 `1c2b92a6571a239335d300d5a2b363ae5a12ea95b223555c7703731988a42e6f`
 - 冻结 plan-gate artifact：`planner/20260824-040000-plan-gate-r1.json` sha256 `bdfab21ffa1c7c7df05a4478d26d035329cf36c24a1d91b981c0f85e51a92b45`（Plan Gate PASS，warnings `[]`）
 - Plan provenance：run `50739374-3ed1-4be6-8c59-ade3d98da490`（≠ Discovery Run，自证检查已闭合）
-- 当前状态：IMPLEMENTING
+- Stage 1 工单（冻结 artifact 的机械投影）：`leader/20260824-044027-stage1-red-workorder.json` sha256 `876014dae72a723775e2b384f3c9aa3905ce55dcc313bae4bf3cdc528968fc86`（21 条 RED 探针）
+- 当前状态：IMPLEMENTING（Stage 1 of N，顺序执行；`work_partition` 仍为单一 unit，未重新切分）
 
 ## 分录
 
@@ -20,3 +21,4 @@
 | 20260824-030834 | leader | discovery gate + dispatch plan | leader/20260824-030834-discovery-gate-dispatch-plan.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | PASS |
 | 20260824-040000 | planner | plan r1 | planner/20260824-040000-plan-r1.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | FROZEN |
 | 20260824-033836 | leader | plan gate + dispatch code | leader/20260824-033836-plan-gate-dispatch-code.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | PASS |
+| 20260824-044027 | leader | code 重编排 + dispatch stage 1 | leader/20260824-044027-code-restage-dispatch.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | — |

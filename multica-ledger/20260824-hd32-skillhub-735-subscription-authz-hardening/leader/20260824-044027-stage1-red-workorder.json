@@ -1,0 +1,371 @@
+{
+ "note": "MECHANICAL PROJECTION of frozen plan-gate-r1.json (sha256 bdfab21f...). Filter: acceptance_probes[expected_before==FAIL]. No content authored by leader.",
+ "source_artifact_sha256": "bdfab21ffa1c7c7df05a4478d26d035329cf36c24a1d91b981c0f85e51a92b45",
+ "red_probe_count": 21,
+ "test_files_touched": [
+  "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java",
+  "server/skillhub-app/src/test/java/com/iflytek/skillhub/exception/SubscriptionMessageBundleTest.java",
+  "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java",
+  "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+  "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java"
+ ],
+ "probes": [
+  {
+   "probe_id": "subscribe-private-denied",
+   "path_id": "subscription-create",
+   "state_id": "subscribe-private-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java",
+    "symbol": "subscribe_privateOrdinaryMember_deniesBeforeMutation"
+   },
+   "sink_assertions": [
+    "DomainForbiddenException code is exact",
+    "zero row, counter and event while PRIVATE manager control is allowed"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_privateOrdinaryMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "subscribe-hidden-denied",
+   "path_id": "subscription-create",
+   "state_id": "subscribe-hidden-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java",
+    "symbol": "subscribe_hiddenOrdinaryMember_deniesBeforeMutation"
+   },
+   "sink_assertions": [
+    "zero row, counter and event",
+    "owner or manager control is allowed"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_hiddenOrdinaryMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "subscribe-removed-denied",
+   "path_id": "subscription-create",
+   "state_id": "subscribe-removed-denied",
+   "class": "REVOCATION",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java",
+    "symbol": "subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation"
+   },
+   "sink_assertions": [
+    "absent current membership yields zero mutation and event",
+    "current MEMBER control is allowed"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_namespaceOnlyRemovedMember_deniesBeforeMutation -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "subscribe-disabled-denied",
+   "path_id": "subscription-create",
+   "state_id": "subscribe-disabled-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/domain/social/SkillSubscriptionServiceTest.java",
+    "symbol": "subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill"
+   },
+   "sink_assertions": [
+    "disabled user on PUBLIC reaches zero row, count and event",
+    "active control succeeds"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SkillSubscriptionServiceTest#subscribe_disabledUser_deniesEvenWithOtherwiseReadableSkill -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "subscribe-message-en-zh",
+   "path_id": "subscription-create",
+   "state_id": "subscribe-private-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/exception/SubscriptionMessageBundleTest.java",
+    "symbol": "subscriptionDeniedMessage_resolvesEnglishAndChinese"
+   },
+   "sink_assertions": [
+    "English copy equals frozen text",
+    "Chinese copy equals frozen text and neither falls back to raw code"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriptionMessageBundleTest -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "stale-read-private-denied",
+   "path_id": "my-subscriptions-current-read",
+   "state_id": "stale-read-private-denied",
+   "class": "STALE_STATE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java",
+    "symbol": "listMySubscriptions_filtersPrivateStaleRow"
+   },
+   "sink_assertions": [
+    "no private SkillSummaryResponse item",
+    "stale row remains and no counter mutation occurs"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_filtersPrivateStaleRow -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "stale-read-removed-denied",
+   "path_id": "my-subscriptions-current-read",
+   "state_id": "stale-read-removed-denied",
+   "class": "REVOCATION",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java",
+    "symbol": "listMySubscriptions_filtersRemovedMemberRow"
+   },
+   "sink_assertions": [
+    "removed NAMESPACE_ONLY row exposes no item",
+    "retained database row is not deleted"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_filtersRemovedMemberRow -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "stale-read-hidden-denied",
+   "path_id": "my-subscriptions-current-read",
+   "state_id": "stale-read-hidden-denied",
+   "class": "STALE_STATE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java",
+    "symbol": "listMySubscriptions_filtersHiddenRow"
+   },
+   "sink_assertions": [
+    "hidden stale row exposes no item",
+    "owner or manager visible control remains"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_filtersHiddenRow -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "stale-read-disabled-denied",
+   "path_id": "my-subscriptions-current-read",
+   "state_id": "stale-read-disabled-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java",
+    "symbol": "listMySubscriptions_disabledUserGetsNoMetadata"
+   },
+   "sink_assertions": [
+    "disabled account receives no items",
+    "retained rows and counts are not mutated"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_disabledUserGetsNoMetadata -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "stale-read-mixed-visible-total",
+   "path_id": "my-subscriptions-current-read",
+   "state_id": "stale-read-mixed-page",
+   "class": "STALE_STATE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/service/MySkillAppServiceTest.java",
+    "symbol": "listMySubscriptions_filtersStaleMetadataAndVisibleTotal"
+   },
+   "sink_assertions": [
+    "items contain only visible rows in stable order",
+    "total equals visible set rather than underlying retained-row count"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=MySkillAppServiceTest#listMySubscriptions_filtersStaleMetadataAndVisibleTotal -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "published-private-denied",
+   "path_id": "published-subscriber-fanout",
+   "state_id": "published-private-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "publish_privateOrdinaryMember_hasZeroRowAndSse"
+   },
+   "sink_assertions": [
+    "ordinary member gets zero row and SSE",
+    "PRIVATE manager control gets exact row and SSE"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_privateOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "published-hidden-denied",
+   "path_id": "published-subscriber-fanout",
+   "state_id": "published-hidden-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "publish_hiddenOrdinaryMember_hasZeroRowAndSse"
+   },
+   "sink_assertions": [
+    "ordinary member gets zero row and SSE",
+    "owner or manager control gets exact sink tuple"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_hiddenOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "published-removed-denied",
+   "path_id": "published-subscriber-fanout",
+   "state_id": "published-removed-denied",
+   "class": "REVOCATION",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "publish_namespaceOnlyRemovedMember_hasZeroRowAndSse"
+   },
+   "sink_assertions": [
+    "stale row with absent membership gets zero row and SSE",
+    "current MEMBER control gets exact sink tuple"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_namespaceOnlyRemovedMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "published-disabled-denied",
+   "path_id": "published-subscriber-fanout",
+   "state_id": "published-disabled-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "publish_disabledUser_hasZeroRowAndSse"
+   },
+   "sink_assertions": [
+    "disabled subscriber gets zero row and SSE",
+    "active control gets exact sink tuple"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#publish_disabledUser_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "yanked-private-denied",
+   "path_id": "yanked-subscriber-fanout",
+   "state_id": "yanked-private-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "yank_privateOrdinaryMember_hasZeroRowAndSse"
+   },
+   "sink_assertions": [
+    "ordinary member gets zero yank row and SSE",
+    "PRIVATE manager control gets exact sink tuple"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_privateOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "yanked-hidden-denied",
+   "path_id": "yanked-subscriber-fanout",
+   "state_id": "yanked-hidden-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "yank_hiddenOrdinaryMember_hasZeroRowAndSse"
+   },
+   "sink_assertions": [
+    "ordinary member gets zero yank row and SSE",
+    "owner or manager control gets exact tuple"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_hiddenOrdinaryMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "yanked-removed-denied",
+   "path_id": "yanked-subscriber-fanout",
+   "state_id": "yanked-removed-denied",
+   "class": "REVOCATION",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "yank_namespaceOnlyRemovedMember_hasZeroRowAndSse"
+   },
+   "sink_assertions": [
+    "removed member gets zero row and SSE",
+    "current MEMBER control gets exact tuple"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_namespaceOnlyRemovedMember_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "yanked-disabled-denied",
+   "path_id": "yanked-subscriber-fanout",
+   "state_id": "yanked-disabled-denied",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "yank_disabledUser_hasZeroRowAndSse"
+   },
+   "sink_assertions": [
+    "disabled subscriber gets zero row and SSE",
+    "active control gets exact tuple"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#yank_disabledUser_hasZeroRowAndSse -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "authority-removed-member",
+   "path_id": "current-authority-resolution",
+   "state_id": "authority-removed-member",
+   "class": "REVOCATION",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java",
+    "symbol": "removedMember_isDeniedFromCurrentFacts"
+   },
+   "sink_assertions": [
+    "absent current membership reaches checker as no role",
+    "stale subscription row is never treated as authority"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberAccessResolverTest#removedMember_isDeniedFromCurrentFacts -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "authority-disabled-user",
+   "path_id": "current-authority-resolution",
+   "state_id": "authority-disabled-user",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberAccessResolverTest.java",
+    "symbol": "disabledUser_isDeniedEvenWithBindings"
+   },
+   "sink_assertions": [
+    "disabled account excluded",
+    "role bindings cannot override inactive status"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberAccessResolverTest#disabledUser_isDeniedEvenWithBindings -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  },
+  {
+   "probe_id": "notification-ineligible-zero",
+   "path_id": "notification-final-sinks",
+   "state_id": "notification-ineligible-enabled-preference",
+   "class": "NEGATIVE",
+   "entry": {
+    "path": "server/skillhub-app/src/test/java/com/iflytek/skillhub/listener/SubscriberNotificationSinkTest.java",
+    "symbol": "ineligibleRecipient_preferenceEnabledStillHasZeroFinalSink"
+   },
+   "sink_assertions": [
+    "preference enabled cannot admit ineligible recipient",
+    "zero durable row, SSE and later list item"
+   ],
+   "command": "cd server && ./mvnw -pl skillhub-app -am -Dtest=SubscriberNotificationSinkTest#ineligibleRecipient_preferenceEnabledStillHasZeroFinalSink -Dsurefire.failIfNoSpecifiedTests=false test",
+   "expected_before": "FAIL",
+   "expected_after": "PASS"
+  }
+ ]
+}
