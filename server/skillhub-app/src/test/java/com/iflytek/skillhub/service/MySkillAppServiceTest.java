@@ -15,6 +15,7 @@ import com.iflytek.skillhub.domain.skill.SkillVisibility;
 import com.iflytek.skillhub.domain.skill.service.SkillLifecycleProjectionService;
 import com.iflytek.skillhub.domain.social.SkillStar;
 import com.iflytek.skillhub.domain.social.SkillStarRepository;
+import com.iflytek.skillhub.domain.social.SkillSubscription;
 import com.iflytek.skillhub.domain.social.SkillSubscriptionRepository;
 import com.iflytek.skillhub.repository.JpaMySkillQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,8 +34,13 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MySkillAppServiceTest {
@@ -390,5 +396,163 @@ class MySkillAppServiceTest {
         Namespace namespace = new Namespace(slug, slug, "user-1");
         ReflectionTestUtils.setField(namespace, "id", id);
         return namespace;
+    }
+
+    // ------------------------------------------------------------------
+    // HD-32 path my-subscriptions-current-read.
+    //
+    // Retained subscription rows survive a later visibility or membership
+    // change. GET /me/subscriptions assembles its response straight from those
+    // rows, so the stale row keeps leaking slug, displayName, summary,
+    // visibility and namespace. Read-time filtering is the fix; deleting the
+    // row is an explicit non-goal, so every probe also pins the retained row.
+    // ------------------------------------------------------------------
+
+    private static final String SUBSCRIBER = "viewer-1";
+    private static final Long SUBSCRIPTION_NAMESPACE_ID = 101L;
+
+    private SkillSubscription subscriptionRow(Long skillId, String createdAt) {
+        SkillSubscription subscription = new SkillSubscription(skillId, SUBSCRIBER);
+        ReflectionTestUtils.setField(subscription, "createdAt", Instant.parse(createdAt));
+        return subscription;
+    }
+
+    private Skill subscribedSkill(Long id, String slug, SkillVisibility visibility, boolean hidden) {
+        Skill skill = createSkill(id, SUBSCRIPTION_NAMESPACE_ID, slug, "owner-1");
+        skill.setVisibility(visibility);
+        skill.setHidden(hidden);
+        skill.setLatestVersionId(id * 10);
+        return skill;
+    }
+
+    /** Assembly-side stubs; a filtered row never reaches them, so they must stay lenient. */
+    private void stubSummaryAssembly(List<Skill> skills) {
+        for (Skill skill : skills) {
+            lenient().when(skillVersionRepository.findBySkillIdAndStatus(skill.getId(), SkillVersionStatus.PUBLISHED))
+                    .thenReturn(List.of());
+            lenient().when(skillVersionRepository.findBySkillId(skill.getId())).thenReturn(List.of());
+        }
+        lenient().when(namespaceRepository.findByIdIn(List.of(SUBSCRIPTION_NAMESPACE_ID)))
+                .thenReturn(List.of(namespace(SUBSCRIPTION_NAMESPACE_ID, "team-ai")));
+    }
+
+    private void assertRetainedRowsUntouched() {
+        verify(skillSubscriptionRepository, never()).delete(any());
+        verify(skillSubscriptionRepository, never()).deleteBySkillId(anyLong());
+        verify(skillRepository, never()).decrementSubscriptionCount(anyLong());
+    }
+
+    /** Probe stale-read-private-denied. */
+    @Test
+    void listMySubscriptions_filtersPrivateStaleRow() {
+        Skill staleSkill = subscribedSkill(1L, "private-skill", SkillVisibility.PRIVATE, false);
+        Skill visibleSkill = subscribedSkill(2L, "public-skill", SkillVisibility.PUBLIC, false);
+
+        given(skillSubscriptionRepository.findByUserId(SUBSCRIBER, PageRequest.of(0, 10)))
+                .willReturn(new PageImpl<>(
+                        List.of(subscriptionRow(1L, "2026-03-14T10:00:00Z"), subscriptionRow(2L, "2026-03-14T11:00:00Z")),
+                        PageRequest.of(0, 10),
+                        2));
+        given(skillRepository.findByIdIn(List.of(1L, 2L))).willReturn(List.of(staleSkill, visibleSkill));
+        stubSummaryAssembly(List.of(staleSkill, visibleSkill));
+
+        var subscriptions = service.listMySubscriptions(SUBSCRIBER, 0, 10);
+
+        assertThat(subscriptions.items())
+                .as("a PRIVATE skill the subscriber can no longer read must not appear")
+                .extracting("slug")
+                .containsExactly("public-skill");
+        assertThat(subscriptions.total())
+                .as("total must describe the visible set, not the retained-row count")
+                .isEqualTo(1);
+        assertRetainedRowsUntouched();
+    }
+
+    /** Probe stale-read-hidden-denied. */
+    @Test
+    void listMySubscriptions_filtersHiddenRow() {
+        Skill hiddenSkill = subscribedSkill(3L, "hidden-skill", SkillVisibility.PUBLIC, true);
+        Skill visibleSkill = subscribedSkill(4L, "public-skill", SkillVisibility.PUBLIC, false);
+
+        given(skillSubscriptionRepository.findByUserId(SUBSCRIBER, PageRequest.of(0, 10)))
+                .willReturn(new PageImpl<>(
+                        List.of(subscriptionRow(3L, "2026-03-14T10:00:00Z"), subscriptionRow(4L, "2026-03-14T11:00:00Z")),
+                        PageRequest.of(0, 10),
+                        2));
+        given(skillRepository.findByIdIn(List.of(3L, 4L))).willReturn(List.of(hiddenSkill, visibleSkill));
+        stubSummaryAssembly(List.of(hiddenSkill, visibleSkill));
+
+        var subscriptions = service.listMySubscriptions(SUBSCRIBER, 0, 10);
+
+        assertThat(subscriptions.items())
+                .as("a hidden skill stays readable only for its owner or a namespace manager")
+                .extracting("slug")
+                .containsExactly("public-skill");
+        assertThat(subscriptions.total()).isEqualTo(1);
+        assertRetainedRowsUntouched();
+    }
+
+    /**
+     * Probe stale-read-removed-denied.
+     *
+     * <p>The subscriber carries no current membership in the skill's namespace, so a NAMESPACE_ONLY
+     * skill must drop out of the page while its row stays in the database.
+     */
+    @Test
+    void listMySubscriptions_filtersRemovedMemberRow() {
+        Skill namespaceOnlySkill = subscribedSkill(5L, "namespace-only-skill", SkillVisibility.NAMESPACE_ONLY, false);
+        Skill visibleSkill = subscribedSkill(6L, "public-skill", SkillVisibility.PUBLIC, false);
+
+        given(skillSubscriptionRepository.findByUserId(SUBSCRIBER, PageRequest.of(0, 10)))
+                .willReturn(new PageImpl<>(
+                        List.of(subscriptionRow(5L, "2026-03-14T10:00:00Z"), subscriptionRow(6L, "2026-03-14T11:00:00Z")),
+                        PageRequest.of(0, 10),
+                        2));
+        given(skillRepository.findByIdIn(List.of(5L, 6L))).willReturn(List.of(namespaceOnlySkill, visibleSkill));
+        stubSummaryAssembly(List.of(namespaceOnlySkill, visibleSkill));
+
+        var subscriptions = service.listMySubscriptions(SUBSCRIBER, 0, 10);
+
+        assertThat(subscriptions.items())
+                .as("a removed member holds no current namespace role, so NAMESPACE_ONLY metadata is unreadable")
+                .extracting("slug")
+                .containsExactly("public-skill");
+        assertThat(subscriptions.total()).isEqualTo(1);
+        assertRetainedRowsUntouched();
+    }
+
+    /** Probe stale-read-mixed-visible-total. */
+    @Test
+    void listMySubscriptions_filtersStaleMetadataAndVisibleTotal() {
+        Skill firstVisible = subscribedSkill(7L, "first-public-skill", SkillVisibility.PUBLIC, false);
+        Skill privateSkill = subscribedSkill(8L, "private-skill", SkillVisibility.PRIVATE, false);
+        Skill hiddenSkill = subscribedSkill(9L, "hidden-skill", SkillVisibility.PUBLIC, true);
+        Skill namespaceOnlySkill = subscribedSkill(10L, "namespace-only-skill", SkillVisibility.NAMESPACE_ONLY, false);
+        Skill secondVisible = subscribedSkill(11L, "second-public-skill", SkillVisibility.PUBLIC, false);
+
+        given(skillSubscriptionRepository.findByUserId(SUBSCRIBER, PageRequest.of(0, 10)))
+                .willReturn(new PageImpl<>(
+                        List.of(
+                                subscriptionRow(7L, "2026-03-14T10:00:00Z"),
+                                subscriptionRow(8L, "2026-03-14T11:00:00Z"),
+                                subscriptionRow(9L, "2026-03-14T12:00:00Z"),
+                                subscriptionRow(10L, "2026-03-14T13:00:00Z"),
+                                subscriptionRow(11L, "2026-03-14T14:00:00Z")),
+                        PageRequest.of(0, 10),
+                        5));
+        given(skillRepository.findByIdIn(List.of(7L, 8L, 9L, 10L, 11L)))
+                .willReturn(List.of(firstVisible, privateSkill, hiddenSkill, namespaceOnlySkill, secondVisible));
+        stubSummaryAssembly(List.of(firstVisible, privateSkill, hiddenSkill, namespaceOnlySkill, secondVisible));
+
+        var subscriptions = service.listMySubscriptions(SUBSCRIBER, 0, 10);
+
+        assertThat(subscriptions.items())
+                .as("only currently readable rows survive, in the retained-row order")
+                .extracting("slug")
+                .containsExactly("first-public-skill", "second-public-skill");
+        assertThat(subscriptions.total())
+                .as("total must not leak how many stale rows are retained behind the filter")
+                .isEqualTo(2);
+        assertRetainedRowsUntouched();
     }
 }
