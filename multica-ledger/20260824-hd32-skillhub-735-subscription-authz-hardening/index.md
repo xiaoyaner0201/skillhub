@@ -12,3 +12,4 @@
 | 时间 | Agent | 动作 | 产物 | tree | 结论 |
 |---|---|---|---|---|---|
 | 20260824-024121 | leader | intake+dispatch | leader/20260824-024121-intake-dispatch.md | — | — |
+| 20260824-030408 | qa | behavior discovery | qa/20260824-030408-behavior-discovery.md | `c81497cf7eb98f0568b8b30c9af1e67797bca27a` | FROZEN |
