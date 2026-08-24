@@ -28,3 +28,4 @@
 | 20260824-080500 | leader | stage 1 裁决 + 重新分期（6 条归 RISK_ROUTE_GAP 自担，D3 转 Planner） | leader/20260824-080500-stage1-adjudication-restage.md | `ca28196b0bfda8860ba6e30a5562f39688176c78` | ACCEPTED PARTIAL |
 | 20260824-080019 | planner | supersede `ASSUME_MESSAGE_COPY` observable | planner/20260824-080019-assume-message-copy-supersession.md | — | FROZEN |
 | 20260824-084451 | coder | stage 2 可复现性修复 + `current-authority-resolution` seam RED→GREEN | coder/20260824-084451-stage2-authority-seam.md | `179c7aa3d3e1f6a46c39f92ebc617b321497e2e0` | RED→GREEN |
+| 20260824-090500 | leader | stage 2 受理 + D3 闭合 + 分期细化派发 stage 3 | leader/20260824-090500-stage2-acceptance-dispatch-stage3.md | `179c7aa3d3e1f6a46c39f92ebc617b321497e2e0` | ACCEPTED |
