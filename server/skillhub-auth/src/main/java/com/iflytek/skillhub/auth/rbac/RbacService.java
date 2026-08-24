@@ -7,7 +7,11 @@ import com.iflytek.skillhub.auth.repository.UserRoleBindingRepository;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,6 +40,26 @@ public class RbacService {
         return PlatformRoleDefaults.withDefaultUserRole(roleBindingRepo.findByUserId(userId).stream()
             .map(rb -> rb.getRole().getCode())
             .collect(Collectors.toSet()));
+    }
+
+    /**
+     * Batch counterpart of {@link #getUserRoleCodes(String)}: one binding read for the whole set,
+     * normalized through the same default-role rule so a caller cannot end up with a parallel
+     * role model. Every requested id is present in the result, unbound users included.
+     */
+    public Map<String, Set<String>> getUserRoleCodesIn(Collection<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> distinctIds = new LinkedHashSet<>(userIds);
+        Map<String, Set<String>> bound = roleBindingRepo.findByUserIdIn(distinctIds).stream()
+            .collect(Collectors.groupingBy(UserRoleBinding::getUserId,
+                Collectors.mapping(rb -> rb.getRole().getCode(), Collectors.toSet())));
+        Map<String, Set<String>> resolved = new LinkedHashMap<>();
+        for (String userId : distinctIds) {
+            resolved.put(userId, PlatformRoleDefaults.withDefaultUserRole(bound.get(userId)));
+        }
+        return Map.copyOf(resolved);
     }
 
     public Set<String> getUserPermissions(String userId) {

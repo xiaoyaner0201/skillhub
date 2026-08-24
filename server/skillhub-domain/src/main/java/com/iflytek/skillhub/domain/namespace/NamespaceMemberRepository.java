@@ -15,6 +15,12 @@ public interface NamespaceMemberRepository {
     List<NamespaceMember> findByUserId(String userId);
     Page<NamespaceMember> findByNamespaceId(Long namespaceId, Pageable pageable);
     List<NamespaceMember> findByNamespaceIdAndRoleIn(Long namespaceId, Collection<NamespaceRole> roles);
+
+    /**
+     * Batch membership read for one namespace. Callers that decide access for a set of users must
+     * use this instead of a per-user lookup inside their decision loop.
+     */
+    List<NamespaceMember> findByNamespaceIdAndUserIdIn(Long namespaceId, Collection<String> userIds);
     NamespaceMember save(NamespaceMember member);
     void deleteByNamespaceId(Long namespaceId);
     void deleteByNamespaceIdAndUserId(Long namespaceId, String userId);
