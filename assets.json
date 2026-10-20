@@ -1,0 +1,21 @@
+{
+  "description": "Original bilingual feature-proposal illustrations: passive semantic labels and optional vendor-neutral business-event export.",
+  "images": [
+    {
+      "language": "zh",
+      "sha256": "97b308fd2754d6a19326a6637846963ba9b160089cfaac4e61c80ad695e94fa2",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "language": "en",
+      "sha256": "fd8369ce4fc83952425d2fce57faae1d632c5bded1ac366acb8cefdd5490de26",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    }
+  ]
+}
